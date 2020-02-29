@@ -1,0 +1,150 @@
+$def with(post)
+<script type="text/javascript" src="static/js/jquery.js"></script>   
+<script type="text/javascript" src="static/js/jquery.form.js"></script> 
+<script type="text/javascript" src="static/js/helps.js"></script> 
+<link rel="stylesheet" href="static/css/checkbox.css">
+<!-- CSS goes in the document HEAD or added to your external stylesheet -->
+<style type="text/css">
+table.gridtable {
+	font-family: verdana,arial,sans-serif;
+	font-size:10px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 10px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 10px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+}
+.loading{display: none; position: absolute; top: 50%; left: 50%; z-index:1002; }
+.class_div{ display:inline} 
+</style>
+
+
+
+<script type="text/javascript">
+    //变量初始化，存储需要请求的数据
+imgJson = {"imgString":"",
+               "num":0,
+               "url":"",
+               "result":"",
+               "timeTake":0.0,
+               "textAngle":false,
+               "textLine":false,
+               'ocrFlag':false
+              };
+    
+imgBoxes = [];
+imgRate=1;
+ </script>   
+
+
+<div style="">
+      <div>
+        
+        <span class="margin-r" style="font-size:100%">文字方向检测</span>
+            <label class="el-switch el-switch-sm">
+            <input type="checkbox" name="switch" id="textAngle">
+            <span class="el-switch-style"></span>
+        </label>
+        
+        <span class="margin-r" style="font-size:110%">单行文字识别</span>
+            <label class="el-switch el-switch-sm"> 
+            <input type="checkbox" name="switch" id="textLine">
+        <span class="el-switch-style"></span>
+        </label>               
+    </div>   
+   <br>
+   <div >
+       
+       $for i,bill in enumerate(post['billList']):
+            <div style="font-size:10px" class="class_div" onclick="getBill('$bill',this,$i)">
+            <span class="margin-r" style="font-size:110%">$bill</span>
+            <label class="el-switch el-switch-sm">
+            <input type="checkbox" name="switch" id="billModel_$i">
+            <span class="el-switch-style"></span>
+            </label>
+            </div>
+       
+   </div>
+    <br>
+      <div class="image-input-container" style="osition: absolute; left: 50%; top: 20%; ">
+                                    <input type="file"   id='imageButton'  accept="image/png, image/bmp, image/jpg, image/jpeg" class="image-local-input" onchange="FunimgPreview('imageButton','Preview','myCanvas')">
+                                    
+      </div> 
+     
+ </div>
+
+<br>
+
+                        
+<div class="canvas-container" >
+                                <img id='Preview' width="1600" height="1000"  src="" style="position: absolute; left: 35%; top: 55%; transform: translate(-50%, -50%) scale(0.5);z-index:2;"></img>
+                                <canvas id="myCanvas" width="1600" height="1000" style="position: absolute; left: 35%; top: 55%; transform: translate(-50%, -50%) scale(0.5);z-index:3;">
+     
+
+</div>
+<img id='loadingGif' width="800" height="500"  src="static/img/loading.gif" style="position: absolute; left: 50%; top: 55%; transform: translate(-50%, -50%) scale(0.5);z-index:3;display:none"></img>
+
+
+
+
+
+
+
+    
+ <!#############################识别结果######################################################### ---->   
+                <div style="position: absolute; left: 68%; top: 12%;" >
+                    <div class="json">
+                        <div class="json-request-title" id="billmodelname">$post.get('name')</div>
+                            <div style="height:500px;width:300px; overflow:scroll;">
+                                <div id="billNameList"></div>
+                                <div id="mytable"></div>
+                                
+                            </div>
+                        
+                    </div>
+                </div>
+             </div>       
+<!##############################识别结果######################################################### ---->
+                    
+
+
+
+
+<script type="text/javascript">
+            //点击文件,自动提交文件，进行识别
+            jQuery('#imageButton').on('change', function()  
+                      {  
+                      });
+    
+    function getBill(value,that,index){
+        //勾选需要识别的类型
+            var divStyle = document.getElementsByClassName("class_div");
+            for(var i=0;i<divStyle.length;i++){
+                if(index==i){
+                     document.getElementById("billModel_"+i).checked=true;
+                }
+                else{
+                    document.getElementById("billModel_"+i).checked=false;
+                }
+        }
+
+        imgJson.billModel = value;
+    } 
+    
+setInterval(cycle,700); //动画显示box   
+    
+</script> 
+
