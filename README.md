@@ -13,7 +13,7 @@
 
 ## web服务启动
 ``` Bash
-cd chineseocr## 进入chineseocr目录
+cd chineseocr_lite## 进入chineseocr目录
 python app.py 8080 ##8080端口号，可以设置任意端口
 ```
 
