@@ -13,7 +13,7 @@ text_handle = PSENetHandel(pse_model_path, text_detect_net, pse_scale, gpu_id=GP
 
 if crnn_type == "full_lstm":
     crnn_net  = FullCrnn(32, 1, len(alphabet) + 1, nh, n_rnn=2, leakyRelu=False, lstmFlag=LSTMFLAG)
-elif crnn_type == "lite_lstm":
+elif crnn_type == "lite_lstm" or crnn_type == "lite_dense":
     crnn_net =  LiteCrnn(32, 1, len(alphabet) + 1, nh, n_rnn=2, leakyRelu=False, lstmFlag=LSTMFLAG)
 
 crnn_handle  =  CRNNHandle(crnn_model_path , crnn_net , gpu_id=GPU_ID)

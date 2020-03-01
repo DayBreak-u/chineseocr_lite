@@ -1,5 +1,4 @@
-from .resnet import  resnet18,resnet50,resnet34
-from config import  lable_map_dict
+
 import torch
 from torchvision import  transforms
 from torch.autograd import Variable

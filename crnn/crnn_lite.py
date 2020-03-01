@@ -94,8 +94,8 @@ class CRnn(nn.Module):
             )
         else:
             self.linear = nn.Sequential(
-                nn.Linear(nm[-1], nh//4),
-                nn.Linear(nh//4, nclass),
+                nn.Linear(nm[-1], nh//2),
+                nn.Linear(nh//2, nclass),
             )
 
     def forward(self, input):

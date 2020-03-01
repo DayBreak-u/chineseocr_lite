@@ -13,15 +13,18 @@ pse_scale = 4
 if  pse_model_type == "mobilenetv2":
     pse_model_path = os.path.join(father_path, "models/psenet_lite_mbv2.pth")
 #crnn相关
-crnn_type  = "lite_lstm"
+nh = 256
+crnn_type  = "lite_dense"
 if crnn_type == "lite_lstm":
-    nh = 256
     LSTMFLAG = True
     crnn_model_path =  os.path.join(father_path,"models/crnn_lite_lstm_dw.pth")
 elif crnn_type == "full_lstm":
-    nh = 256
     LSTMFLAG = True
     crnn_model_path = os.path.join(father_path,"models/ocr-lstm.pth")
+elif crnn_type == "lite_dense":
+    LSTMFLAG = False
+    crnn_model_path = os.path.join(father_path, "models/crnn_lite_dense_dw.pth")
+
 # crnn_model_path = os.path.join(father_path,"models/ocr-lstm.pth")
 
 # from crnn.keys import  alphabet
