@@ -18,12 +18,15 @@ crnn_type  = "lite_dense"
 if crnn_type == "lite_lstm":
     LSTMFLAG = True
     crnn_model_path =  os.path.join(father_path,"models/crnn_lite_lstm_dw.pth")
-elif crnn_type == "full_lstm":
-    LSTMFLAG = True
-    crnn_model_path = os.path.join(father_path,"models/ocr-lstm.pth")
 elif crnn_type == "lite_dense":
     LSTMFLAG = False
     crnn_model_path = os.path.join(father_path, "models/crnn_lite_dense_dw.pth")
+elif crnn_type == "full_lstm":
+    LSTMFLAG = True
+    crnn_model_path = os.path.join(father_path,"models/ocr-lstm.pth")
+elif crnn_type == "full_dense":
+    LSTMFLAG = True
+    crnn_model_path = os.path.join(father_path,"models/ocr-dense.pth")
 
 # crnn_model_path = os.path.join(father_path,"models/ocr-lstm.pth")
 

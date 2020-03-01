@@ -10,12 +10,13 @@ import cv2
 
 text_detect_net  = PSENet(backbone=pse_model_type, pretrained=False, result_num=6,scale = pse_scale)
 text_handle = PSENetHandel(pse_model_path, text_detect_net, pse_scale, gpu_id=GPU_ID)
-
-if crnn_type == "full_lstm":
+crnn_net = None
+if crnn_type == "full_lstm" or crnn_type == "full_dense":
     crnn_net  = FullCrnn(32, 1, len(alphabet) + 1, nh, n_rnn=2, leakyRelu=False, lstmFlag=LSTMFLAG)
 elif crnn_type == "lite_lstm" or crnn_type == "lite_dense":
     crnn_net =  LiteCrnn(32, 1, len(alphabet) + 1, nh, n_rnn=2, leakyRelu=False, lstmFlag=LSTMFLAG)
 
+assert  crnn_type is not None
 crnn_handle  =  CRNNHandle(crnn_model_path , crnn_net , gpu_id=GPU_ID)
 
 

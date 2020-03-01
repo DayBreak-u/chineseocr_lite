@@ -4,6 +4,7 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="Remote Python 3.6.3 (sftp://yanghuiyu@192.168.55.68:22/home/yanghuiyu/.pyenv/versions/anaconda3-5.0.1/bin/python)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="adv_detect" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_FOLDERS">

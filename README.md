@@ -4,7 +4,7 @@
 # 实现功能
 - [x]  提供轻量的backone检测模型psenet（8.5M）,crnn_lstm_lite(9.5M) 和行文本方向分类网络（1.5M）
 - [x]  任意方向文字检测，识别时判断行文本方向 
-- [x]  crnn\crnn_lite ocr 识别          
+- [x]  crnn\crnn_lite lstm\dense识别（ocr-dense和ocr-lstm是搬运[chineseocr](https://github.com/chineseocr/chineseocr)的）   
 - [ ]  支持竖直文本识别  
 - [ ]  ncnn实现全部网络  
 
