@@ -169,7 +169,7 @@ std::vector<std::vector<cv::Point>> deocde(const cv::Mat &score, const cv::Mat &
     return bboxs;
 }
 
-static int detect_rfcn(const char *model, const char *model_param, const char *imagepath, const int long_size = 800) {
+static int detect_psenet(const char *model, const char *model_param, const char *imagepath, const int long_size = 800) {
     cv::Mat im_bgr = cv::imread(imagepath, 1);
 
     if (im_bgr.empty()) {
