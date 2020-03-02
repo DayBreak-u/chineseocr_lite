@@ -33,7 +33,7 @@ http://127.0.0.1:8080/ocr
 
 
 ## ncnn检测结果展示
-<img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/test_imgs/https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/psenet/build/imgs/result.jpg"/>
+<img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/psenet/build/imgs/result.jpg"/>
 
 ## 参考
 1. crnn  https://github.com/meijieru/crnn.pytorch.git              
