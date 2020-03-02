@@ -7,14 +7,20 @@ father_path=os.path.abspath(os.path.dirname(filt_path)+os.path.sep+".")
 GPU_ID = 0
 
 #psenet相关
-pse_long_size = 640
+pse_long_size = 960
 pse_model_type  = "mobilenetv2"
-pse_scale = 4
-if  pse_model_type == "mobilenetv2":
+pse_scale = 1
+
+
+if pse_model_type == "mobilenetv2" :
     pse_model_path = os.path.join(father_path, "models/psenet_lite_mbv2.pth")
+
 #crnn相关
 nh = 256
-crnn_type  = "lite_dense"
+crnn_type  = "lite_lstm"
+
+crnn_vertical_model_path = os.path.join(father_path,"models/crnn_dw_lstm_vertical.pth")
+
 if crnn_type == "lite_lstm":
     LSTMFLAG = True
     crnn_model_path =  os.path.join(father_path,"models/crnn_lite_lstm_dw.pth")

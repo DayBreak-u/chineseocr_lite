@@ -13,7 +13,8 @@ d = {'resnet18': {'models': resnet18, 'out': [64, 128, 256, 512]},
      'resnet50': {'models': resnet50, 'out': [256, 512, 1024, 2048]},
      'resnet101': {'models': resnet101, 'out': [256, 512, 1024, 2048]},
      'resnet152': {'models': resnet152, 'out': [256, 512, 1024, 2048]},
-     'mobilenetv2': {'models': mobilenet_v2, 'out': [24, 32, 96, 320]}
+     'mobilenetv2': {'models': mobilenet_v2, 'out': [24, 32, 96, 320]},
+     'mobilenetv2_lite': {'models': mobilenet_v2, 'out': [24, 32, 96, 320]}
 
      }
 
@@ -22,15 +23,18 @@ inplace = True
 
 
 class PSENet(nn.Module):
-    def __init__(self, backbone, result_num=6, scale: int = 1, pretrained=False):
+    def __init__(self, backbone, result_num=6, scale: int = 1, pretrained=False ):
         super(PSENet, self).__init__()
+
         assert backbone in d, 'backbone must in: {}'.format(d)
         self.scale = scale
+
         conv_out = 128
         model, out = d[backbone]['models'], d[backbone]['out']
         self.backbone = model(pretrained=pretrained)
         # Reduce channels
         # Top layer
+
         self.toplayer = nn.Sequential(nn.Conv2d(out[3], conv_out, kernel_size=1, stride=1, padding=0),
                                       nn.BatchNorm2d(conv_out),
                                       nn.ReLU(inplace=inplace)
@@ -50,18 +54,6 @@ class PSENet(nn.Module):
                                        )
 
         # Smooth layers
-        # self.smooth1 = nn.Sequential(nn.Conv2d(conv_out, conv_out, kernel_size=3, stride=1, padding=1),
-        #                              nn.BatchNorm2d(conv_out),
-        #                              nn.ReLU(inplace=inplace)
-        #                              )
-        # self.smooth2 = nn.Sequential(nn.Conv2d(conv_out, conv_out, kernel_size=3, stride=1, padding=1),
-        #                              nn.BatchNorm2d(conv_out),
-        #                              nn.ReLU(inplace=inplace)
-        #                              )
-        # self.smooth3 = nn.Sequential(nn.Conv2d(conv_out, conv_out, kernel_size=3, stride=1, padding=1),
-        #                              nn.BatchNorm2d(conv_out),
-        #                              nn.ReLU(inplace=inplace)
-        #                              )
 
         self.smooth1 = nn.Sequential(nn.Conv2d(conv_out, conv_out, kernel_size=3, stride=1, padding=1, groups=conv_out),
                                      nn.BatchNorm2d(conv_out),
@@ -122,8 +114,10 @@ class PSENet(nn.Module):
         p3 = F.interpolate(p3, size=(h, w), mode='nearest')
         p4 = F.interpolate(p4, size=(h, w), mode='nearest')
         p5 = F.interpolate(p5, size=(h, w), mode='nearest')
-        # return torch.add([p2, p3, p4, p5], dim=1)
+
         return p2 + p3 + p4 + p5
+
+
 
 if __name__ == '__main__':
     import time

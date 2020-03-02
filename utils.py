@@ -24,7 +24,7 @@ def rotate_cut_img(im, degree, x_center , y_center, w, h, leftAdjust=False, righ
     return tmpImg, newW, newH
 
 
-def crop_rect(img, rect ,alph = 0.02):
+def crop_rect(img, rect ,alph = 0.05):
     img  = np.asarray(img)
     # get the parameter of the small rectangle
     # print("rect!")
