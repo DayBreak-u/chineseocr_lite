@@ -15,7 +15,7 @@ if(True)
     endif()
 endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/include/ncnn)
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/lib)
 
@@ -35,6 +35,6 @@ set(SRC
         main.cpp
         )
 
-add_executable(FaceDetector ${SRC})
-target_link_libraries(FaceDetector ncnn ${OpenCV_LIBS})
+add_executable(Text_detext ${SRC})
+target_link_libraries(Text_detext ncnn ${OpenCV_LIBS})
 

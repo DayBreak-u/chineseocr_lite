@@ -65,39 +65,39 @@ CMAKE_SOURCE_DIR = /mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/ncnn_project/ps
 CMAKE_BINARY_DIR = /mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/ncnn_project/psenet/build
 
 #=============================================================================
-# Target rules for target CMakeFiles/FaceDetector.dir
+# Target rules for target CMakeFiles/Text_detext.dir
 
 # All Build rule for target.
-CMakeFiles/FaceDetector.dir/all:
-	$(MAKE) -f CMakeFiles/FaceDetector.dir/build.make CMakeFiles/FaceDetector.dir/depend
-	$(MAKE) -f CMakeFiles/FaceDetector.dir/build.make CMakeFiles/FaceDetector.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/ncnn_project/psenet/build/CMakeFiles --progress-num=1,2 "Built target FaceDetector"
-.PHONY : CMakeFiles/FaceDetector.dir/all
+CMakeFiles/Text_detext.dir/all:
+	$(MAKE) -f CMakeFiles/Text_detext.dir/build.make CMakeFiles/Text_detext.dir/depend
+	$(MAKE) -f CMakeFiles/Text_detext.dir/build.make CMakeFiles/Text_detext.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/ncnn_project/psenet/build/CMakeFiles --progress-num=1,2 "Built target Text_detext"
+.PHONY : CMakeFiles/Text_detext.dir/all
 
 # Include target in all.
-all: CMakeFiles/FaceDetector.dir/all
+all: CMakeFiles/Text_detext.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/FaceDetector.dir/rule: cmake_check_build_system
+CMakeFiles/Text_detext.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/ncnn_project/psenet/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/FaceDetector.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/Text_detext.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/ncnn_project/psenet/build/CMakeFiles 0
-.PHONY : CMakeFiles/FaceDetector.dir/rule
+.PHONY : CMakeFiles/Text_detext.dir/rule
 
 # Convenience name for target.
-FaceDetector: CMakeFiles/FaceDetector.dir/rule
+Text_detext: CMakeFiles/Text_detext.dir/rule
 
-.PHONY : FaceDetector
-
-# clean rule for target.
-CMakeFiles/FaceDetector.dir/clean:
-	$(MAKE) -f CMakeFiles/FaceDetector.dir/build.make CMakeFiles/FaceDetector.dir/clean
-.PHONY : CMakeFiles/FaceDetector.dir/clean
+.PHONY : Text_detext
 
 # clean rule for target.
-clean: CMakeFiles/FaceDetector.dir/clean
+CMakeFiles/Text_detext.dir/clean:
+	$(MAKE) -f CMakeFiles/Text_detext.dir/build.make CMakeFiles/Text_detext.dir/clean
+.PHONY : CMakeFiles/Text_detext.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/Text_detext.dir/clean
 
 .PHONY : clean
 

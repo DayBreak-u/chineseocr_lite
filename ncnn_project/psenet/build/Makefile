@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/ncnn_project/ps
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -77,6 +66,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/local/bin/cmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named FaceDetector
+# Target rules for targets named Text_detext
 
 # Build rule for target.
-FaceDetector: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 FaceDetector
-.PHONY : FaceDetector
+Text_detext: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Text_detext
+.PHONY : Text_detext
 
 # fast build rule for target.
-FaceDetector/fast:
-	$(MAKE) -f CMakeFiles/FaceDetector.dir/build.make CMakeFiles/FaceDetector.dir/build
-.PHONY : FaceDetector/fast
+Text_detext/fast:
+	$(MAKE) -f CMakeFiles/Text_detext.dir/build.make CMakeFiles/Text_detext.dir/build
+.PHONY : Text_detext/fast
 
 main.o: main.cpp.o
 
@@ -129,7 +129,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/FaceDetector.dir/build.make CMakeFiles/FaceDetector.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/Text_detext.dir/build.make CMakeFiles/Text_detext.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -138,7 +138,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/FaceDetector.dir/build.make CMakeFiles/FaceDetector.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/Text_detext.dir/build.make CMakeFiles/Text_detext.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -147,7 +147,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/FaceDetector.dir/build.make CMakeFiles/FaceDetector.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/Text_detext.dir/build.make CMakeFiles/Text_detext.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -156,9 +156,9 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... FaceDetector"
+	@echo "... rebuild_cache"
+	@echo "... Text_detext"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
