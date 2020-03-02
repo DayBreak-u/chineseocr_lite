@@ -6,7 +6,9 @@
 - [x]  任意方向文字检测，识别时判断行文本方向 
 - [x]  crnn\crnn_lite lstm\dense识别（ocr-dense和ocr-lstm是搬运[chineseocr](https://github.com/chineseocr/chineseocr)的）   
 - [x]  支持竖直文本识别  
-- [ ]  ncnn实现全部网络  
+- [x]  ncnn 实现 psenet （未实现核扩展）
+- [ ]  ncnn 实现 crnn
+  
 
  
 
@@ -29,6 +31,9 @@ http://127.0.0.1:8080/ocr
 <img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/test_imgs/2_res.jpg"/>
 <img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/test_imgs/3_res.jpg"/>
 
+
+## ncnn检测结果展示
+<img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/test_imgs/https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/psenet/build/imgs/result.jpg"/>
 
 ## 参考
 1. crnn  https://github.com/meijieru/crnn.pytorch.git              
