@@ -9,8 +9,8 @@ pytorch  1.2.0
 - [x]  crnn\crnn_lite lstm\dense识别（ocr-dense和ocr-lstm是搬运[chineseocr](https://github.com/chineseocr/chineseocr)的）   
 - [x]  支持竖直文本识别  
 - [x]  ncnn 实现 psenet （未实现核扩展）
-- [ ]  ncnn 实现 crnn
-  
+- [x]  ncnn 实现 crnn_dense (改变了全连接为conv1x1)
+- [ ]  ncnn 实现 shuuflenev2 角度分类网络
 
  
 

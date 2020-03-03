@@ -15,11 +15,11 @@ if(True)
     endif()
 endif()
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/include/ncnn)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ncnn/include/ncnn)
 
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/lib)
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../ncnn/lib)
 
-
+add_definitions(-DUNICODE -D_UNICODE)
 
 find_package( OpenCV REQUIRED )
 
