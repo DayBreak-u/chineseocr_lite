@@ -3,6 +3,13 @@
 # 环境
 pytorch  1.2.0
 
+## PSENET 编译
+``` Bash
+cd psenet/pse
+rm -rf pse.so 
+make 
+```
+
 # 实现功能
 - [x]  提供轻量的backone检测模型psenet（8.5M）,crnn_lstm_lite(9.5M) 和行文本方向分类网络（1.5M）
 - [x]  任意方向文字检测，识别时判断行文本方向 
