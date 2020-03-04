@@ -7,10 +7,12 @@ pytorch  1.2.0
 - [x]  提供轻量的backone检测模型psenet（8.5M）,crnn_lstm_lite(9.5M) 和行文本方向分类网络（1.5M）
 - [x]  任意方向文字检测，识别时判断行文本方向 
 - [x]  crnn\crnn_lite lstm\dense识别（ocr-dense和ocr-lstm是搬运[chineseocr](https://github.com/chineseocr/chineseocr)的）   
-- [x]  支持竖直文本识别  
+- [x]  支持竖排文本识别  
 - [x]  ncnn 实现 psenet （未实现核扩展）
 - [x]  ncnn 实现 crnn_dense (改变了全连接为conv1x1)
-- [ ]  ncnn 实现 shuuflenev2 角度分类网络
+- [x]  ncnn 实现 shuuflenev2 角度分类网络
+- [ ]  ncnn 实现 ocr 整个流程
+- [ ]  提供竖排文本训练方案
 
  
 

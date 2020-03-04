@@ -35,7 +35,7 @@ set(SRC
         main.cpp
         )
 
-add_executable(Text_detext ${SRC})
+add_executable(Text_recognition ${SRC})
 
-target_link_libraries(Text_detext ncnn ${OpenCV_LIBS})
+target_link_libraries(Text_recognition ncnn ${OpenCV_LIBS})
 

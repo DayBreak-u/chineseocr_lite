@@ -96,7 +96,7 @@ std::vector<std::string> deocde(const ncnn::Mat score) {
 }
 
 
-static int detect_rfcn(const char *model, const char *model_param, const char *imagepath, const int imgH = 32) {
+static int detect_crnn(const char *model, const char *model_param, const char *imagepath, const int imgH = 32) {
     cv::Mat im_bgr = cv::imread(imagepath, 1);
 
     if (im_bgr.empty()) {
@@ -161,6 +161,6 @@ int main(int argc, char **argv) {
 
 
 
-    detect_rfcn(model, model_param, imagepath);
+    detect_crnn(model, model_param, imagepath);
     return 0;
 }
