@@ -22,19 +22,14 @@ class AangleClassHandle():
         self.net = torch.load(model_path, map_location=self.device)
         print('device:', self.device)
 
-        if angle_type == "resnet18" :
-            self.trans = transforms.Compose([
-                # transforms.RandomResizedCrop((56, 224)),
-                transforms.Resize((int(56 / 0.875),int(224 / 0.875))),
-                transforms.CenterCrop((56, 224)),
-                transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
-        else :
-            self.trans = transforms.Compose([
-                transforms.Resize((int(48 / 1.0), int(196 / 0.875))),
-                transforms.CenterCrop((48, 196)),
-                transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+
+        self.trans = transforms.Compose([
+            # transforms.Resize((int(48 / 1.0), int(196 / 0.875))),
+            # transforms.CenterCrop((48, 196)),
+            #
+            transforms.Resize((48, 196)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
 
 
         if net is not None:
@@ -51,7 +46,7 @@ class AangleClassHandle():
                 net.load_state_dict(self.net)
 
             self.net = net
-            print('load models')
+            print('load model')
         self.net.eval()
 
 
