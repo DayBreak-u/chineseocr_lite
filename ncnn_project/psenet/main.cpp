@@ -147,13 +147,13 @@ std::vector<std::vector<cv::Point>> deocde(const cv::Mat &score, const cv::Mat &
         float h = rect.size.height;
         float angle = rect.angle;
 
-        if (w < h) {
-            std::swap(w, h);
-            angle -= 90;
-        }
-        if (45 < std::abs(angle) && std::abs(angle) < 135) {
-            std::swap(img_rows, img_cols);
-        }
+//        if (w < h) {
+//            std::swap(w, h);
+//            angle -= 90;
+//        }
+//        if (45 < std::abs(angle) && std::abs(angle) < 135) {
+//            std::swap(img_rows, img_cols);
+//        }
         points.clear();
         // 对卡号进行限制，长宽比，卡号的宽度不能超过图片宽高的95%
         // if (w > h * 8 && w < img_cols * 0.95) {
@@ -226,6 +226,6 @@ int main(int argc, char **argv) {
     const int long_size = atoi(argv[4]);
     std::cout << model << " " << model_param << " " << imagepath << " " << long_size << std::endl;
 
-    detect_rfcn(model, model_param, imagepath, long_size);
+    detect_psenet(model, model_param, imagepath, long_size);
     return 0;
 }
