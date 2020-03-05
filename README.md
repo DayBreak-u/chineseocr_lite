@@ -18,7 +18,7 @@ make
 - [x]  ncnn 实现 psenet （未实现核扩展）
 - [x]  ncnn 实现 crnn_dense (改变了全连接为conv1x1)
 - [x]  ncnn 实现 shuuflenev2 角度分类网络
-- [ ]  ncnn 实现 ocr 整个流程
+- [x]  ncnn 实现 ocr 整个流程
 - [ ]  提供竖排文本训练方案
 
  
@@ -43,9 +43,10 @@ http://127.0.0.1:8080/ocr
 <img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/test_imgs/3_res.jpg"/>
 
 
-## ncnn检测结果展示
-<img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/psenet/build/imgs/result.jpg"/>
-<img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/crnn/test_res.jpg"/>
+## ncnn检测识别展示
+<img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/ocr/res_imgs/res_1.jpg"/>
+<img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/orc/res_imgs/res_2.jpg"/>
+因为ncnn模型都是dense的 lstm的没转成功，效果差的不少，以后继续优化
 
 ## 参考
 1. crnn  https://github.com/meijieru/crnn.pytorch.git              
