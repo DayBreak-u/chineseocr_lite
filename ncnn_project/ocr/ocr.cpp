@@ -271,6 +271,8 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
 
         // 图像缩放
     auto im = resize_img(im_bgr, long_size);
+
+
     float h_scale = im_bgr.rows * 1.0 / im.rows;
     float w_scale = im_bgr.cols * 1.0 / im.cols;
 
@@ -309,6 +311,12 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
         // "," <<  temprect.center.y  << "," <<  temprect.angle << std::endl;
         // cv::Mat part_im = crop_text_area(temprect,im_bgr);
         cv::Mat part_im ;
+
+        int  min_size   = temprect.size.width>temprect.size.height?temprect.size.height:temprect.size.width;
+        temprect.size.width  =   int(temprect.size.width + min_size * 0.1);
+        temprect.size.height =  int(temprect.size.height + min_size * 0.1);
+
+
         RRLib::getRotRectImg(temprect, im_bgr, part_im);
 
         int part_im_w = part_im.cols;
