@@ -9,7 +9,7 @@ make
 ```
 # 识别
 ``` Bash
-./Text_recognition ../../../test_imgs/5.jpg 640
+./Text_recognition ../../../test_imgs/1.jpg 640
 ```
 
 # ncnn检测识别展示(x86 cpu 单进程)
