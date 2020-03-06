@@ -6,11 +6,11 @@ OCR::OCR()
     psenet.load_param("../../models/psenet_lite_mbv2.param");
     psenet.load_model("../../models/psenet_lite_mbv2.bin");
 
-//    crnn_net.load_param("../../models/crnn_lite_dw_dense.param");
-//    crnn_net.load_model("../../models/crnn_lite_dw_dense.bin");
+    crnn_net.load_param("../../models/crnn_lite_dw_dense.param");
+    crnn_net.load_model("../../models/crnn_lite_dw_dense.bin");
 
-    crnn_net.load_param("../../models/crnn_lite_dw_dense_1x5.param");
-    crnn_net.load_model("../../models/crnn_lite_dw_dense_1x5.bin");
+//    crnn_net.load_param("../../models/crnn_lite_dw_dense_1x5.param");
+//    crnn_net.load_model("../../models/crnn_lite_dw_dense_1x5.bin");
 
     crnn_vertical_net.load_param("../../models/crnn_lite_dw_dense_vertical.param");
     crnn_vertical_net.load_model("../../models/crnn_lite_dw_dense_vertical.bin");
