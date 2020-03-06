@@ -1,13 +1,13 @@
 
 
-#编译
+# 编译
 ``` Bash
 cd ocr 
 mkdir build &&  cd build 
 cmake  ..
 make 
 ```
-#识别
+# 识别
 ``` Bash
 ./Text_recognition ../../../test_imgs/5.jpg 640
 ```
