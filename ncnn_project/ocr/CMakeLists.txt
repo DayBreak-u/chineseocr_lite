@@ -16,7 +16,7 @@ if(True)
 endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/include/ncnn)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/lib)
 
 
@@ -32,9 +32,9 @@ endif (NOT OpenCV_FOUND)
 
 
 set(SRC
-        main.cpp 
-        ocr.cpp
-        RRLib.cpp
+        src/main.cpp
+        src/ocr.cpp
+        src/RRLib.cpp
         )
 
 add_executable(Text_recognition ${SRC})
