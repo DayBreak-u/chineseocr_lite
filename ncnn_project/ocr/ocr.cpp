@@ -6,9 +6,12 @@ OCR::OCR()
     psenet.load_param("../../models/psenet_lite_mbv2.param");
     psenet.load_model("../../models/psenet_lite_mbv2.bin");
 
-    crnn_net.load_param("../../models/crnn_lite_dw_dense.param");
-    crnn_net.load_model("../../models/crnn_lite_dw_dense.bin");
-    
+//    crnn_net.load_param("../../models/crnn_lite_dw_dense.param");
+//    crnn_net.load_model("../../models/crnn_lite_dw_dense.bin");
+
+    crnn_net.load_param("../../models/crnn_lite_dw_dense_1x5.param");
+    crnn_net.load_model("../../models/crnn_lite_dw_dense_1x5.bin");
+
     crnn_vertical_net.load_param("../../models/crnn_lite_dw_dense_vertical.param");
     crnn_vertical_net.load_model("../../models/crnn_lite_dw_dense_vertical.bin");
     
@@ -243,56 +246,6 @@ std::vector<std::vector<cv::Point>> pse_deocde(const cv::Mat &score, const cv::M
 
 
 
-cv::Mat crop_text_area(cv::RotatedRect rect, cv::Mat imageSource)
-{
-	cv::Point2f vertices[4];
-	rect.points(vertices);//外接矩形的4个顶点
-	// for (int i = 0; i < 4; i++)//画矩形
-		// line(imageSource, vertices[i], vertices[(i + 1) % 4], cv::Scalar(255, 0, 0));
- 
-	// /*Rect brect = rect.boundingRect();
-	// rectangle(imageSource, brect, Scalar(255, 0, 0));*/
-	// cv::imwrite("line.jpg", imageSource);
-	cv::Point2f center = rect.center;//外接矩形中心点坐标
-    if (rect.angle < -45){
-        rect.angle = rect.angle  - 270;
-        int temp =  rect.size.height;
-        rect.size.height = rect.size.width;
-        rect.size.width  = temp ; 
-        // float temp_point  = rect.center.x;
-
-    }
-	cv::Mat rot_mat = getRotationMatrix2D(center, rect.angle, 1.0);//求旋转矩阵
-	cv::Mat rot_image;
-	cv::Size dst_sz(imageSource.size());
-	cv::warpAffine(imageSource, rot_image, rot_mat, dst_sz);//原图像旋转
-
-	// cv::imwrite("debug_im/rot_image.jpg", rot_image);
-    int src_h  = rot_image.rows;
-    int src_w  = rot_image.cols;
-    int min_size  = rect.size.height > rect.size.width?rect.size.width:rect.size.height;
-
-    int crop_h = int( rect.size.height  + min_size * 0.1 );
-    int crop_w = int( rect.size.width   + min_size * 0.1);
-
-   
-
-    if (center.x - crop_w/2 <= 0 || center.x + crop_w/2 >= src_w) {
-        crop_w = rect.size.width ;
-    }
-
-    if (center.y - crop_h/2 <= 0 || center.y + crop_h/2 >= src_h){
-        crop_h = rect.size.height;
-    }
-
-    // std::cout << center.x - (crop_w / 2) << "," << center.y - (crop_h/2) << "," << crop_w << "," << crop_h << "," <<src_w << "," << src_h<<std::endl; 
-
-	// cv::Mat result1 = rot_image(cv::Rect(center.x - (rect.size.width / 2), center.y - (rect.size.height/2), rect.size.width, rect.size.height));//提取ROI
-	cv::Mat result1 = rot_image(cv::Rect(center.x - (crop_w / 2), center.y - (crop_h/2), crop_w, crop_h));//提取ROI
-	
-    return result1;
-}
-
 cv::Mat matRotateClockWise180(cv::Mat src)//顺时针180
 {
 	//0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
@@ -422,7 +375,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
 
         //判断用横排还是竖排模型 { 0 : "hengdao",  1:"hengzhen",  2:"shudao",  3:"shuzhen"} #hengdao: 文本行横向倒立 其他类似
        
-        time1 = static_cast<double>( cv::getTickCount());
+        // time1 = static_cast<double>( cv::getTickCount());
         // std::cout << angle_index << std::endl;
         if (angle_index ==0 || angle_index ==1 ){
             ncnn::Extractor crnn_ex = crnn_net.create_extractor();
