@@ -2,7 +2,7 @@
 
 # 环境
 pytorch  1.2.0
-
+linux/macos
 ## PSENET 编译
 ``` Bash
 cd psenet/pse
@@ -19,6 +19,7 @@ make
 - [x]  ncnn 实现 crnn_dense (改变了全连接为conv1x1)
 - [x]  ncnn 实现 shuuflenev2 角度分类网络
 - [x]  ncnn 实现 ocr 整个流程
+- [ ]  mnn  实现 
 - [ ]  提供竖排文本训练方案
 
  

@@ -1,5 +1,5 @@
 from torch import nn
-from torchvision.models.utils import load_state_dict_from_url
+# from torchvision.models.utils import load_state_dict_from_url
 from collections import OrderedDict
 
 __all__ = ['MobileNetV2', 'mobilenet_v2']
@@ -143,8 +143,8 @@ def mobilenet_v2(pretrained=False, progress=True, **kwargs):
         progress (bool): If True, displays a progress bar of the download to stderr
     """
     model = MobileNetV2(**kwargs)
-    if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['mobilenet_v2'],
-                                              progress=progress)
-        load_model(model,state_dict)
+    # if pretrained:
+    #     state_dict = load_state_dict_from_url(model_urls['mobilenet_v2'],
+    #                                           progress=progress)
+        # load_model(model,state_dict)
     return model

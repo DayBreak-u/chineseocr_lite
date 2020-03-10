@@ -8,13 +8,13 @@ from .resnet import resnet18, resnet34, resnet50, resnet101, resnet152
 from .mobilenetv2 import mobilenet_v2
 
 
-d = {'resnet18': {'models': resnet18, 'out': [64, 128, 256, 512]},
-     'resnet34': {'models': resnet34, 'out': [64, 128, 256, 512]},
-     'resnet50': {'models': resnet50, 'out': [256, 512, 1024, 2048]},
-     'resnet101': {'models': resnet101, 'out': [256, 512, 1024, 2048]},
-     'resnet152': {'models': resnet152, 'out': [256, 512, 1024, 2048]},
-     'mobilenetv2': {'models': mobilenet_v2, 'out': [24, 32, 96, 320]},
-     'mobilenetv2_lite': {'models': mobilenet_v2, 'out': [24, 32, 96, 320]}
+d = {'resnet18': {'model': resnet18, 'out': [64, 128, 256, 512]},
+     'resnet34': {'model': resnet34, 'out': [64, 128, 256, 512]},
+     'resnet50': {'model': resnet50, 'out': [256, 512, 1024, 2048]},
+     'resnet101': {'model': resnet101, 'out': [256, 512, 1024, 2048]},
+     'resnet152': {'model': resnet152, 'out': [256, 512, 1024, 2048]},
+     'mobilenetv2': {'model': mobilenet_v2, 'out': [24, 32, 96, 320]},
+     'mobilenetv2_lite': {'model': mobilenet_v2, 'out': [24, 32, 96, 320]}
 
      }
 
@@ -30,7 +30,7 @@ class PSENet(nn.Module):
         self.scale = scale
 
         conv_out = 128
-        model, out = d[backbone]['models'], d[backbone]['out']
+        model, out = d[backbone]['model'], d[backbone]['out']
         self.backbone = model(pretrained=pretrained)
         # Reduce channels
         # Top layer

@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torchvision.models.utils import load_state_dict_from_url
+# from torchvision.models.utils import load_state_dict_from_url
 
 
 __all__ = [
@@ -150,13 +150,13 @@ class ShuffleNetV2(nn.Module):
 def _shufflenetv2(arch, pretrained, progress, *args, **kwargs):
     model = ShuffleNetV2(*args, **kwargs)
 
-    if pretrained:
-        model_url = model_urls[arch]
-        if model_url is None:
-            raise NotImplementedError('pretrained {} is not supported as of now'.format(arch))
-        else:
-            state_dict = load_state_dict_from_url(model_url, progress=progress)
-            model.load_state_dict(state_dict,strict = False)
+    # if pretrained:
+    #     model_url = model_urls[arch]
+        # if model_url is None:
+        #     raise NotImplementedError('pretrained {} is not supported as of now'.format(arch))
+        # else:
+            # state_dict = load_state_dict_from_url(model_url, progress=progress)
+            # model.load_state_dict(state_dict,strict = False)
 
     return model
 

@@ -44,7 +44,7 @@ class PSENetHandel():
                 net.load_state_dict(self.net)
 
             self.net = net
-            print('load models')
+            print('load model')
         self.net.eval()
 
     #
@@ -96,7 +96,9 @@ class PSENetHandel():
             # torch.cuda.synchronize()
             start = time.time()
             preds = self.net(tensor)
+
             preds, boxes_list,rects  =  pse_decode(preds[0], self.scale)
+
             scale = (preds.shape[1] / w, preds.shape[0] / h)
             # print(scale)
             # preds, boxes_list = decode(preds,num_pred=-1)

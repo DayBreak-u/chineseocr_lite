@@ -16,11 +16,14 @@ def pse_warpper(kernals, min_area=5):
     :param min_area:
     :return:
     '''
+
     from .pse import pse_cpp
+
     kernal_num = len(kernals)
     if not kernal_num:
         return np.array([]), []
     kernals = np.array(kernals)
+
     label_num, label = cv2.connectedComponents(kernals[0].astype(np.uint8), connectivity=4)
     label_values = []
     for label_idx in range(1, label_num):
@@ -55,7 +58,9 @@ def decode(preds, scale,
 
     preds = preds > threshold
     # preds = preds * preds[-1] # 使用最大的kernel作为其他小图的mask,不使用的话效果更好
+
     pred, label_values = pse_warpper(preds, 5)
+
     bbox_list = []
     rects = []
     for label_value in label_values:

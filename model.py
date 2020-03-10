@@ -89,7 +89,7 @@ def crnnRec(im, rects_re, leftAdjust=False, rightAdjust=False, alph=0.2, f=1.0):
 
 
         partImg = Image.fromarray(partImg_array).convert("RGB")
-
+        #
         # partImg.save("./debug_im/{}.jpg".format(index))
         
         partImg_ = partImg.convert('L')

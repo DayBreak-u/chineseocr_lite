@@ -52,7 +52,8 @@ namespace pse{
 
         int dx[4] = {-1, 1, 0, 0};
         int dy[4] = {0, 0, -1, 1};
-        for (int i = c-2; i>=0; i--)
+        // merge from small to large kernel progressively
+        for (int i = 1; i<c; i++)
         {
             //get each kernels
             auto p_Sn = ptr_Sn + i*h*w;
@@ -75,6 +76,7 @@ namespace pse{
                         continue;
                     q.push(std::make_tuple(index_y, index_x, l));
                     res[index_y][index_x]=l;
+                    is_edge = false;
                 }
                 if (is_edge){
                     next_q.push(std::make_tuple(y, x, l));
@@ -89,4 +91,3 @@ namespace pse{
 PYBIND11_MODULE(pse, m){
     m.def("pse_cpp", &pse::pse, " re-implementation pse algorithm(cpp)", py::arg("label_map"), py::arg("Sn"), py::arg("c")=6);
 }
-

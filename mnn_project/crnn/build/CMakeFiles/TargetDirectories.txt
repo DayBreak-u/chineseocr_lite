@@ -1,0 +1,3 @@
+/mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/mnn_project/crnn/build/CMakeFiles/rebuild_cache.dir
+/mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/mnn_project/crnn/build/CMakeFiles/edit_cache.dir
+/mnt/data1/yanghuiyu/project/OCR/chinese_ocr2/mnn_project/crnn/build/CMakeFiles/Text_recognition.dir
