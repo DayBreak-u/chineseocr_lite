@@ -30,10 +30,11 @@ def crop_rect(img, rect ,alph = 0.05):
     # print("rect!")
     # print(rect)
     center, size, angle = rect[0], rect[1], rect[2]
+    min_size  = min(size)
     if(angle>-45):
         center, size = tuple(map(int, center)), tuple(map(int, size))
         # angle-=270
-        size  = ( int(size[0] * (1+ alph)) , int(size[1]  + size[0] * alph) )
+        size  = ( int(size[0] + min_size*alph ) , int(size[1]  +  min_size*alph) )
         height, width = img.shape[0], img.shape[1]
         M = cv2.getRotationMatrix2D(center, angle, 1)
     # size = tuple([int(rect[1][1]), int(rect[1][0])])
@@ -43,7 +44,7 @@ def crop_rect(img, rect ,alph = 0.05):
     else:
         center=tuple(map(int,center))
         size = tuple([int(rect[1][1]), int(rect[1][0])])
-        size  = ( int(size[0] * (1+ alph)) ,int(size[1]  + size[0] * alph) )
+        size  = ( int(size[0] + min_size*alph) ,int(size[1]  + min_size*alph) )
         angle -= 270
         height, width = img.shape[0], img.shape[1]
         M = cv2.getRotationMatrix2D(center, angle, 1)
