@@ -9,18 +9,28 @@ cd psenet/pse
 rm -rf pse.so 
 make 
 ```
+# 2020.03.12更新
+- 升级crnn_lite_lstm_dw.pth模型crnn_lite_lstm_dw_v2.pth , 精度更高
+- 提供竖排文字样例以及字体库（旋转90度的字体）
 
+## 字体样式：
+  <img width="300" height="200" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/vertical_text_fonts/imgs/test.jpg"/>
+
+## 生成的竖排文本样例：
+  <img width="256" height="32" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/vertical_text_fonts/imgs/00156360.jpg"/>
+  <img width="256" height="32" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/vertical_text_fonts/imgs/00000027.jpg"/>
+  <img width="256" height="32" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/vertical_text_fonts/imgs/00156365.jpg"/>
+  <img width="256" height="32" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/vertical_text_fonts/imgs/00187940.jpg"/>
+  
+  
 # 实现功能
 - [x]  提供轻量的backone检测模型psenet（8.5M）,crnn_lstm_lite(9.5M) 和行文本方向分类网络（1.5M）
 - [x]  任意方向文字检测，识别时判断行文本方向 
 - [x]  crnn\crnn_lite lstm\dense识别（ocr-dense和ocr-lstm是搬运[chineseocr](https://github.com/chineseocr/chineseocr)的）   
 - [x]  支持竖排文本识别  
-- [x]  ncnn 实现 psenet （未实现核扩展）
-- [x]  ncnn 实现 crnn_dense (改变了全连接为conv1x1)
-- [x]  ncnn 实现 shuuflenev2 角度分类网络
-- [x]  ncnn 实现 ocr 整个流程
+- [x]  ncnn 实现 
 - [ ]  mnn  实现 
-- [ ]  提供竖排文本训练方案
+
 
  
 

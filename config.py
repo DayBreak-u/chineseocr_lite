@@ -23,7 +23,7 @@ crnn_vertical_model_path = os.path.join(father_path,"models/crnn_dw_lstm_vertica
 
 if crnn_type == "lite_lstm":
     LSTMFLAG = True
-    crnn_model_path =  os.path.join(father_path,"models/crnn_lite_lstm_dw.pth")
+    crnn_model_path =  os.path.join(father_path,"models/crnn_lite_lstm_dw_v2.pth")
 elif crnn_type == "lite_dense":
     LSTMFLAG = False
     crnn_model_path = os.path.join(father_path, "models/crnn_lite_dense_dw.pth")

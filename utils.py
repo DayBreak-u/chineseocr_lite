@@ -24,13 +24,14 @@ def rotate_cut_img(im, degree, x_center , y_center, w, h, leftAdjust=False, righ
     return tmpImg, newW, newH
 
 
-def crop_rect(img, rect ,alph = 0.05):
+def crop_rect(img, rect ,alph = 0.25):
     img  = np.asarray(img)
     # get the parameter of the small rectangle
     # print("rect!")
     # print(rect)
     center, size, angle = rect[0], rect[1], rect[2]
     min_size  = min(size)
+
     if(angle>-45):
         center, size = tuple(map(int, center)), tuple(map(int, size))
         # angle-=270
