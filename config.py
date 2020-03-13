@@ -7,7 +7,7 @@ father_path=os.path.abspath(os.path.dirname(filt_path)+os.path.sep+".")
 GPU_ID = 0
 
 #psenet相关
-pse_long_size = 2280 #图片长边
+pse_long_size = 960 #图片长边
 pse_model_type  = "mobilenetv2"
 pse_scale = 1
 
