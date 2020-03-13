@@ -4,10 +4,10 @@ father_path=os.path.abspath(os.path.dirname(filt_path)+os.path.sep+".")
 
 
 
-GPU_ID = None
+GPU_ID = 0
 
 #psenet相关
-pse_long_size = 1280 #图片长边
+pse_long_size = 2280 #图片长边
 pse_model_type  = "mobilenetv2"
 pse_scale = 1
 
@@ -31,7 +31,7 @@ elif crnn_type == "full_lstm":
     LSTMFLAG = True
     crnn_model_path = os.path.join(father_path,"models/ocr-lstm.pth")
 elif crnn_type == "full_dense":
-    LSTMFLAG = True
+    LSTMFLAG = False
     crnn_model_path = os.path.join(father_path,"models/ocr-dense.pth")
 
 # crnn_model_path = os.path.join(father_path,"models/ocr-lstm.pth")
