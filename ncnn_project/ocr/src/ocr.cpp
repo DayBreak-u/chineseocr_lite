@@ -1,14 +1,19 @@
 #include "ocr.h"
 
+#define CRNN_LSTM 0
 
 OCR::OCR()
 {
     psenet.load_param("../../models/psenet_lite_mbv2.param");
     psenet.load_model("../../models/psenet_lite_mbv2.bin");
 
+#if CRNN_LSTM
+    crnn_net.load_param("../../models/crnn_lite_lstm_v2.param");
+    crnn_net.load_model("../../models/crnn_lite_lstm_v2.bin");
+#else
     crnn_net.load_param("../../models/crnn_lite_dw_dense.param");
     crnn_net.load_model("../../models/crnn_lite_dw_dense.bin");
-
+#endif
 //    crnn_net.load_param("../../models/crnn_lite_dw_dense_1x5.param");
 //    crnn_net.load_model("../../models/crnn_lite_dw_dense_1x5.bin");
 
@@ -388,7 +393,50 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
         if (angle_index ==0 || angle_index ==1 ){
             ncnn::Extractor crnn_ex = crnn_net.create_extractor();
             crnn_ex.input("input", crnn_in);
+#if CRNN_LSTM
+            // lstm
+            ncnn::Mat blob162;
+            crnn_ex.extract("234", blob162);
+
+            // batch fc
+            ncnn::Mat blob182(256, blob162.h);
+            for (int i=0; i<blob162.h; i++)
+            {
+                ncnn::Extractor crnn_ex_1 = crnn_net.create_extractor();
+
+                ncnn::Mat blob162_i = blob162.row_range(i, 1);
+                crnn_ex_1.input("253", blob162_i);
+
+                ncnn::Mat blob182_i;
+                crnn_ex_1.extract("254", blob182_i);
+
+                memcpy(blob182.row(i), blob182_i, 256 * sizeof(float));
+            }
+
+            // lstm
+            ncnn::Mat blob243;
+            crnn_ex.input("260", blob182);
+            crnn_ex.extract("387", blob243);
+
+            // batch fc
+            ncnn::Mat blob263(5530, blob243.h);
+            for (int i=0; i<blob243.h; i++)
+            {
+                ncnn::Extractor crnn_ex_2 = crnn_net.create_extractor();
+
+                ncnn::Mat blob243_i = blob243.row_range(i, 1);
+                crnn_ex_2.input("406", blob243_i);
+
+                ncnn::Mat blob263_i;
+                crnn_ex_2.extract("407", blob263_i);
+
+                memcpy(blob263.row(i), blob263_i, 5530 * sizeof(float));
+            }
+
+            crnn_preds = blob263;
+#else // CRNN_LSTM
             crnn_ex.extract("out", crnn_preds);
+#endif // CRNN_LSTM
         }
         else{
             ncnn::Extractor crnn_ex = crnn_vertical_net.create_extractor();
