@@ -20,7 +20,8 @@ make
 
 
 
-# 2020.03.12更新
+# 2020.03.14更新
+- nihui大佬实现的crnn_lstm推理 https://github.com/ouyanghuiyu/chineseocr_lite/pull/41
 - 升级crnn_lite_lstm_dw.pth模型crnn_lite_lstm_dw_v2.pth , 精度更高
 - 提供竖排文字样例以及字体库（旋转90度的字体）
 
