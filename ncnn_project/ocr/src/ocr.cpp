@@ -1,6 +1,6 @@
 #include "ocr.h"
 
-#define CRNN_LSTM 0
+#define CRNN_LSTM 1
 
 OCR::OCR()
 {
@@ -10,16 +10,15 @@ OCR::OCR()
 #if CRNN_LSTM
     crnn_net.load_param("../../models/crnn_lite_lstm_v2.param");
     crnn_net.load_model("../../models/crnn_lite_lstm_v2.bin");
+    crnn_vertical_net.load_param("../../models/crnn_lite_lstm_vertical.param");
+    crnn_vertical_net.load_model("../../models/crnn_lite_lstm_vertical.bin");
 #else
     crnn_net.load_param("../../models/crnn_lite_dw_dense.param");
     crnn_net.load_model("../../models/crnn_lite_dw_dense.bin");
-#endif
-//    crnn_net.load_param("../../models/crnn_lite_dw_dense_1x5.param");
-//    crnn_net.load_model("../../models/crnn_lite_dw_dense_1x5.bin");
-
     crnn_vertical_net.load_param("../../models/crnn_lite_dw_dense_vertical.param");
     crnn_vertical_net.load_model("../../models/crnn_lite_dw_dense_vertical.bin");
-    
+#endif
+
 
 
     angle_net.load_param("../../models/shufflenetv2_05_angle.param");
@@ -81,16 +80,16 @@ std::vector<std::string> crnn_deocde(const ncnn::Mat score , string alphabetChin
                 max_index = j;
             }
         }
-
         if (max_index >0 && (not (i>0 && max_index == last_index))  ){
-            
-            std::string temp_str =  utf8_substr2(alphabetChinese,max_index-1,1)  ;
+//            std::cout <<  max_index - 1 << std::endl;
+            std::string temp_str =  utf8_substr2(alphabetChinese,max_index - 1,1)  ;
             str_res.push_back(temp_str);
         }
 
+
+
         last_index = max_index;
     }
-
     return str_res;
 }
 
@@ -319,7 +318,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
 
         int  min_size   = temprect.size.width>temprect.size.height?temprect.size.height:temprect.size.width;
         temprect.size.width  =   int(temprect.size.width + min_size * 0.1);
-        temprect.size.height =  int(temprect.size.height + min_size * 0.1);
+        temprect.size.height =   int(temprect.size.height + min_size * 0.1);
 
 
         RRLib::getRotRectImg(temprect, im_bgr, part_im);
@@ -343,10 +342,10 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
         //    shufflenetv2_ex.set_num_threads(4);
         shufflenetv2_ex.input("input", shufflenet_input);
         ncnn::Mat angle_preds;
-        time1 = static_cast<double>( cv::getTickCount());
+        double time2 = static_cast<double>( cv::getTickCount());
         shufflenetv2_ex.extract("out", angle_preds);
 
-        // std::cout << "anglenet前向时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
+        // std::cout << "anglenet前向时间:" << (static_cast<double>( cv::getTickCount()) - time2) / cv::getTickFrequency() << "s" << std::endl;
         // std::cout << "网络输出尺寸 (" << preds.w << ", " << preds.h << ", " << preds.c << ")" << std::endl;
 
         float *srcdata =(float*) angle_preds.data;
@@ -391,10 +390,12 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
         // time1 = static_cast<double>( cv::getTickCount());
         // std::cout << angle_index << std::endl;
         if (angle_index ==0 || angle_index ==1 ){
+
             ncnn::Extractor crnn_ex = crnn_net.create_extractor();
             crnn_ex.input("input", crnn_in);
 #if CRNN_LSTM
             // lstm
+
             ncnn::Mat blob162;
             crnn_ex.extract("234", blob162);
 
@@ -439,9 +440,55 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
 #endif // CRNN_LSTM
         }
         else{
+
+
             ncnn::Extractor crnn_ex = crnn_vertical_net.create_extractor();
-            crnn_ex.input("input", crnn_in); 
+            crnn_ex.input("input", crnn_in);
+#if CRNN_LSTM
+            // lstm
+
+            ncnn::Mat blob162;
+            crnn_ex.extract("234", blob162);
+
+            // batch fc
+            ncnn::Mat blob182(256, blob162.h);
+            for (int i=0; i<blob162.h; i++)
+            {
+                ncnn::Extractor crnn_ex_1 = crnn_vertical_net.create_extractor();
+
+                ncnn::Mat blob162_i = blob162.row_range(i, 1);
+                crnn_ex_1.input("253", blob162_i);
+
+                ncnn::Mat blob182_i;
+                crnn_ex_1.extract("254", blob182_i);
+
+                memcpy(blob182.row(i), blob182_i, 256 * sizeof(float));
+            }
+
+            // lstm
+            ncnn::Mat blob243;
+            crnn_ex.input("260", blob182);
+            crnn_ex.extract("387", blob243);
+
+            // batch fc
+            ncnn::Mat blob263(5530, blob243.h);
+            for (int i=0; i<blob243.h; i++)
+            {
+                ncnn::Extractor crnn_ex_2 = crnn_vertical_net.create_extractor();
+
+                ncnn::Mat blob243_i = blob243.row_range(i, 1);
+                crnn_ex_2.input("406", blob243_i);
+
+                ncnn::Mat blob263_i;
+                crnn_ex_2.extract("407", blob263_i);
+
+                memcpy(blob263.row(i), blob263_i, 5530 * sizeof(float));
+            }
+
+            crnn_preds = blob263;
+#else // CRNN_LSTM
             crnn_ex.extract("out", crnn_preds);
+#endif // CRNN_LSTM
         }
          
        
@@ -458,6 +505,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
             std::cout << res_pre[i] ;
         }
         std::cout  <<std::endl;
+
 
     }
     std::cout << "角度检测和文字识别总时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;

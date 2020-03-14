@@ -15,7 +15,7 @@ make
 - [x]  任意方向文字检测，识别时判断行文本方向 
 - [x]  crnn\crnn_lite lstm\dense识别（ocr-dense和ocr-lstm是搬运[chineseocr](https://github.com/chineseocr/chineseocr)的）   
 - [x]  支持竖排文本识别  
-- [x]  ncnn 实现 
+- [x]  ncnn 实现 (支持lstm)
 - [ ]  mnn  实现 
 
 
