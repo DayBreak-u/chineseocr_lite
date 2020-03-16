@@ -21,23 +21,134 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "platform.h"
+#include "polygon.h"
 #include "net.h"
 
-void ncnn2cv(ncnn::Mat src, cv::Mat &score, cv::Mat &thre_img, const float thre_val = 0.7311) {
-    float *srcdata = (float *) src.data;
-    for (int i = 0; i < src.h; i++) {
-        for (int j = 0; j < src.w; j++) {
-            score.at<float>(i, j) = srcdata[i * src.w + j + src.w*src.h*5];
-            
-            if (srcdata[i * src.w + j + src.w*src.h*5 ] >= thre_val) {
-                // std::cout << srcdata[i * src.w + j] << std::endl;
-                thre_img.at<uchar>(i, j) = 255;
-            } else {
-                thre_img.at<uchar>(i, j) = 0;
+
+void PseAdaptor(ncnn::Mat& features,
+                              std::map<int, std::vector<cv::Point>>& contours_map,
+                              const float thresh,
+                              const float min_area,
+                              const float ratio) 
+{
+
+        /// get kernels
+        float *srcdata = (float *) features.data;
+        std::vector<cv::Mat> kernels;
+          
+        float _thresh = thresh;
+        cv::Mat scores = cv::Mat::zeros(features.h, features.w, CV_32FC1);
+        for (int c = features.c - 1; c >= 0; --c){
+            cv::Mat kernel(features.h, features.w, CV_8UC1);
+            for (int i = 0; i < features.h; i++) {
+                for (int j = 0; j < features.w; j++) {
+               
+                    if (c==features.c - 1) scores.at<float>(i, j) = srcdata[i * features.w + j + features.w*features.h*c ] ;
+
+                    if (srcdata[i * features.w + j + features.w*features.h*c ] >= _thresh) {
+                    // std::cout << srcdata[i * src.w + j] << std::endl;
+                        kernel.at<uint8_t>(i, j) = 1;
+                    } else {
+                        kernel.at<uint8_t>(i, j) = 0;
+                        }
+               
+                }
+            }
+            kernels.push_back(kernel);
+            _thresh = thresh * ratio;
+        }
+
+    
+        /// make label
+        cv::Mat label;
+        std::map<int, int> areas;
+        std::map<int, float> scores_sum;
+        cv::Mat mask(features.h, features.w, CV_32S, cv::Scalar(0));
+        cv::connectedComponents(kernels[features.c  - 1], label, 4);
+
+
+       
+
+        for (int y = 0; y < label.rows; ++y) {
+            for (int x = 0; x < label.cols; ++x) {
+                int value = label.at<int32_t>(y, x);
+                float score = scores.at<float>(y,x);
+                if (value == 0) continue;
+                areas[value] += 1;
+             
+                scores_sum[value] += score;
             }
         }
-    }
+
+        std::queue<cv::Point> queue, next_queue;
+
+        for (int y = 0; y < label.rows; ++y) {
+            
+            for (int x = 0; x < label.cols; ++x) {
+                int value = label.at<int>(y, x);
+
+                if (value == 0) continue;
+                if (areas[value] < min_area) {
+                    areas.erase(value);
+                    continue;
+                }
+               
+                if (scores_sum[value]*1.0 /areas[value] < 0.93  )
+                {
+                    areas.erase(value);
+                    scores_sum.erase(value);
+                    continue;
+                }
+                cv::Point point(x, y);
+                queue.push(point);
+                mask.at<int32_t>(y, x) = value;
+            }
+        }
+
+        /// growing text line
+        int dx[] = {-1, 1, 0, 0};
+        int dy[] = {0, 0, -1, 1};
+
+        for (int idx = features.c  - 2; idx >= 0; --idx) {
+            while (!queue.empty()) {
+                cv::Point point = queue.front(); queue.pop();
+                int x = point.x;
+                int y = point.y;
+                int value = mask.at<int32_t>(y, x);
+
+                bool is_edge = true;
+                for (int d = 0; d < 4; ++d) {
+                    int _x = x + dx[d];
+                    int _y = y + dy[d];
+
+                    if (_y < 0 || _y >= mask.rows) continue;
+                    if (_x < 0 || _x >= mask.cols) continue;
+                    if (kernels[idx].at<uint8_t>(_y, _x) == 0) continue;
+                    if (mask.at<int32_t>(_y, _x) > 0) continue;
+
+                    cv::Point point_dxy(_x, _y);
+                    queue.push(point_dxy);
+
+                    mask.at<int32_t>(_y, _x) = value;
+                    is_edge = false;
+                }
+
+                if (is_edge) next_queue.push(point);
+            }
+            std::swap(queue, next_queue);
+        }
+
+        /// make contoursMap
+        for (int y=0; y < mask.rows; ++y)
+            for (int x=0; x < mask.cols; ++x) {
+                int idx = mask.at<int32_t>(y, x);
+                if (idx == 0) continue;
+                contours_map[idx].emplace_back(cv::Point(x, y));
+            }
 }
+
+
+
 
 
 
@@ -91,84 +202,6 @@ cv::Mat draw_bbox(cv::Mat &src, const std::vector<std::vector<cv::Point>> &bboxs
     return dst;
 }
 
-std::vector<std::vector<cv::Point>> deocde(const cv::Mat &score, const cv::Mat &thre, const int scale, const float h_scale, const float w_scale) {
-    int img_rows = score.rows;
-    int img_cols = score.cols;
-    // auto min_w_h = std::min(img_cols,img_rows);
-    // min_w_h *= min_w_h / 20;
-    auto min_w_h = 800;
-
-    cv::Mat stats, centroids, label_img(thre.size(), CV_32S);
-    // 二值化
-    // cv::threshold(cv_img * 255, thre, 0, 255, cv::THRESH_OTSU);
-    // 计算连通域ss
-    int nLabels = connectedComponentsWithStats(thre, label_img, stats, centroids,4);
-    // int nLabels = connectedComponents(thre, label_img  , 4);
-
-
-    std::cout << "nLabels:" << nLabels << std::endl;
-
-    std::vector<float> angles;
-    std::vector<std::vector<cv::Point>> bboxs;
-
-    for (int label = 1; label < nLabels; label++) {
-        float area = stats.at<int>(label, cv::CC_STAT_AREA);
-        if (area < min_w_h / (scale * scale)) {
-            // std::cout << "area:" << area << std::endl;
-            // std::cout << "min_w_h:" << min_w_h / (scale * scale) << std::endl;
-            continue;
-        }
-        // 计算该label的平均分数
-        std::vector<float> scores;
-        std::vector<cv::Point> points;
-        for (int y = 0; y < img_rows; ++y) {
-            for (int x = 0; x < img_cols; ++x) {
-                if (label_img.at<int>(y, x) == label) {
-                    scores.emplace_back(score.at<float>(y, x));
-                    points.emplace_back(cv::Point(x, y));
-                }
-            }
-        }
-
-        //均值
-        double sum = std::accumulate(std::begin(scores), std::end(scores), 0.0);
-        std::cout << "sum" << sum << std::endl;
-        if (sum == 0) {
-            continue;
-        }
-        double mean = sum / scores.size();
-        std::cout << "mean" << mean << std::endl;
-
-        if (mean < 0.8) {
-            continue;
-        }
-        cv::RotatedRect rect = cv::minAreaRect(points);
-        float w = rect.size.width;
-        float h = rect.size.height;
-        float angle = rect.angle;
-
-//        if (w < h) {
-//            std::swap(w, h);
-//            angle -= 90;
-//        }
-//        if (45 < std::abs(angle) && std::abs(angle) < 135) {
-//            std::swap(img_rows, img_cols);
-//        }
-        points.clear();
-        // 对卡号进行限制，长宽比，卡号的宽度不能超过图片宽高的95%
-        // if (w > h * 8 && w < img_cols * 0.95) {
-        cv::Mat bbox;
-        cv::boxPoints(rect, bbox);
-        for (int i = 0; i < bbox.rows; ++i) {
-            points.emplace_back(cv::Point(int(bbox.at<float>(i, 0) * w_scale), int(bbox.at<float>(i, 1) * h_scale)));
-        }
-        bboxs.emplace_back(points);
-        angles.emplace_back(angle);
-        // }
-    }
-    return bboxs;
-}
-
 static int detect_psenet(const char *model, const char *model_param, const char *imagepath, const int long_size = 800) {
     cv::Mat im_bgr = cv::imread(imagepath, 1);
 
@@ -192,7 +225,7 @@ static int detect_psenet(const char *model, const char *model_param, const char 
     psenet.load_param(model_param);
     psenet.load_model(model);
     ncnn::Extractor ex = psenet.create_extractor();
-//    ex.set_num_threads(4);ss
+    ex.set_num_threads(4);
     ex.input("input", in);
 
     ncnn::Mat preds;
@@ -202,16 +235,31 @@ static int detect_psenet(const char *model, const char *model_param, const char 
     std::cout << "网络输出尺寸 (" << preds.w << ", " << preds.h << ", " << preds.c << ")" << std::endl;
 
     time1 = static_cast<double>( cv::getTickCount());
-    cv::Mat score = cv::Mat::zeros(preds.h, preds.w, CV_32FC1);
-    cv::Mat thre = cv::Mat::zeros(preds.h, preds.w, CV_8UC1);
-    ncnn2cv(preds, score, thre);
-    auto bboxs = deocde(score, thre, 1, h_scale, w_scale);
+    // cv::Mat score = cv::Mat::zeros(preds.h, preds.w, CV_32FC1);
+    // cv::Mat thre = cv::Mat::zeros(preds.h, preds.w, CV_8UC1);
+    // ncnn2cv(preds, score, thre);
+    // auto bboxs = deocde(score, thre, 1, h_scale, w_scale);
+    std::map<int, std::vector<cv::Point>> contoursMap;
+    PseAdaptor(preds, contoursMap, 0.7311, 10, 1);
+    std::vector<std::vector<cv::Point>> bboxs;
+    for (auto &cnt: contoursMap) {
+        cv::Mat bbox;
+        cv::RotatedRect minRect = cv::minAreaRect(cnt.second);
+        cv::boxPoints(minRect, bbox);
+        std::vector<cv::Point> points;
+        for (int i = 0; i < bbox.rows; ++i) {
+                points.emplace_back(cv::Point(int(bbox.at<float>(i, 0) * w_scale), int(bbox.at<float>(i, 1) * h_scale)));
+            }
+        bboxs.emplace_back(points);
+      
+    }
+
+    
     std::cout << "decode 时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
     std::cout << "boxzie" << bboxs.size() << std::endl;
     auto result = draw_bbox(im_bgr, bboxs);
     cv::imwrite("./imgs/result.jpg", result);
-    cv::imwrite("./imgs/net_result.jpg", score * 255);
-    cv::imwrite("./imgs/net_thre.jpg", thre);
+ 
     return 0;
 }
 

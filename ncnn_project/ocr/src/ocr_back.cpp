@@ -93,6 +93,21 @@ std::vector<std::string> crnn_deocde(const ncnn::Mat score , string alphabetChin
     return str_res;
 }
 
+void ncnn2cv(ncnn::Mat src, cv::Mat &score, cv::Mat &thre_img, const float thre_val = 0.7311) {
+    float *srcdata = (float *) src.data;
+    for (int i = 0; i < src.h; i++) {
+        for (int j = 0; j < src.w; j++) {
+            score.at<float>(i, j) = srcdata[i * src.w + j + src.w*src.h*5];
+            
+            if (srcdata[i * src.w + j + src.w*src.h*5 ] >= thre_val) {
+                // std::cout << srcdata[i * src.w + j] << std::endl;
+                thre_img.at<uchar>(i, j) = 255;
+            } else {
+                thre_img.at<uchar>(i, j) = 0;
+            }
+        }
+    }
+}
 
 
 cv::Mat resize_img(cv::Mat src,const int long_size)
@@ -146,129 +161,91 @@ cv::Mat draw_bbox(cv::Mat &src, const std::vector<std::vector<cv::Point>> &bboxs
 }
 
 
-void pse_deocde(ncnn::Mat& features,
-                              std::map<int, std::vector<cv::Point>>& contours_map,
-                              const float thresh,
-                              const float min_area,
-                              const float ratio
-                              )
-{
+std::vector<std::vector<cv::Point>> pse_deocde(const cv::Mat &score, const cv::Mat &thre,std::vector<cv::RotatedRect> &rects , const int scale, const float h_scale, const float w_scale) {
+    int img_rows = score.rows;
+    int img_cols = score.cols;
+    // auto min_w_h = std::min(img_cols,img_rows);
+    // min_w_h *= min_w_h / 20;
+    auto min_w_h = 800;
 
-        /// get kernels
-        float *srcdata = (float *) features.data;
-        std::vector<cv::Mat> kernels;
+    cv::Mat stats, centroids, label_img(thre.size(), CV_32S);
+    // 二值化
+    // cv::threshold(cv_img * 255, thre, 0, 255, cv::THRESH_OTSU);
+    // 计算连通域ss
+    int nLabels = connectedComponentsWithStats(thre, label_img, stats, centroids,4);
+    // int nLabels = connectedComponents(thre, label_img  , 4);
 
-        float _thresh = thresh;
-        cv::Mat scores = cv::Mat::zeros(features.h, features.w, CV_32FC1);
-        for (int c = features.c - 1; c >= 0; --c){
-            cv::Mat kernel(features.h, features.w, CV_8UC1);
-            for (int i = 0; i < features.h; i++) {
-                for (int j = 0; j < features.w; j++) {
 
-                    if (c==features.c - 1) scores.at<float>(i, j) = srcdata[i * features.w + j + features.w*features.h*c ] ;
+    // std::cout << "nLabels:" << nLabels << std::endl;
 
-                    if (srcdata[i * features.w + j + features.w*features.h*c ] >= _thresh) {
-                    // std::cout << srcdata[i * src.w + j] << std::endl;
-                        kernel.at<uint8_t>(i, j) = 1;
-                    } else {
-                        kernel.at<uint8_t>(i, j) = 0;
-                        }
+    std::vector<float> angles;
+    std::vector<std::vector<cv::Point>> bboxs;
 
-                }
-            }
-            kernels.push_back(kernel);
-            _thresh = thresh * ratio;
+    for (int label = 1; label < nLabels; label++) {
+        float area = stats.at<int>(label, cv::CC_STAT_AREA);
+        if (area < min_w_h / (scale * scale)) {
+            // std::cout << "area:" << area << std::endl;
+            // std::cout << "min_w_h:" << min_w_h / (scale * scale) << std::endl;
+            continue;
         }
-
-
-        /// make label
-        cv::Mat label;
-        std::map<int, int> areas;
-        std::map<int, float> scores_sum;
-        cv::Mat mask(features.h, features.w, CV_32S, cv::Scalar(0));
-        cv::connectedComponents(kernels[features.c  - 1], label, 4);
-
-
-
-
-        for (int y = 0; y < label.rows; ++y) {
-            for (int x = 0; x < label.cols; ++x) {
-                int value = label.at<int32_t>(y, x);
-                float score = scores.at<float>(y,x);
-                if (value == 0) continue;
-                areas[value] += 1;
-
-                scores_sum[value] += score;
+        // 计算该label的平均分数
+        std::vector<float> scores;
+        std::vector<cv::Point> points;
+        for (int y = 0; y < img_rows; ++y) {
+            for (int x = 0; x < img_cols; ++x) {
+                if (label_img.at<int>(y, x) == label) {
+                    scores.emplace_back(score.at<float>(y, x));
+                    points.emplace_back(cv::Point(x, y));
+                }
             }
         }
 
-        std::queue<cv::Point> queue, next_queue;
-
-        for (int y = 0; y < label.rows; ++y) {
-
-            for (int x = 0; x < label.cols; ++x) {
-                int value = label.at<int>(y, x);
-
-                if (value == 0) continue;
-                if (areas[value] < min_area) {
-                    areas.erase(value);
-                    continue;
-                }
-
-                if (scores_sum[value]*1.0 /areas[value] < 0.93  )
-                {
-                    areas.erase(value);
-                    scores_sum.erase(value);
-                    continue;
-                }
-                cv::Point point(x, y);
-                queue.push(point);
-                mask.at<int32_t>(y, x) = value;
-            }
+        //均值
+        double sum = std::accumulate(std::begin(scores), std::end(scores), 0.0);
+        // std::cout << "sum" << sum << std::endl;
+        if (sum == 0) {
+            continue;
         }
+        double mean = sum / scores.size();
+        // std::cout << "mean" << mean << std::endl;
 
-        /// growing text line
-        int dx[] = {-1, 1, 0, 0};
-        int dy[] = {0, 0, -1, 1};
-
-        for (int idx = features.c  - 2; idx >= 0; --idx) {
-            while (!queue.empty()) {
-                cv::Point point = queue.front(); queue.pop();
-                int x = point.x;
-                int y = point.y;
-                int value = mask.at<int32_t>(y, x);
-
-                bool is_edge = true;
-                for (int d = 0; d < 4; ++d) {
-                    int _x = x + dx[d];
-                    int _y = y + dy[d];
-
-                    if (_y < 0 || _y >= mask.rows) continue;
-                    if (_x < 0 || _x >= mask.cols) continue;
-                    if (kernels[idx].at<uint8_t>(_y, _x) == 0) continue;
-                    if (mask.at<int32_t>(_y, _x) > 0) continue;
-
-                    cv::Point point_dxy(_x, _y);
-                    queue.push(point_dxy);
-
-                    mask.at<int32_t>(_y, _x) = value;
-                    is_edge = false;
-                }
-
-                if (is_edge) next_queue.push(point);
-            }
-            std::swap(queue, next_queue);
+        if (mean < 0.8) {
+            continue;
         }
+        cv::RotatedRect rect = cv::minAreaRect(points);
+        
+        float w = rect.size.width;
+        float h = rect.size.height;
+        float angle = rect.angle;
 
-        /// make contoursMap
-        for (int y=0; y < mask.rows; ++y)
-            for (int x=0; x < mask.cols; ++x) {
-                int idx = mask.at<int32_t>(y, x);
-                if (idx == 0) continue;
-                contours_map[idx].emplace_back(cv::Point(x, y));
-            }
+        // if (w < h) {
+        //     std::swap(w, h);
+        //     angle -= 90;
+        // }
+        // if (45 < std::abs(angle) && std::abs(angle) < 135) {
+        //     std::swap(img_rows, img_cols);
+        // }
+
+        points.clear();
+        // 对卡号进行限制，长宽比，卡号的宽度不能超过图片宽高的95%
+        // if (w > h * 8 && w < img_cols * 0.95) {
+        cv::Mat bbox;
+        cv::boxPoints(rect, bbox);
+        for (int i = 0; i < bbox.rows; ++i) {
+            points.emplace_back(cv::Point(int(bbox.at<float>(i, 0) * w_scale), int(bbox.at<float>(i, 1) * h_scale)));
+        }
+        rect.size.width = rect.size.width * w_scale;
+        rect.size.height = rect.size.height * h_scale;
+        rect.center.x = rect.center.x * w_scale;
+        rect.center.y = rect.center.y * h_scale;
+
+        bboxs.emplace_back(points);
+        angles.emplace_back(angle);
+        rects.push_back(rect);
+     
+    }
+    return bboxs;
 }
-
 
 
 
@@ -309,7 +286,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
     // std::cout << "输入尺寸 (" << in.w << ", " << in.h << ")" << std::endl;
 
     ncnn::Extractor ex = psenet.create_extractor();
-    ex.set_num_threads(num_thread);
+//    ex.set_num_threads(4);
     ex.input("input", in);
     ncnn::Mat preds;
     double time1 = static_cast<double>( cv::getTickCount());
@@ -318,35 +295,20 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
     // std::cout << "网络输出尺寸 (" << preds.w << ", " << preds.h << ", " << preds.c << ")" << std::endl;
 
     time1 = static_cast<double>( cv::getTickCount());
-    std::map<int, std::vector<cv::Point>> contoursMap;
-    pse_deocde(preds, contoursMap, 0.7311, 10, 1);
-    std::vector<std::vector<cv::Point>> bboxs;
-    std::vector<cv::RotatedRect> rects ;
-    for (auto &cnt: contoursMap) {
-        cv::Mat bbox;
-        cv::RotatedRect rect = cv::minAreaRect(cnt.second);
-        rect.size.width = rect.size.width * w_scale;
-        rect.size.height = rect.size.height * h_scale;
-        rect.center.x = rect.center.x * w_scale;
-        rect.center.y = rect.center.y * h_scale;
-        rects.push_back(rect);
-        cv::boxPoints(rect, bbox);
-        std::vector<cv::Point> points;
-        for (int i = 0; i < bbox.rows; ++i) {
-                points.emplace_back(cv::Point(int(bbox.at<float>(i, 0) ), int(bbox.at<float>(i, 1) )));
-            }
-        bboxs.emplace_back(points);
-
-    }
+    cv::Mat score = cv::Mat::zeros(preds.h, preds.w, CV_32FC1);
+    cv::Mat thre = cv::Mat::zeros(preds.h, preds.w, CV_8UC1);
+    std::vector<cv::RotatedRect> rects ; 
+    ncnn2cv(preds, score, thre);
+    auto bboxs = pse_deocde(score, thre, rects , 1, h_scale, w_scale);
     std::cout << "psenet decode 时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
     std::cout << "boxzie" << bboxs.size() << std::endl;
 
     auto result = draw_bbox(im_bgr, bboxs);
     cv::imwrite("./imgs/result.jpg", result);
-
+    cv::imwrite("./imgs/net_result.jpg", score * 255);
+    cv::imwrite("./imgs/net_thre.jpg", thre);
     time1 = static_cast<double>( cv::getTickCount());
     //开始行文本角度检测和文字识别
-    std::cout << "预测结果：\n";
     for (int i = 0; i < rects.size() ; i++ ){
         cv::RotatedRect  temprect = rects[i];
         // std::cout<<  temprect.size.width << "," << temprect.size.height << "," <<  temprect.center.x <<
@@ -355,8 +317,8 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
         cv::Mat part_im ;
 
         int  min_size   = temprect.size.width>temprect.size.height?temprect.size.height:temprect.size.width;
-        temprect.size.width  =   int(temprect.size.width + min_size * 0.15);
-        temprect.size.height =   int(temprect.size.height + min_size * 0.15);
+        temprect.size.width  =   int(temprect.size.width + min_size * 0.1);
+        temprect.size.height =   int(temprect.size.height + min_size * 0.1);
 
 
         RRLib::getRotRectImg(temprect, im_bgr, part_im);
@@ -377,7 +339,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
 
         shufflenet_input.substract_mean_normalize(mean_vals_pse_angle,norm_vals_pse_angle );
         ncnn::Extractor shufflenetv2_ex = angle_net.create_extractor();
-        shufflenetv2_ex.set_num_threads(num_thread);
+        //    shufflenetv2_ex.set_num_threads(4);
         shufflenetv2_ex.input("input", shufflenet_input);
         ncnn::Mat angle_preds;
         double time2 = static_cast<double>( cv::getTickCount());
@@ -430,7 +392,6 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
         if (angle_index ==0 || angle_index ==1 ){
 
             ncnn::Extractor crnn_ex = crnn_net.create_extractor();
-            crnn_ex.set_num_threads(num_thread);
             crnn_ex.input("input", crnn_in);
 #if CRNN_LSTM
             // lstm
@@ -443,7 +404,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
             for (int i=0; i<blob162.h; i++)
             {
                 ncnn::Extractor crnn_ex_1 = crnn_net.create_extractor();
-                crnn_ex_1.set_num_threads(num_thread);
+
                 ncnn::Mat blob162_i = blob162.row_range(i, 1);
                 crnn_ex_1.input("253", blob162_i);
 
@@ -463,7 +424,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
             for (int i=0; i<blob243.h; i++)
             {
                 ncnn::Extractor crnn_ex_2 = crnn_net.create_extractor();
-                crnn_ex_2.set_num_threads(num_thread);
+
                 ncnn::Mat blob243_i = blob243.row_range(i, 1);
                 crnn_ex_2.input("406", blob243_i);
 
@@ -482,7 +443,6 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
 
 
             ncnn::Extractor crnn_ex = crnn_vertical_net.create_extractor();
-            crnn_ex.set_num_threads(num_thread);
             crnn_ex.input("input", crnn_in);
 #if CRNN_LSTM
             // lstm
@@ -495,7 +455,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
             for (int i=0; i<blob162.h; i++)
             {
                 ncnn::Extractor crnn_ex_1 = crnn_vertical_net.create_extractor();
-                crnn_ex_1.set_num_threads(num_thread);
+
                 ncnn::Mat blob162_i = blob162.row_range(i, 1);
                 crnn_ex_1.input("253", blob162_i);
 
@@ -515,7 +475,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
             for (int i=0; i<blob243.h; i++)
             {
                 ncnn::Extractor crnn_ex_2 = crnn_vertical_net.create_extractor();
-                crnn_ex_2.set_num_threads(num_thread);
+
                 ncnn::Mat blob243_i = blob243.row_range(i, 1);
                 crnn_ex_2.input("406", blob243_i);
 
@@ -540,7 +500,7 @@ void  OCR::detect(cv::Mat im_bgr,int long_size)
 
 
         auto res_pre = crnn_deocde(crnn_preds,alphabetChinese);
-
+        std::cout << "预测结果：";
         for (int i=0; i<res_pre.size();i++){
             std::cout << res_pre[i] ;
         }
