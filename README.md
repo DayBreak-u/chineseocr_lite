@@ -67,7 +67,8 @@ http://127.0.0.1:8080/ocr
 
 
 ## 参考
-1. crnn  https://github.com/meijieru/crnn.pytorch.git              
-2. chineseocr  https://github.com/chineseocr/chineseocr      
-3. Psenet https://github.com/WenmuZhou/PSENet.pytorch  
-4. 语言模型实现 https://github.com/lukhy/masr
+1. ncnn  https://github.com/Tencent/ncnn         
+2. crnn  https://github.com/meijieru/crnn.pytorch.git              
+3. chineseocr  https://github.com/chineseocr/chineseocr      
+4. Psenet https://github.com/WenmuZhou/PSENet.pytorch  
+5. 语言模型实现 https://github.com/lukhy/masr
