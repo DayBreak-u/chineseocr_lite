@@ -55,8 +55,13 @@ add_library(ncnn STATIC IMPORTED)
 
 set_target_properties(ncnn PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/ncnn"
+  INTERFACE_LINK_LIBRARIES "OpenMP::OpenMP_CXX"
   INTERFACE_POSITION_INDEPENDENT_CODE "ON"
 )
+
+if(CMAKE_VERSION VERSION_LESS 2.8.12)
+  message(FATAL_ERROR "This file relies on consumers using CMake 2.8.12 or greater.")
+endif()
 
 # Load information for each installed configuration.
 get_filename_component(_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)

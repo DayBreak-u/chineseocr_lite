@@ -476,6 +476,28 @@ void kanna_rotate_c4(const unsigned char* src, int srcw, int srch, int srcstride
 void kanna_rotate_yuv420sp(const unsigned char* src, int srcw, int srch, unsigned char* dst, int w, int h, int type);
 #endif // NCNN_PIXEL_ROTATE
 
+// type conversion
+// convert float to half precision floating point
+unsigned short float32_to_float16(float value);
+// convert half precision floating point to float
+float float16_to_float32(unsigned short value);
+// convert float to brain half
+inline unsigned short float32_to_bfloat16(float value)
+{
+    // 16 : 16
+    union { unsigned int u; float f; } tmp;
+    tmp.f = value;
+    return tmp.u >> 16;
+}
+// convert brain half to float
+inline float bfloat16_to_float32(unsigned short value)
+{
+    // 16 : 16
+    union { unsigned int u; float f; } tmp;
+    tmp.u = value << 16;
+    return tmp.f;
+}
+
 // mat process
 enum BorderType
 {
@@ -490,6 +512,8 @@ void convert_packing(const Mat& src, Mat& dst, int elempack, const Option& opt =
 void cast_float32_to_float16(const Mat& src, Mat& dst, const Option& opt = Option());
 void cast_float16_to_float32(const Mat& src, Mat& dst, const Option& opt = Option());
 void cast_int8_to_float32(const Mat& src, Mat& dst, const Option& opt = Option());
+void cast_float32_to_bfloat16(const Mat& src, Mat& dst, const Option& opt = Option());
+void cast_bfloat16_to_float32(const Mat& src, Mat& dst, const Option& opt = Option());
 void quantize_float32_to_int8(const Mat& src, Mat& dst, float scale, const Option& opt = Option());
 void dequantize_int32_to_float32(Mat& m, float scale, const float* bias, int bias_data_size, const Option& opt = Option());
 void requantize_int8_to_int8(const Mat& src, Mat& dst, float scale_in, float scale_out, const float* bias, int bias_data_size, int fusion_relu, const Option& opt = Option());
@@ -1052,22 +1076,24 @@ inline void Mat::create(int _w, int _h, int _c, size_t _elemsize, int _elempack,
 
 inline void Mat::create_like(const Mat& m, Allocator* _allocator)
 {
-    if (m.dims == 1)
+    int _dims = m.dims;
+    if (_dims == 1)
         create(m.w, m.elemsize, m.elempack, _allocator);
-    else if (m.dims == 2)
+    if (_dims == 2)
         create(m.w, m.h, m.elemsize, m.elempack, _allocator);
-    else if (m.dims == 3)
+    if (_dims == 3)
         create(m.w, m.h, m.c, m.elemsize, m.elempack, _allocator);
 }
 
 #if NCNN_VULKAN
 inline void Mat::create_like(const VkMat& m, Allocator* _allocator)
 {
-    if (m.dims == 1)
+    int _dims = m.dims;
+    if (_dims == 1)
         create(m.w, m.elemsize, m.elempack, _allocator);
-    else if (m.dims == 2)
+    if (_dims == 2)
         create(m.w, m.h, m.elemsize, m.elempack, _allocator);
-    else if (m.dims == 3)
+    if (_dims == 3)
         create(m.w, m.h, m.c, m.elemsize, m.elempack, _allocator);
 }
 #endif // NCNN_VULKAN
@@ -1526,21 +1552,23 @@ inline void VkMat::create(int _w, int _h, int _c, size_t _elemsize, int _elempac
 
 inline void VkMat::create_like(const Mat& m, VkAllocator* _allocator, VkAllocator* _staging_allocator)
 {
-    if (m.dims == 1)
+    int _dims = m.dims;
+    if (_dims == 1)
         create(m.w, m.elemsize, m.elempack, _allocator, _staging_allocator);
-    else if (m.dims == 2)
+    if (_dims == 2)
         create(m.w, m.h, m.elemsize, m.elempack, _allocator, _staging_allocator);
-    else if (m.dims == 3)
+    if (_dims == 3)
         create(m.w, m.h, m.c, m.elemsize, m.elempack, _allocator, _staging_allocator);
 }
 
 inline void VkMat::create_like(const VkMat& m, VkAllocator* _allocator, VkAllocator* _staging_allocator)
 {
-    if (m.dims == 1)
+    int _dims = m.dims;
+    if (_dims == 1)
         create(m.w, m.elemsize, m.elempack, _allocator, _staging_allocator);
-    else if (m.dims == 2)
+    if (_dims == 2)
         create(m.w, m.h, m.elemsize, m.elempack, _allocator, _staging_allocator);
-    else if (m.dims == 3)
+    if (_dims == 3)
         create(m.w, m.h, m.c, m.elemsize, m.elempack, _allocator, _staging_allocator);
 }
 
