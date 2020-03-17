@@ -75,7 +75,6 @@ void PseAdaptor(ncnn::Mat& features,
                 float score = scores.at<float>(y,x);
                 if (value == 0) continue;
                 areas[value] += 1;
-             
                 scores_sum[value] += score;
             }
         }

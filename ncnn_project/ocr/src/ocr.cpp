@@ -23,50 +23,28 @@ OCR::OCR()
 
     angle_net.load_param("../../models/shufflenetv2_05_angle.param");
     angle_net.load_model("../../models/shufflenetv2_05_angle.bin");
+
+    //load keys
+    ifstream in("../../models/keys.txt");
+	std::string filename;
+	std::string line;
+
+	if(in) // 有该文件
+	{
+		while (getline (in, line)) // line中不包括每行的换行符
+		{
+            alphabetChinese.push_back(line);
+		}
+	}
+	else // 没有该文件
+	{
+		std::cout <<"no txt file" << std::endl;
+	}
 }
 
 
-string utf8_substr2(const string &str,int start, int length=INT_MAX)
-{
-    int i,ix,j,realstart,reallength;
-    if (length==0) return "";
-    if (start<0 || length <0)
-    {
-        //find j=utf8_strlen(str);
-        for(j=0,i=0,ix=str.length(); i<ix; i+=1, j++)
-        {
-            unsigned char c= str[i];
-            if      (c>=0   && c<=127) i+=0;
-            else if (c>=192 && c<=223) i+=1;
-            else if (c>=224 && c<=239) i+=2;
-            else if (c>=240 && c<=247) i+=3;
-            else if (c>=248 && c<=255) return "";//invalid utf8
-        }
-        if (length !=INT_MAX && j+length-start<=0) return "";
-        if (start  < 0 ) start+=j;
-        if (length < 0 ) length=j+length-start;
-    }
 
-    j=0,realstart=0,reallength=0;
-    for(i=0,ix=str.length(); i<ix; i+=1, j++)
-    {
-        if (j==start) { realstart=i; }
-        if (j>=start && (length==INT_MAX || j<=start+length)) { reallength=i-realstart; }
-        unsigned char c= str[i];
-        if      (c>=0   && c<=127) i+=0;
-        else if (c>=192 && c<=223) i+=1;
-        else if (c>=224 && c<=239) i+=2;
-        else if (c>=240 && c<=247) i+=3;
-        else if (c>=248 && c<=255) return "";//invalid utf8
-    }
-    if (j==start) { realstart=i; }
-    if (j>=start && (length==INT_MAX || j<=start+length)) { reallength=i-realstart; }
-
-    return str.substr(realstart,reallength);
-}
-
-
-std::vector<std::string> crnn_deocde(const ncnn::Mat score , string alphabetChinese) {
+std::vector<std::string> crnn_deocde(const ncnn::Mat score , std::vector<std::string> alphabetChinese) {
     float *srcdata = (float* ) score.data;
     std::vector<std::string> str_res;
     int last_index = 0;  
@@ -82,8 +60,8 @@ std::vector<std::string> crnn_deocde(const ncnn::Mat score , string alphabetChin
         }
         if (max_index >0 && (not (i>0 && max_index == last_index))  ){
 //            std::cout <<  max_index - 1 << std::endl;
-            std::string temp_str =  utf8_substr2(alphabetChinese,max_index - 1,1)  ;
-            str_res.push_back(temp_str);
+//            std::string temp_str =  utf8_substr2(alphabetChinese,max_index - 1,1)  ;
+            str_res.push_back(alphabetChinese[max_index-1]);
         }
 
 
