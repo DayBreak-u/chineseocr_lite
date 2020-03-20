@@ -1,7 +1,8 @@
 ## 本项目基于[chineseocr](https://github.com/chineseocr/chineseocr) 与[psenet](https://github.com/WenmuZhou/PSENet.pytorch)  实现中文自然场景文字检测及识别
 
 # 环境
-- pytorch  1.2.0
+- pytorch  1.2.0 
+- python3
 - linux/macos/windows
 - windows环境配置参考热心网友的文章[Python构建快速高效的中文文字识别OCR](https://blog.csdn.net/lly1122334/article/details/104752851) 👍
 ## PSENET 编译
