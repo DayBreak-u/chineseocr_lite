@@ -2,7 +2,8 @@
 
 # 环境
 pytorch  1.2.0
-linux/macos
+linux/macos/windows
+window环境配置参考[window](https://blog.csdn.net/lly1122334/article/details/104752851) 👍
 ## PSENET 编译
 ``` Bash
 cd psenet/pse
@@ -18,6 +19,7 @@ make
 - [x]  ncnn 实现 (支持lstm) nihui大佬实现的[crnn_lstm推理](https://github.com/ouyanghuiyu/chineseocr_lite/pull/41) 具体操作详解: [详细记录超轻量中文OCR LSTM模型ncnn实现](https://zhuanlan.zhihu.com/p/113338890?utm_source=qq&utm_medium=social&utm_oi=645149500650557440)
 - [x]  提供竖排文字样例以及字体库（旋转90度的字体）
 - [ ]  mnn  实现 
+
 
 
 # 2020.03.16更新
