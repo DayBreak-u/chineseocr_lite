@@ -3,7 +3,7 @@
 # 环境
 pytorch  1.2.0
 linux/macos/windows
-window环境配置参考热心网友的文章[window](https://blog.csdn.net/lly1122334/article/details/104752851) 👍
+windows环境配置参考热心网友的文章[window](https://blog.csdn.net/lly1122334/article/details/104752851) 👍
 ## PSENET 编译
 ``` Bash
 cd psenet/pse
