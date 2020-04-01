@@ -21,6 +21,6 @@ int main(int argc, char **argv) {
     
     ocrengine->detect(im_bgr,long_size);
 
-
+    delete ocrengine;
     return 0;
 }
