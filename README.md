@@ -13,9 +13,9 @@
 
   1. 可以直接在项目根目录下面运行`docker build -t my/chineseocr .` 构建运行环境的镜像，也可以
 
-     使用已经构建好的镜像`docker run -dit -p 8080:8080 -v /mnt/d/data/:/data --name chineseocr vitzy/chineseocr_lite`。
+     使用其他已经构建好的镜像`docker run -dit -p 8080:8080 -v /mnt/d/data/:/data --name chineseocr vitzy/chineseocr_lite`。
 
-  2. 可通过`docker attach <container id>`进入容器，然后`git clone https://github.com/ouyanghuiyu/chineseocr_lite`拉取本项目代码到`/data`
+  2. 可通过`docker attach --sig-proxy=false <container id>` 或者`docker exec -it <your container name or id> /bin/bash`进入容器，然后`git clone https://github.com/ouyanghuiyu/chineseocr_lite`拉取本项目代码到`/data`
   3. cd 到`chineseocr_lite`下进行安装：`pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt`
   4. 启动 web `python3 app.py 8080`， 在浏览器中打开` http://127.0.0.1:8080/ocr`。
 ## PSENET 编译
