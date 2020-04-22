@@ -1,4 +1,5 @@
 #include "ocr.h"
+#include <queue>
 
 #define CRNN_LSTM 1
 
