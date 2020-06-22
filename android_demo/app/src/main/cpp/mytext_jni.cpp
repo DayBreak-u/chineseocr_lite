@@ -17,7 +17,7 @@ static OCR *textocr;
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_abbott_mytext_textocr_Init(JNIEnv *env, jobject thiz,jobject assetManager,
+Java_com_ncnn_demo_textocr_Init(JNIEnv *env, jobject thiz,jobject assetManager,
         jbyteArray pse_param, jbyteArray pse_bin,
         jbyteArray crnn_param, jbyteArray crnn_bin,jobject label) {
 // TODO: implement textocr_init
@@ -75,7 +75,7 @@ Java_com_abbott_mytext_textocr_Init(JNIEnv *env, jobject thiz,jobject assetManag
 
 extern "C"
 JNIEXPORT jintArray JNICALL
-Java_com_abbott_mytext_textocr_Detect(JNIEnv *env, jobject thiz, jobject bitmap,jint lengthsize) {
+Java_com_ncnn_demo_textocr_Detect(JNIEnv *env, jobject thiz, jobject bitmap,jint lengthsize) {
     // TODO: implement Detect()
 
 
