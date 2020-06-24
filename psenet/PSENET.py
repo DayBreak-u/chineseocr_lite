@@ -8,7 +8,28 @@ import numpy as np
 from .pse import decode as pse_decode
 
 
-class PSENetHandel:
+def Singleton(cls):
+    _instance = {}
+    
+    def _singleton(*args, **kargs):
+        if cls not in _instance:
+            _instance[cls] = cls(*args, **kargs)
+        return _instance[cls]
+    
+    return _singleton
+
+
+class SingletonType(type):
+    def __init__(cls, *args, **kwargs):
+        super(SingletonType, cls).__init__(*args, **kwargs)
+    
+    def __call__(cls, *args, **kwargs):
+        obj = cls.__new__(cls, *args, **kwargs)
+        cls.__init__(obj, *args, **kwargs)
+        return obj
+
+
+class PSENetHandel(metaclass=SingletonType):
     def __init__(self, model_path, net, scale, gpu_id=None):
         """
         初始化pytorch模型
