@@ -45,3 +45,5 @@ angle_type = "shufflenetv2_05"
 angle_model_path = os.path.join(father_path, "models/{}.pth".format(angle_type))
 
 TIMEOUT = 30
+
+version = 'api/v1'
