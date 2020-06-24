@@ -4,17 +4,17 @@
 import torch
 import torch.nn as nn
 import collections
-from PIL import  Image
-import  numpy as np
-from torchvision import  transforms
+from PIL import Image
+import numpy as np
+from torchvision import transforms
 
 
 class resizeNormalize(object):
-
+    
     def __init__(self, size, interpolation=Image.BILINEAR):
         self.size = size
         self.interpolation = interpolation
-
+    
     def __call__(self, img):
         size = self.size
         imgW, imgH = size
@@ -37,26 +37,27 @@ class resizeNormalize(object):
 
 
 class strLabelConverter(object):
-
+    
     def __init__(self, alphabet):
         self.alphabet = alphabet + 'ç'  # for `-1` index
         self.dict = {}
         for i, char in enumerate(alphabet):
             # NOTE: 0 is reserved for 'blank' required by wrap_ctc
             self.dict[char] = i + 1
+    
     def encode(self, text, depth=0):
         """Support batch or single str."""
         length = []
-        result=[]
+        result = []
         for str in text:
             length.append(len(str))
             for char in str:
-               #print(char)
-               index = self.dict[char]
-               result.append(index)
+                # print(char)
+                index = self.dict[char]
+                result.append(index)
         text = result
-        return (torch.IntTensor(text), torch.IntTensor(length))
-
+        return torch.IntTensor(text), torch.IntTensor(length)
+    
     def decode(self, t, length, raw=False):
         if length.numel() == 1:
             length = length[0]
@@ -81,20 +82,20 @@ class strLabelConverter(object):
 
 
 class averager(object):
-
+    
     def __init__(self):
         self.reset()
-
+    
     def add(self, v):
         self.n_count += v.data.numel()
         # NOTE: not `+= v.sum()`, which will add a node in the compute graph,
         # which lead to memory leak
         self.sum += v.data.sum()
-
+    
     def reset(self):
         self.n_count = 0
         self.sum = 0
-
+    
     def val(self):
         res = 0
         if self.n_count != 0:

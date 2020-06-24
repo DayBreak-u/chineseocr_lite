@@ -1,2 +1,2 @@
-from .model import  PSENet
+from .model import PSENet
 from .PSENET import PSENetHandel
