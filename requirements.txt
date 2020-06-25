@@ -1,6 +1,5 @@
 scipy
 numpy
-easydict
 opencv-python
 Cython
 pillow

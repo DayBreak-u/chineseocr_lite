@@ -5,24 +5,10 @@ COPY . /chineseocr_lite
 
 WORKDIR /chineseocr_lite
 
-RUN PIP_INSTALL="pip install -i https://mirrors.aliyun.com/pypi/simple/" && \
+RUN PIP_INSTALL="pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/" && \
     $PIP_INSTALL \
-    numpy \
-    scipy \
-    pandas \
-    cloudpickle \
-    scikit-image>=0.14.2 \
-    scikit-learn \
-    matplotlib \
-    Cython \
-    tqdm \
-    future \
-    protobuf \
-    enum34 \
-    pyyaml \
-    typing \
-    torch \
-    torchvision \
+    torch==1.2.0 \
+    torchvision==0.4.0 \
     && \
     $PIP_INSTALL -r requirements.txt
 
