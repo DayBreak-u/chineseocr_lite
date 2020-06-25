@@ -6,8 +6,10 @@
 - python3
 
 - linux/macos/windows
-
+---
 - windows环境配置参考热心网友的文章[Python构建快速高效的中文文字识别OCR](https://blog.csdn.net/lly1122334/article/details/104752851) 👍
+- windows环境运行需要手动编译psenet/pse目录下的pse.cpp为dll，为了方便新增支持python3.5和python3.6的pyd文件，在windows平台运行
+的时候需要根据自己环境的python版本更改对应的pyd文件为pse.pyd即可
 
 - Docker 环境
 
