@@ -44,7 +44,7 @@ class ImageIdentify(Resource):
                 result = text_predict(b64_image)
                 os.remove(filelock)
                 break
-        return jsonify({'text': [i['text'] for i in result]})
+        return jsonify({'code': 'SUCCESS', 'text': [i['text'] for i in result]})
 
 
 api.add_resource(ImageIdentify, app_url(version, '/ocr'))

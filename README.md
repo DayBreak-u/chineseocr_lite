@@ -66,11 +66,24 @@ make
 cd chineseocr_lite## 进入chineseocr目录
 python app.py 8080 ##8080端口号，可以设置任意端口
 ```
-
 ## 访问服务
 http://127.0.0.1:8080/ocr
 
 
+## flask-restful api demo
+```text
+cd chineseocr_lite && python flask_app.py
+
+- 请求url: http://ip:port/api/v1/ocr
+- 请求方式：POST
+- 请求参数
+    - imgString：图片转base64后的字符串， str
+- 返回实例
+{
+    "code": "SUCCESS",
+    "text": "不配图我总觉得不舒服不完整不专业"
+}
+```
 ## 识别结果展示
 
 <img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/test_imgs/5_res.jpg"/>
