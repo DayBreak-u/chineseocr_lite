@@ -1,0 +1,8 @@
+scipy
+numpy
+opencv-python
+Cython
+pillow
+web.py==0.40.dev0
+flask
+flask-restful
