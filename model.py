@@ -136,7 +136,7 @@ def crnnRecWithBox(im, boxes_list):
 
         partImg = Image.fromarray(partImg_array).convert("RGB")
         #
-        partImg.save("./debug_im/{}.jpg".format(index))
+        # partImg.save("./debug_im/{}.jpg".format(index))
 
         partImg_ = partImg.convert('L')
         newW, newH = partImg.size
@@ -164,8 +164,8 @@ def text_predict(img):
     else:
         boxes_list, score_list = text_handle.process(img)
 
-    img2 = draw_bbox(img, boxes_list, color=(0, 255, 0))
-    cv2.imwrite("debug_im/draw.jpg", img2)
+    # img2 = draw_bbox(img, boxes_list, color=(0, 255, 0))
+    # cv2.imwrite("debug_im/draw.jpg", img2)
     
     # result = crnnRec(np.array(img), rects_re)
     result = crnnRecWithBox(np.array(img), boxes_list)
