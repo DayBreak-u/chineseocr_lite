@@ -13,7 +13,7 @@
 
 ## Docker 环境
 - 重写Dockerfile，资源占用更小，可在1C 1G的学生服务器编译成功
-- 容器环境是python3.6 + pytorch1.2
+- 容器环境是python3.6 + pytorch-cpu1.2
 - 编译方式：在项目根目录下运行 `docker build -t chineseocr:v1 .`
 - Flask-RESTful API运行方式: `docker run --name ocr_api -p5000:5000 -d <Image ID>`
   请求方式详见下方
