@@ -21,7 +21,7 @@ def draw_bbox(img_path, result, color=(255, 0, 0), thickness=2):
     return img_path
 
 
-class DBNET(object, metaclass=SingletonType):
+class DBNET(metaclass=SingletonType):
     def __init__(self, MODEL_PATH, short_size=640):
         self.sess = rt.InferenceSession(MODEL_PATH)
         self.short_size = short_size

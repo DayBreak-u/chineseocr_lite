@@ -94,6 +94,9 @@ http://127.0.0.1:8080/ocr
 <img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/ocr/res_imgs/res_3.jpg"/>
 <img width="500" height="300" src="https://github.com/ouyanghuiyu/chineseocr_lite/blob/master/ncnn_project/ocr/res_imgs/res_2.jpg"/>
 
+## flask-restful api 内存测试(dbnet)
+200张图片测试稳定在1-1.5G左右的内存
+![](test_imgs/flask-api.png)
 
 
 ## 参考

@@ -13,7 +13,7 @@ class SegDetectorRepresenter:
         self.unclip_ratio = unclip_ratio
     
     def __call__(self, pred, height, width):
-        '''
+        """
         batch: (image, polygons, ignore_tags
         batch: a dict produced by dataloaders.
             image: tensor of shape (N, C, H, W).
@@ -25,7 +25,7 @@ class SegDetectorRepresenter:
             binary: text region segmentation map, with shape (N, H, W)
             thresh: [if exists] thresh hold prediction with shape (N, H, W)
             thresh_binary: [if exists] binarized with threshhold, (N, H, W)
-        '''
+        """
         
         pred = pred[0, :, :]
         segmentation = self.binarize(pred)
@@ -38,10 +38,10 @@ class SegDetectorRepresenter:
         return pred > self.thresh
     
     def boxes_from_bitmap(self, pred, bitmap, dest_width, dest_height):
-        '''
+        """
         _bitmap: single map with shape (H, W),
             whose values are binarized as {0, 1}
-        '''
+        """
         
         assert len(bitmap.shape) == 2
         # bitmap = _bitmap.cpu().numpy()  # The first channel
