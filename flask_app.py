@@ -12,7 +12,7 @@ api = Api(app)
 
 
 class ImageIdentify(Resource):
-    # http://ip:port/api/v1/knowledge_manager/ocr
+    # http://ip:port/api/v1/ocr
     def post(self, **kwargs):
         parser = reqparse.RequestParser()
         parser.add_argument('ImgString', type=str,
