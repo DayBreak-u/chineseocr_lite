@@ -1,15 +1,36 @@
-FROM python:3.6
-ENV LANG C.UTF-8
+FROM centos:7.2.1511
 
-COPY . /chineseocr_lite
+LABEL Author="Pad0y<github.com/Pad0y>"
 
-WORKDIR /chineseocr_lite
+ENV LANG C.UTF-8 LC_ALL=C.UTF-8
 
-RUN PIP_INSTALL="pip install -i https://pypi.tuna.tsinghua.edu.cn/simple/" && \
-    $PIP_INSTALL \
-    torch==1.2.0 \
-    torchvision==0.4.0 \
-    && \
-    $PIP_INSTALL -r requirements.txt
+COPY . /data/project/
+WORKDIR /data/project/
 
-CMD python app.py 8080
+RUN yum -y update \
+    && yum -y install gcc gcc-c++ wget make git libSM-1.2.2-2.el7.x86_64 libXrender libXext\
+    && yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel libffi-devel \
+    && yum -y install python3-devel centos-release-scl scl-utils-build \
+    && yum -y install  devtoolset-7-gcc* \
+    && echo 'source /opt/rh/devtoolset-7/enable' >> ~/.bash_profile \
+    && source ~/.bash_profile \
+    && scl enable devtoolset-7 bash 
+
+
+RUN pip3 install --user  -U pip -i https://pypi.tuna.tsinghua.edu.cn/simple/  \ 
+    && pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/ 
+
+
+RUN source ~/.bash_profile && pip3 install -r requirements.txt \
+    && pip3 install ./resource/torch-1.2.0+cpu-cp36-cp36m-manylinux1_x86_64.whl \
+    && pip3 install ./resource/torchvision-0.4.0+cpu-cp36-cp36m-manylinux1_x86_64.whl
+
+RUN source ~/.bash_profile && cd ./psenet/pse && make clean && make
+RUN yum clean all && \
+    rm -rf /tmp/* && \
+    rm -rf /data/project/resource
+
+EXPOSE 5000
+EXPOSE 8000
+
+CMD python3 flask_app.py
