@@ -2,22 +2,18 @@ from config import *
 from crnn import FullCrnn, LiteCrnn, CRNNHandle
 from psenet import PSENet, PSENetHandel
 from angle_class import AangleClassHandle, shufflenet_v2_x0_5
-from utils import draw_bbox, crop_rect ,sorted_boxes,get_rotate_crop_image
+from utils import draw_bbox, crop_rect, sorted_boxes, get_rotate_crop_image
 from PIL import Image
 import numpy as np
 import cv2
 import copy
 from dbnet.dbnet_infer import DBNET
 
-
-
 if det_model_type == "pse_mobilenetv2":
     text_detect_net = PSENet(backbone=det_model_type.split("_")[-1], pretrained=False, result_num=6, scale=pse_scale)
     text_handle = PSENetHandel(model_path, text_detect_net, pse_scale, gpu_id=GPU_ID)
 elif det_model_type == "dbnet":
-    text_handle = DBNET(model_path,short_size = dbnet_short_size)
-
-
+    text_handle = DBNET(model_path, short_size=dbnet_short_size)
 
 crnn_net = None
 
@@ -85,7 +81,7 @@ def crnnRec(im, rects_re, leftAdjust=False, rightAdjust=False, alph=0.2, f=1.0):
         # partImg.save("./debug_im/{}.jpg".format(index))
         
         partImg_ = partImg.convert('L')
-
+        
         try:
             
             if crnn_vertical_handle is not None and angel_class in ["shudao", "shuzhen"]:
@@ -119,39 +115,39 @@ def crnnRecWithBox(im, boxes_list):
         # degree, w, h, cx, cy = rect
         # box = sorted_boxes(box)
         tmp_box = copy.deepcopy(box)
-        partImg_array =   get_rotate_crop_image(im,tmp_box.astype(np.float32))
-
+        partImg_array = get_rotate_crop_image(im, tmp_box.astype(np.float32))
+        
         # partImg = Image.fromarray(partImg_array).convert("RGB")
-
+        
         # partImg.save("./debug_im/{}.jpg".format(index))
-
+        
         angel_index = angle_handle.predict(partImg_array)
-
+        
         angel_class = lable_map_dict[angel_index]
         # print(angel_class)
         rotate_angle = rotae_map_dict[angel_class]
-
+        
         if rotate_angle != 0:
             partImg_array = np.rot90(partImg_array, rotate_angle // 90)
-
+        
         partImg = Image.fromarray(partImg_array).convert("RGB")
         #
         # partImg.save("./debug_im/{}.jpg".format(index))
-
+        
         partImg_ = partImg.convert('L')
         newW, newH = partImg.size
         try:
-
+            
             if crnn_vertical_handle is not None and angel_class in ["shudao", "shuzhen"]:
-
+                
                 simPred = crnn_vertical_handle.predict(partImg_)
             else:
                 simPred = crnn_handle.predict(partImg_)  ##识别的文本
         except:
             continue
-
+        
         if simPred.strip() != u'':
-            results.append({'cx': 0 , 'cy': 0 , 'text': simPred, 'w': newW , 'h': newH ,
+            results.append({'cx': 0, 'cy': 0, 'text': simPred, 'w': newW, 'h': newH,
                             'degree': 0})
             # results.append({ 'text': simPred, })
     return results
@@ -163,13 +159,13 @@ def text_predict(img):
         preds, boxes_list, rects_re, t = text_handle.predict(img, long_size=pse_long_size)
     else:
         boxes_list, score_list = text_handle.process(img)
-
+    
     # img2 = draw_bbox(img, boxes_list, color=(0, 255, 0))
     # cv2.imwrite("debug_im/draw.jpg", img2)
     
     # result = crnnRec(np.array(img), rects_re)
     result = crnnRecWithBox(np.array(img), boxes_list)
-
+    
     return result
 
 

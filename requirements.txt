@@ -4,5 +4,8 @@ opencv-python
 Cython
 pillow
 web.py==0.40.dev0
+onnxruntime
+pyclipper
+shapely
 flask
 flask-restful
