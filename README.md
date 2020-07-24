@@ -17,7 +17,7 @@
 - 编译方式：在项目根目录下运行 `docker build -t chineseocr:v1 .`
 - Flask-RESTful API运行方式: `docker run --name ocr_api -p5000:5000 -d <Image ID>`
   请求方式详见下方
-- web app运行方式：`docker run --name ocr_ui -p8000:8000 -d <Image ID> python3 app.py`
+- web app运行方式：`docker run --name ocr_ui -p8000:8000 -d <Image ID> python3 app.py 8000`
 
 
 ## PSENET 编译
