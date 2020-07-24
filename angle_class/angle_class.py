@@ -6,7 +6,7 @@ from PIL import Image
 from config import angle_type
 
 
-class AangleClassHandle():
+class AangleClassHandle:
     def __init__(self, model_path, net, gpu_id=None):
         """
            初始化pytorch模型

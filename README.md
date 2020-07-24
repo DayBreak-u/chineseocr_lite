@@ -11,15 +11,15 @@
 - windows环境运行需要手动编译psenet/pse目录下的pse.cpp为DLL，为了方便新增支持python3.5和python3.6的pyd文件，在windows平台运行
 的时候需要根据自己环境的python版本更改对应的pyd文件为pse.pyd即可
 
-- Docker 环境
+## Docker 环境
+- 重写Dockerfile，资源占用更小，可在1C 1G的学生服务器编译成功
+- 容器环境是python3.6 + pytorch1.2
+- 编译方式：在项目根目录下运行 `docker build -t chineseocr:v1 .`
+- Flask-RESTful API运行方式: `docker run --name ocr_api -p5000:5000 -d <Image ID>`
+  请求方式详见下方
+- web app运行方式：`docker run --name ocr_ui -p8000:8000 -d <Image ID> python3 app.py`
 
-  1. 可以直接在项目根目录下面运行`docker build -t my/chineseocr .` 构建运行环境的镜像，也可以
 
-     使用其他已经构建好的镜像`docker run -dit -p 8080:8080 -v /mnt/d/data/:/data --name chineseocr vitzy/chineseocr_lite`。
-
-  2. 可通过`docker attach --sig-proxy=false <container id>` 或者`docker exec -it <your container name or id> /bin/bash`进入容器，然后`git clone https://github.com/ouyanghuiyu/chineseocr_lite`拉取本项目代码到`/data`
-  3. cd 到`chineseocr_lite`下进行安装：`pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt`
-  4. 启动 web `python3 app.py 8080`， 在浏览器中打开` http://127.0.0.1:8080/ocr`。
 ## PSENET 编译
 ``` Bash
 cd psenet/pse
@@ -74,7 +74,7 @@ http://127.0.0.1:8080/ocr
 - 请求url: http://ip:port/api/v1/ocr
 - 请求方式：POST
 - 请求参数
-    - imgString：图片转base64后的字符串， str
+    - ImgString：图片转base64后的字符串， str
 - 返回实例
 {
     "code": "SUCCESS",
