@@ -1,12 +1,32 @@
 import onnxruntime as rt
-import numpy as np
+import  numpy as np
 import time
 import cv2
-from .decode import SegDetectorRepresenter
-from psenet.PSENET import SingletonType
+from .decode import  SegDetectorRepresenter
 
 mean = (0.485, 0.456, 0.406)
 std = (0.229, 0.224, 0.225)
+
+
+def Singleton(cls):
+    _instance = {}
+
+    def _singleton(*args, **kargs):
+        if cls not in _instance:
+            _instance[cls] = cls(*args, **kargs)
+        return _instance[cls]
+
+    return _singleton
+
+
+class SingletonType(type):
+    def __init__(cls, *args, **kwargs):
+        super(SingletonType, cls).__init__(*args, **kwargs)
+
+    def __call__(cls, *args, **kwargs):
+        obj = cls.__new__(cls, *args, **kwargs)
+        cls.__init__(obj, *args, **kwargs)
+        return obj
 
 
 def draw_bbox(img_path, result, color=(255, 0, 0), thickness=2):
@@ -16,7 +36,7 @@ def draw_bbox(img_path, result, color=(255, 0, 0), thickness=2):
     img_path = img_path.copy()
     for point in result:
         point = point.astype(int)
-        
+
         cv2.polylines(img_path, [point], True, color, thickness)
     return img_path
 
@@ -26,30 +46,30 @@ class DBNET(metaclass=SingletonType):
         self.sess = rt.InferenceSession(MODEL_PATH)
         self.short_size = short_size
         self.decode_handel = SegDetectorRepresenter()
-    
+
     def process(self, img):
-        
+
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         h, w = img.shape[:2]
-        
+
         if h < w:
             scale_h = self.short_size / h
             tar_w = w * scale_h
             tar_w = tar_w - tar_w % 32
             tar_w = max(32, tar_w)
             scale_w = tar_w / w
-        
+
         else:
             scale_w = self.short_size / w
             tar_h = h * scale_w
             tar_h = tar_h - tar_h % 32
             tar_h = max(32, tar_h)
             scale_h = tar_h / h
-        
+
         img = cv2.resize(img, None, fx=scale_w, fy=scale_h)
-        
+
         img = img.astype(np.float32)
-        
+
         img /= 255.0
         img -= mean
         img /= std
