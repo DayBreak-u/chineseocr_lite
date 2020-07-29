@@ -1,12 +1,11 @@
 #!/usr/bin/python
 # encoding: utf-8
 
-import torch
-import torch.nn as nn
+
 import collections
 from PIL import Image
 import numpy as np
-from torchvision import transforms
+
 
 
 class resizeNormalize(object):
@@ -16,6 +15,7 @@ class resizeNormalize(object):
         self.interpolation = interpolation
     
     def __call__(self, img):
+
         size = self.size
         imgW, imgH = size
         scale = img.size[1] * 1.0 / imgH
@@ -30,9 +30,15 @@ class resizeNormalize(object):
             img = Image.fromarray(newImage)
         else:
             img = img.resize((imgW, imgH), self.interpolation)
-        # img = (np.array(img)/255.0-0.5)/0.5
-        img = transforms.ToTensor()(img)
-        img.sub_(0.5).div_(0.5)
+
+        img = np.array(img,dtype=np.float32)
+
+        img -= 127.5
+        img /= 127.5
+
+
+        img = img.reshape([*img.shape,1])
+
         return img
 
 
@@ -44,41 +50,20 @@ class strLabelConverter(object):
         for i, char in enumerate(alphabet):
             # NOTE: 0 is reserved for 'blank' required by wrap_ctc
             self.dict[char] = i + 1
-    
-    def encode(self, text, depth=0):
-        """Support batch or single str."""
-        length = []
-        result = []
-        for str in text:
-            length.append(len(str))
-            for char in str:
-                # print(char)
-                index = self.dict[char]
-                result.append(index)
-        text = result
-        return torch.IntTensor(text), torch.IntTensor(length)
+
     
     def decode(self, t, length, raw=False):
-        if length.numel() == 1:
-            length = length[0]
-            t = t[:length]
-            if raw:
-                return ''.join([self.alphabet[i - 1] for i in t])
-            else:
-                char_list = []
-                for i in range(length):
-                    if t[i] != 0 and (not (i > 0 and t[i - 1] == t[i])):
-                        char_list.append(self.alphabet[t[i] - 1])
-                return ''.join(char_list)
+        t = t[:length]
+        if raw:
+            return ''.join([self.alphabet[i - 1] for i in t])
         else:
-            texts = []
-            index = 0
-            for i in range(length.numel()):
-                l = length[i]
-                texts.append(self.decode(
-                    t[index:index + l], torch.IntTensor([l]), raw=raw))
-                index += l
-            return texts
+            char_list = []
+            for i in range(length):
+
+                if t[i] != 0 and (not (i > 0 and t[i - 1] == t[i])):
+                    char_list.append(self.alphabet[t[i] - 1])
+            return ''.join(char_list)
+
 
 
 class averager(object):
@@ -102,34 +87,3 @@ class averager(object):
             res = self.sum / float(self.n_count)
         return res
 
-
-def oneHot(v, v_length, nc):
-    batchSize = v_length.size(0)
-    maxLength = v_length.max()
-    v_onehot = torch.FloatTensor(batchSize, maxLength, nc).fill_(0)
-    acc = 0
-    for i in range(batchSize):
-        length = v_length[i]
-        label = v[acc:acc + length].view(-1, 1).long()
-        v_onehot[i, :length].scatter_(1, label, 1.0)
-        acc += length
-    return v_onehot
-
-
-def loadData(v, data):
-    # v.data.resize_(data.size()).copy_(data)
-    v.resize_(data.size()).copy_(data)
-
-
-def prettyPrint(v):
-    print('Size {0}, Type: {1}'.format(str(v.size()), v.data.type()))
-    print('| Max: %f | Min: %f | Mean: %f' % (v.max().data[0], v.min().data[0], v.mean().data[0]))
-
-
-def assureRatio(img):
-    """Ensure imgH <= imgW."""
-    b, c, h, w = img.size()
-    if h > w:
-        main = nn.UpsamplingBilinear2d(size=(h, h), scale_factor=None)
-        img = main(img)
-    return img
