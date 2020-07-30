@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# encoding: utf-8
-# author:alisen
-# time: 2020/5/29 10:48
+
 
 import logging
 from logging.handlers import RotatingFileHandler

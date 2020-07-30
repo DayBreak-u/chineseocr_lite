@@ -5,7 +5,7 @@ from shapely.geometry import Polygon
 
 
 class SegDetectorRepresenter:
-    def __init__(self, thresh=0.3, box_thresh=0.5, max_candidates=1000, unclip_ratio=1.8):
+    def __init__(self, thresh=0.3, box_thresh=0.5, max_candidates=1000, unclip_ratio=2.0):
         self.min_size = 3
         self.thresh = thresh
         self.box_thresh = box_thresh
@@ -26,7 +26,7 @@ class SegDetectorRepresenter:
             thresh: [if exists] thresh hold prediction with shape (N, H, W)
             thresh_binary: [if exists] binarized with threshhold, (N, H, W)
         """
-        
+
         pred = pred[0, :, :]
         segmentation = self.binarize(pred)
         

@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# encoding: utf-8
-# author:alisen
-# time: 2020/4/29 10:56
+
 
 import tornado.web
 import tornado.gen
@@ -15,4 +12,4 @@ class Index(tornado.web.RequestHandler):
 
     @tornado.gen.coroutine
     def get(self, *args, **kwargs):
-        self.render(os.path.join(BASE_PATH, 'dist/TrWebOcr_fontend/index.html'))
+        self.render(os.path.join(BASE_PATH, 'dist/chineseocr_lite_fontend/index.html'))
