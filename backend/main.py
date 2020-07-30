@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# encoding: utf-8
-# author:alisen
-# time: 2020/4/28 14:54
+
 import os
 import sys
 
@@ -22,7 +19,7 @@ logger = logging.getLogger(log.LOGGER_ROOT_NAME+'.'+__name__)
 current_path = os.path.dirname(__file__)
 settings = dict(
     # debug=True,
-    static_path=os.path.join(current_path, "dist/TrWebOcr_fontend")  # 配置静态文件路径
+    static_path=os.path.join(current_path, "dist/chineseocr_lite_fontend")  # 配置静态文件路径
 )
 
 
@@ -31,7 +28,7 @@ def make_app():
         (r"/api/tr-run/", tr_run.TrRun),
         (r"/", tr_index.Index),
         (r"/(.*)", StaticFileHandler,
-         {"path": os.path.join(current_path, "dist/TrWebOcr_fontend"), "default_filename": "index.html"}),
+         {"path": os.path.join(current_path, "dist/chineseocr_lite_fontend"), "default_filename": "index.html"}),
 
     ], **settings)
 

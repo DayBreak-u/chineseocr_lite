@@ -21,16 +21,9 @@ RUN pip3 install --user  -U pip -i https://pypi.tuna.tsinghua.edu.cn/simple/  \
     && pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/ 
 
 
-RUN source ~/.bash_profile && pip3 install -r requirements.txt \
-    && pip3 install ./resource/torch-1.2.0+cpu-cp36-cp36m-manylinux1_x86_64.whl \
-    && pip3 install ./resource/torchvision-0.4.0+cpu-cp36-cp36m-manylinux1_x86_64.whl
-
-RUN source ~/.bash_profile && cd ./psenet/pse && make clean && make
-RUN yum clean all && \
-    rm -rf /tmp/* && \
-    rm -rf /data/project/resource
+RUN source ~/.bash_profile && pip3 install -r requirements.txt
 
 EXPOSE 5000
 EXPOSE 8000
 
-CMD python3 flask_app.py
+CMD python3 backend/main.py
