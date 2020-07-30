@@ -1,7 +1,7 @@
 
 
 import time
-from model import  text_predict
+from model import  OcrHandle
 import tornado.web
 import tornado.gen
 import tornado.httpserver
@@ -17,7 +17,7 @@ import logging
 
 logger = logging.getLogger(log.LOGGER_ROOT_NAME + '.' +__name__)
 
-
+ocrhandle = OcrHandle()
 
 class TrRun(tornado.web.RequestHandler):
     '''
@@ -106,7 +106,7 @@ class TrRun(tornado.web.RequestHandler):
             new_height = int(img.height / scale + 0.5)
             img = img.resize((new_width, new_height), Image.BICUBIC)
 
-        res = text_predict(img)
+        res = ocrhandle.text_predict(img)
 
         img_detected = img.copy()
         img_draw = ImageDraw.Draw(img_detected)
