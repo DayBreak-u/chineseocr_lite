@@ -5,7 +5,7 @@ father_path = os.path.abspath(os.path.dirname(filt_path) + os.path.sep + ".")
 
 
 dbnet_short_size = 960
-crnn_lite = True
+crnn_lite = False
 
 model_path = os.path.join(father_path, "models/dbnet.onnx")
 
