@@ -38,11 +38,17 @@ class CRNNHandle:
 
         length  = preds.shape[0]
         preds = preds.reshape(length,-1)
+        # preds = 1/(1+np.exp(-1 * preds))
+
+        # temp_fist = preds[:,0]
+        # temp_fist[temp_fist>0.001] = 0.001
+        #
+        # preds[:,0 ] =temp_fist
+
 
         preds = np.argmax(preds,axis=1)
 
         preds = preds.reshape(-1)
-
 
         sim_pred = converter.decode(preds, length, raw=False)
 
