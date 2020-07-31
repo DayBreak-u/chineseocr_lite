@@ -83,7 +83,7 @@ class SegDetectorRepresenter:
     def unclip(self, box, unclip_ratio=1.5):
         poly = Polygon(box)
         
-        distance = poly.area * unclip_ratio / poly.length
+        distance = poly.area * unclip_ratio / (poly.length  )
         offset = pyclipper.PyclipperOffset()
         offset.AddPath(box, pyclipper.JT_ROUND, pyclipper.ET_CLOSEDPOLYGON)
         expanded = np.array(offset.Execute(distance))
