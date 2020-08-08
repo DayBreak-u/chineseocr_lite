@@ -14,6 +14,7 @@ cd chineseocr_lite## 进入chineseocr目录
 python backend/main.py 
 ```
 
+## 在线体验： http://ocr.timeline229.com/
 
 ## 识别结果展示
 
