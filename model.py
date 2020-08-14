@@ -8,11 +8,11 @@ import cv2
 import copy
 from dbnet.dbnet_infer import DBNET
 
-
+import traceback
 
 class  OcrHandle(object):
     def __init__(self):
-        self.text_handle = DBNET(model_path, short_size=dbnet_short_size)
+        self.text_handle = DBNET(model_path)
         self.crnn_handle = CRNNHandle(crnn_model_path)
 
     def crnnRecWithBox(self,im, boxes_list,score_list):
@@ -35,13 +35,16 @@ class  OcrHandle(object):
 
             partImg = Image.fromarray(partImg_array).convert("RGB")
 
-
-            partImg_ = partImg.convert('L')
+            if not is_rgb:
+                partImg = partImg.convert('L')
 
             try:
-
-                simPred = self.crnn_handle.predict(partImg_)  ##识别的文本
-            except:
+                if is_rgb:
+                    simPred = self.crnn_handle.predict_rbg(partImg)  ##识别的文本
+                else:
+                    simPred = self.crnn_handle.predict(partImg)  ##识别的文本
+            except Exception as e:
+                print(traceback.format_exc())
                 continue
 
             if simPred.strip() != u'':
@@ -50,8 +53,8 @@ class  OcrHandle(object):
         return results
 
 
-    def text_predict(self,img):
-        boxes_list, score_list = self.text_handle.process(np.asarray(img).astype(np.uint8))
+    def text_predict(self,img,short_size):
+        boxes_list, score_list = self.text_handle.process(np.asarray(img).astype(np.uint8),short_size=short_size)
         result = self.crnnRecWithBox(np.array(img), boxes_list,score_list)
 
         return result

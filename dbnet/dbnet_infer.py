@@ -42,29 +42,30 @@ def draw_bbox(img_path, result, color=(255, 0, 0), thickness=2):
 
 
 class DBNET(metaclass=SingletonType):
-    def __init__(self, MODEL_PATH, short_size=640):
+    def __init__(self, MODEL_PATH):
         self.sess = rt.InferenceSession(MODEL_PATH)
-        self.short_size = short_size
+
         self.decode_handel = SegDetectorRepresenter()
 
-    def process(self, img):
+    def process(self, img, short_size):
 
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         h, w = img.shape[:2]
-
         if h < w:
-            scale_h = self.short_size / h
+            scale_h = short_size / h
             tar_w = w * scale_h
             tar_w = tar_w - tar_w % 32
             tar_w = max(32, tar_w)
             scale_w = tar_w / w
 
         else:
-            scale_w = self.short_size / w
+            scale_w = short_size / w
             tar_h = h * scale_w
             tar_h = tar_h - tar_h % 32
             tar_h = max(32, tar_h)
             scale_h = tar_h / h
+        
+
 
         img = cv2.resize(img, None, fx=scale_w, fy=scale_h)
 
