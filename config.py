@@ -5,25 +5,30 @@ import os
 filt_path = os.path.abspath(__file__)
 father_path = os.path.abspath(os.path.dirname(filt_path) + os.path.sep + ".")
 
+# dbnet 参数
+dbnet_max_size = 6000 #长边最大长度
+pad_size = 0 #检测是pad尺寸，有些文档文字充满整个屏幕检测有误，需要pad
 
-dbnet_max_size = 6000
+
+# crnn参数
 crnn_lite = True
-# 每个ip每天的最大访问次数
-max_post_time = 20
 model_path = os.path.join(father_path, "models/dbnet.onnx")
+is_rgb = True
+crnn_model_path = os.path.join(father_path, "models/crnn_lite_lstm.onnx")
 
-# crnn相关
-crnn_model_path = os.path.join(father_path, "models/crnn_lstm.onnx")
-if_rgb = False
-if crnn_lite:
-    crnn_model_path = os.path.join(father_path, "models/crnn_lite_lstm.onnx")
-    is_rgb = True
 
+
+# angle
+angle_detect = True
+angle_detect_num = 10
+angle_net_path = os.path.join(father_path, "models/angle_net.onnx")
+
+
+max_post_time = 100 # ip 访问最大次数
 
 from crnn.keys import alphabetChinese as alphabet
 
-TIMEOUT = 30
-#IP 白名单
-white_ips = []
+
+white_ips = [] #白名单
 
 version = 'api/v1'

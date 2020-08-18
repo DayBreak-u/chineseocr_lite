@@ -6,7 +6,7 @@ import tornado.web
 import tornado.gen
 import tornado.httpserver
 import base64
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw,ImageFont
 from io import BytesIO
 import datetime
 import json
@@ -18,6 +18,8 @@ import logging
 logger = logging.getLogger(log.LOGGER_ROOT_NAME + '.' +__name__)
 
 ocrhandle = OcrHandle()
+
+
 request_time = {}
 now_time = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 from config import max_post_time ,dbnet_max_size,white_ips
@@ -147,7 +149,13 @@ class TrRun(tornado.web.RequestHandler):
 
             for i, r in enumerate(res):
                 rect, txt, confidence = r
+
                 x1,y1,x2,y2,x3,y3,x4,y4 = rect.reshape(-1)
+                size = max(min(x2-x1,y3-y2) // 2 , 20 )
+
+                myfont = ImageFont.truetype("仿宋_GB2312.ttf", size=size)
+                fillcolor = colors[i % len(colors)]
+                img_draw.text((x1, y1 - size ), str(i+1), font=myfont, fill=fillcolor)
                 for xy in [(x1, y1, x2, y2), (x2, y2, x3, y3 ), (x3 , y3 , x4, y4), (x4, y4, x1, y1)]:
                     img_draw.line(xy=xy, fill=colors[i % len(colors)], width=2)
 
