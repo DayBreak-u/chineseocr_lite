@@ -25,3 +25,5 @@ python backend/main.py
 ## 参考
 1. TrWebOCR https://github.com/alisen39/TrWebOCR         
 
+## 技术支持
+email: 760997646@qq.com
