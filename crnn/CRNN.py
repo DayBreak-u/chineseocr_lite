@@ -96,5 +96,5 @@ class CRNNHandle:
 
 if __name__ == "__main__":
     im = Image.open("471594277244_.pic.jpg")
-    crnn_handle = CRNNHandle(model_path="../models/crnn_lite_lstm.onnx")
+    crnn_handle = CRNNHandle(model_path="../models/crnn_lite_lstm_bk.onnx")
     print(crnn_handle.predict(im))

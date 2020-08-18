@@ -14,11 +14,12 @@ cd chineseocr_lite## 进入chineseocr目录
 python backend/main.py 
 ```
 
-## 在线体验(lite版本<模型还在训练中>，支持竖排，空格识别，支持文本行方向旋正)： http://ocr.timeline229.com:8089/
+## 在线体验(lite版本<模型还在训练中>，支持竖排，空格识别，文字行方向旋转)： http://ocr.timeline229.com:8089/
 
 ## 识别结果展示
 
 <p align="center"><img src="test_imgs/res.jpg"\></p>
+<p align="center"><img src="test_imgs/res_2.jpg"\></p>
 
 
 ## 参考
