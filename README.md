@@ -8,6 +8,9 @@
 - linux/macos/windows
 
 
+## 20200820 更新
+  dbnet + crnn_lite(新版本) ncnn 实现
+
 ## web服务启动
 ``` Bash
 cd chineseocr_lite## 进入chineseocr目录
