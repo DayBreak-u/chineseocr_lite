@@ -305,25 +305,25 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         int crnn_w = crnn_in.w;
         int crnn_h = crnn_in.h;
 
-        ncnn::Mat angle_in ;
-        if (crnn_w >= angle_target_w) copy_cut_border(crnn_in,angle_in,0,0,0,crnn_w-angle_target_w);
-        else copy_make_border(crnn_in,angle_in,0,0,0,angle_target_w - crnn_w,0,255.f);
+        //ncnn::Mat angle_in ;
+        //if (crnn_w >= angle_target_w) copy_cut_border(crnn_in,angle_in,0,0,0,crnn_w-angle_target_w);
+        //else copy_make_border(crnn_in,angle_in,0,0,0,angle_target_w - crnn_w,0,255.f);
 
-        angle_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
+        //angle_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
 
 
-        ncnn::Extractor angle_ex = angle_net.create_extractor();
-        angle_ex.set_num_threads(num_thread);
-        angle_ex.input("input", angle_in);
-        ncnn::Mat angle_preds;
+//         ncnn::Extractor angle_ex = angle_net.create_extractor();
+//         angle_ex.set_num_threads(num_thread);
+//         angle_ex.input("input", angle_in);
+//         ncnn::Mat angle_preds;
 
-        angle_ex.extract("out", angle_preds);
+//         angle_ex.extract("out", angle_preds);
 
-        float *srcdata =(float*) angle_preds.data;
+//         float *srcdata =(float*) angle_preds.data;
 
-        float angle_score = srcdata[0];
-        //判断方向
-        if (angle_score < 0.5) part_im = matRotateClockWise180(part_im);
+//         float angle_score = srcdata[0];
+//         //判断方向
+//         if (angle_score < 0.5) part_im = matRotateClockWise180(part_im);
 
         //crnn识别
         crnn_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
