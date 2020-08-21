@@ -12,11 +12,8 @@ OCR::OCR()
     crnn_net.load_param("../../models/crnn_lite.param");
     crnn_net.load_model("../../models/crnn_lite.bin");
 
-
-
-
-//    angle_net.load_param("../../models/shufflenetv2_05_angle.param");
-//    angle_net.load_model("../../models/shufflenetv2_05_angle.bin");
+    angle_net.load_param("../../models/angle_net.param");
+    angle_net.load_model("../../models/angle_net.bin");
 
     //load keys
     ifstream in("../../models/keys.txt");
@@ -287,13 +284,33 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         cv::Mat part_im ;
         part_im = GetRotateCropImage(im_bgr,temp_box);
 
+//
+//        cv::Mat angle_im = part_im.clone();
+//        ncnn::Mat  angle_input = ncnn::Mat::from_pixels_resize(angle_im.data,
+//                ncnn::Mat::PIXEL_BGR2RGB, angle_im.cols, angle_im.rows ,angle_target_w ,angle_target_h );
+//
+//
+//        angle_input.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
+//
+//
+//        ncnn::Extractor angle_ex = angle_net.create_extractor();
+//        angle_ex.set_num_threads(num_thread);
+//        angle_ex.input("input", angle_input);
+//        ncnn::Mat angle_preds;
+//
+//        angle_ex.extract("out", angle_preds);
+//
+//        float *srcdata =(float*) angle_preds.data;
+//
+//        int angle_score = srcdata[0];
+//
+//        if (angle_score < 0.5) part_im = matRotateClockWise180(part_im);
+//
+
+、
 
         int part_im_w = part_im.cols;
         int part_im_h = part_im.rows;
-
-
-        cv::Mat angle_input = part_im.clone();
-
         // 开始文本识别
         int crnn_w_target ;
         float scale  = crnn_h * 1.0/ part_im_h ;
@@ -306,13 +323,11 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
         cv::Mat img2 = part_im.clone();
 
-        ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(img2.data, 
+        ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(img2.data,
                     ncnn::Mat::PIXEL_BGR2RGB, img2.cols, img2.rows , crnn_w_target, crnn_h );
 
-        // ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(part_im.data, 
-        //             ncnn::Mat::PIXEL_BGR2GRAY, part_im.cols, part_im.rows , crnn_w_target, crnn_h );
-        
-        crnn_in.substract_mean_normalize(mean_vals_crnn,norm_vals_crnn );
+
+        crnn_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
        
         ncnn::Mat crnn_preds;
 
