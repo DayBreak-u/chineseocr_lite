@@ -321,7 +321,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
         float *srcdata =(float*) angle_preds.data;
 
-        int angle_score = srcdata[0];
+        float angle_score = srcdata[0];
         //判断方向
         if (angle_score < 0.5) part_im = matRotateClockWise180(part_im);
 
