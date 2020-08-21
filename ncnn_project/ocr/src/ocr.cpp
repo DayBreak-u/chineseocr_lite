@@ -337,21 +337,21 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
 
         ncnn::Mat blob162;
-        crnn_ex.extract("443", blob162);
+        crnn_ex.extract("1000", blob162);
 
-        ncnn::Mat blob263(5532, blob162.h);
+        ncnn::Mat blob263(5531, blob162.h);
         //batch fc
         for (int i=0; i<blob162.h; i++)
         {
             ncnn::Extractor crnn_ex_2 = crnn_net.create_extractor();
             crnn_ex_2.set_num_threads(num_thread);
             ncnn::Mat blob243_i = blob162.row_range(i, 1);
-            crnn_ex_2.input("457", blob243_i);
+            crnn_ex_2.input("1014", blob243_i);
 
             ncnn::Mat blob263_i;
-            crnn_ex_2.extract("458", blob263_i);
+            crnn_ex_2.extract("1015", blob263_i);
 
-            memcpy(blob263.row(i), blob263_i, 5532 * sizeof(float));
+            memcpy(blob263.row(i), blob263_i, 5531 * sizeof(float));
         }
 
         crnn_preds = blob263;
