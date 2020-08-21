@@ -20,7 +20,7 @@ crnn_model_path = os.path.join(father_path, "models/crnn_lite_lstm.onnx")
 
 # angle
 angle_detect = True
-angle_detect_num = 10
+angle_detect_num = 30
 angle_net_path = os.path.join(father_path, "models/angle_net.onnx")
 
 
