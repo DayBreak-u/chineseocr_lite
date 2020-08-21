@@ -6,11 +6,11 @@
 
 OCR::OCR()
 {
-    dbnet.load_param("../../models/dbnet.param");
-    dbnet.load_model("../../models/dbnet.bin");
+    dbnet.load_param("../../models/dbnet_op.param");
+    dbnet.load_model("../../models/dbnet_op.bin");
 
-    crnn_net.load_param("../../models/crnn_lite.param");
-    crnn_net.load_model("../../models/crnn_lite.bin");
+    crnn_net.load_param("../../models/crnn_lite_op.param");
+    crnn_net.load_model("../../models/crnn_lite_op.bin");
 
     angle_net.load_param("../../models/angle_net.param");
     angle_net.load_model("../../models/angle_net.bin");
@@ -307,7 +307,6 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 //        if (angle_score < 0.5) part_im = matRotateClockWise180(part_im);
 //
 
-、
 
         int part_im_w = part_im.cols;
         int part_im_h = part_im.rows;
