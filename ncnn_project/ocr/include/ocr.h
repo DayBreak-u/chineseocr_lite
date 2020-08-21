@@ -47,8 +47,8 @@ class OCR
         ncnn::Net  dbnet,crnn_net,angle_net;
         ncnn::Mat  img;
         int num_thread = 4;
-        int shufflenetv2_target_w  = 196;
-        int shufflenetv2_target_h  = 48;
+        int angle_target_w  = 192;
+        int angle_target_h  = 32;
         int crnn_h = 32;
 
         const float mean_vals_dbnet[3] = { 0.485 * 255, 0.456 * 255, 0.406 * 255 };
@@ -58,8 +58,8 @@ class OCR
         const float thresh = 0.3;
         const int min_size = 3;
 
-        const float mean_vals_crnn[3] = { 127.5, 127.5, 127.5};
-        const float norm_vals_crnn[3] = { 1.0 /127.5,1.0 /127.5,1.0 /127.5};
+        const float mean_vals_crnn_angle[3] = { 127.5, 127.5, 127.5};
+        const float norm_vals_crnn_angle[3] = { 1.0 /127.5,1.0 /127.5,1.0 /127.5};
 
         std::vector<std::string>   alphabetChinese;
 
