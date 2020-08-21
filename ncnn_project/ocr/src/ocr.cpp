@@ -301,15 +301,13 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(img2.data,
                     ncnn::Mat::PIXEL_BGR2RGB, img2.cols, img2.rows , crnn_w_target, crnn_h );
 
-
+        //角度检测
         int crnn_w = crnn_in.w;
         int crnn_h = crnn_in.h;
 
         ncnn::Mat angle_in ;
         if (crnn_w >= angle_target_w) copy_cut_border(crnn_in,angle_in,0,0,0,crnn_w-angle_target_w);
         else copy_make_border(crnn_in,angle_in,0,0,0,angle_target_w - crnn_w,0,255.f);
-
-
 
         angle_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
 
@@ -324,10 +322,10 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         float *srcdata =(float*) angle_preds.data;
 
         int angle_score = srcdata[0];
-
+        //判断方向
         if (angle_score < 0.5) part_im = matRotateClockWise180(part_im);
 
-
+        //crnn识别
         crnn_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
        
         ncnn::Mat crnn_preds;
@@ -342,6 +340,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         crnn_ex.extract("443", blob162);
 
         ncnn::Mat blob263(5532, blob162.h);
+        //batch fc
         for (int i=0; i<blob162.h; i++)
         {
             ncnn::Extractor crnn_ex_2 = crnn_net.create_extractor();
