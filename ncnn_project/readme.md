@@ -6,6 +6,9 @@
 
 主程序改为调用新加的库函数，以演示使用方法。
 
+### 运行效果
+
+![](demo.png)
 
 
 ## 目前编译环境：
@@ -14,18 +17,15 @@
 
 visual studio 2019 +ncnn 最新版本。
 
-![](demo.png)
 
-### Linux:
 
-目前编译环境：
 
-Windows:
 
-visual studio 2019 +ncnn 最新版本。
+
+
 在Windows下平台下，准备好库后，直接用vs2019打开cmake的方法打开cmakelist.txt 文件即可编译。
 
-Linux:
+### Linux:
 
 
 cmake +ncnn 最新版本
