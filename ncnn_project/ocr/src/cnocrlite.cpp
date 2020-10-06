@@ -1,6 +1,4 @@
-#include "ocr.h"
-#include "cnocrlite.h"
-#include <algorithm>
+#include "precomp.h"
 
 //COL = ChineseOCR_lite
 /*

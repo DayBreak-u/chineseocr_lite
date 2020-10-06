@@ -37,16 +37,7 @@
 * used has retained a Delphi flavour.                                          *
 *                                                                              *
 *******************************************************************************/
-
-#include "clipper.hpp"
-#include <cmath>
-#include <vector>
-#include <algorithm>
-#include <stdexcept>
-#include <cstring>
-#include <cstdlib>
-#include <ostream>
-#include <functional>
+#include "precomp.h"
 
 namespace ClipperLib {
 
