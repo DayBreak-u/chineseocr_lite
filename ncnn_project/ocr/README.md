@@ -1,4 +1,4 @@
-#说明
+# 说明
 
 
 CMakeSettings.json  是vs2019 使用的cmake设置。 可以直接用vs2019打开而不需要转成vs工程。
