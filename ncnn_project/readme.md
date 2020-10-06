@@ -11,7 +11,10 @@ ncnn版本维护修改
 目前编译环境：
 Windows:
 visual studio 2019 +ncnn 最新版本。
+在Windows下平台下，准备好库后，直接用vs2019打开cmake的方法打开cmakelist.txt 文件即可编译。
+
 Linux:
+
 cmake +ncnn 最新版本
 
 请修改目录下的CMakeList.txt 以适配你的环境，主要是opencv及vulkan的头文件或目录路径。
