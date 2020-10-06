@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.0)
 
 project(cnocrlite_ncnn)
 
-add_definitions(-std=c++11)
+#add_definitions(-std=c++11)
 add_definitions("-Wall")
-add_definitions(-DUNICODE -D_UNICODE)
+#add_definitions(-DUNICODE -D_UNICODE)
 
 FIND_PACKAGE( OpenMP REQUIRED)
 if(OPENMP_FOUND)
@@ -52,11 +52,13 @@ set(SRC_LIB
         )
 
 
-add_library(cnocrlite SHARED ${SRC_LIB})
+add_library(cnocrlite SHARED ${SRC_LIB} "include/precomp.h")
 
 target_link_libraries(cnocrlite ncnn )
 target_link_libraries(cnocrlite vulkan-1)  #if there's no vaulkan, please comment it
 target_link_libraries(cnocrlite opencv_world3411)
+
+set_target_properties(cnocrlite PROPERTIES SOVERSION 1)
 
 set(SRC
         src/main.cpp
@@ -65,7 +67,7 @@ set(SRC
         src/clipper.cpp
         )
 
-add_executable(cnocrlite_ncnn ${SRC})
+add_executable(cnocrlite_ncnn ${SRC} "include/precomp.h")
 
 
 target_link_libraries(cnocrlite_ncnn ncnn )

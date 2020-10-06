@@ -1,5 +1,4 @@
-#include "ocr.h"
-#include "cnocrlite.h"
+#include "precomp.h"
 int main(int argc, char **argv) {
     if (argc != 3) {
         fprintf(stderr, "Usage: %s  /path/to/image/file  longsize  models_dir \n", argv[0]);
@@ -28,7 +27,7 @@ int main(int argc, char **argv) {
     int nSize = COL_Recognition(pEngine, argv[1], &pResult, long_size);
     if (nSize> 0)
     {
-        printf(pResult);
+        printf("%s",pResult);
     }
 
     cout <<endl<<"total size: "<< nSize << endl;

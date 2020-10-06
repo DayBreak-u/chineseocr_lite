@@ -1,22 +1,5 @@
 #ifndef __OCR_H__
 #define __OCR_H__
-
-
-
-#include <vector>
-#include "net.h"
-#include <algorithm>
-#include <math.h>
-#include "opencv2/opencv.hpp"
-#include "opencv2/highgui/highgui.hpp"    
-#include "opencv2/imgproc/imgproc.hpp"
-#include "RRLib.h"
-#include "polygon.h"
-#include <fstream>
-#include <string>
-#include <iostream>
-
-
 using namespace std;
 
 
