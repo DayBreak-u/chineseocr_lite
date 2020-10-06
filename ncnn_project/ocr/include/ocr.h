@@ -31,6 +31,7 @@ class OCR
 {
     public:
         OCR();
+        ~OCR();
         OCR(const char* szModelDir);
         bool Init(const char* szModelDir);
         void detect(cv::Mat im_bgr,int short_size);
