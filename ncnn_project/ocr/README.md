@@ -1,5 +1,8 @@
+#说明
 
 
+CMakeSettings.json  是vs2019 使用的cmake设置。 可以直接用vs2019打开而不需要转成vs工程。
+vs2019可以开发跨平台项目，特别是以CMake方式进行项目管理时。
 # 编译
 ``` Bash
 cd ocr 
