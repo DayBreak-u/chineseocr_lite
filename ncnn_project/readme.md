@@ -17,7 +17,7 @@ visual studio 2019 +ncnn 最新版本。
 ![](demo.png)
 
 ### Linux:
-=======
+
 目前编译环境：
 
 Windows:
