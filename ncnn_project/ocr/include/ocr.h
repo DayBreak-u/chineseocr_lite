@@ -19,6 +19,19 @@
 
 using namespace std;
 
+
+#define  COL_DBNET_OP_PARAM         "dbnet_op.param"
+#define  COL_DBNET_OP_BIN           "dbnet_op.bin"
+
+#define  COL_CRNN_LITE_PARAM        "crnn_lite_op.param"
+#define  COL_CRNN_LITE_BIN          "crnn_lite_op.bin"
+
+#define  COL_ANGLE_OP_PARAM         "angle_op.param"
+#define  COL_ANGLE_OP_BIN           "angle_op.bin"
+
+
+#define  COL_KEYS_FILE               "keys.txt"
+
 struct Bbox
 {
     int x1;
@@ -35,14 +48,23 @@ class OCR
 {
     public:
         OCR();
+        OCR(const char* szModelDir);
+        bool Init(const char* szModelDir);
         void detect(cv::Mat im_bgr,int short_size);
         void dbnet_decode(cv::Mat im_bgr,int long_size);
 
+        void set_verbose(bool bVerbose)
+        {
+            m_bVerbose = bVerbose;
+        }
 
+        std::vector<string>& GetResult() { return m_Result; }
     private:
        
+        std::vector<string> m_Result;
+        bool m_bReady;
 
-
+        bool m_bVerbose;
 
         ncnn::Net  dbnet,crnn_net,angle_net;
         ncnn::Mat  img;
