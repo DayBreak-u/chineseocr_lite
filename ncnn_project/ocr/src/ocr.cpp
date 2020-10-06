@@ -1,12 +1,9 @@
 #if (_MSC_VER >= 1915)
 #define no_init_all deprecated
 #endif
-#include "ocr.h"
 
+#include "precomp.h"
 
-
-#include "ZUtil.h"
-#include <queue>
 
 
 
@@ -239,8 +236,8 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
     int wid = im.cols;
     int hi = im.rows;
-    int srcwid = im_bgr.cols;
-    int srchi = im_bgr.rows;
+//    int srcwid = im_bgr.cols;
+//    int srchi = im_bgr.rows;
 
     float h_scale = im_bgr.rows * 1.0 / im.rows;
     float w_scale = im_bgr.cols * 1.0 / im.cols;
@@ -343,8 +340,8 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
                     ncnn::Mat::PIXEL_BGR2RGB, img2.cols, img2.rows , crnn_w_target, crnn_h );
 
         //角度检测
-        int crnn_w = crnn_in.w;
-        int crnn_h = crnn_in.h;
+//        int crnn_w = crnn_in.w;
+//        int crnn_h = crnn_in.h;
 
         //ncnn::Mat angle_in ;
         //if (crnn_w >= angle_target_w) copy_cut_border(crnn_in,angle_in,0,0,0,crnn_w-angle_target_w);
@@ -410,9 +407,9 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         }
         else
         {
-            for (size_t i = 0; i < res_pre.size(); i++)
+            for (size_t s = 0; s < res_pre.size(); s++)
             {
-                m_Result.push_back(res_pre[i]);
+                m_Result.push_back(res_pre[s]);
             }
         }
 
