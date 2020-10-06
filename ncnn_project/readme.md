@@ -8,7 +8,13 @@ ncnn版本维护修改
 
 
 
-目前编译环境：visual studio 2019 +ncnn 最新版本。
+目前编译环境：
+Windows:
+visual studio 2019 +ncnn 最新版本。
+Linux:
+cmake +ncnn 最新版本
+
+请修改目录下的CMakeList.txt 以适配你的环境，主要是opencv及vulkan的头文件或目录路径。
 
 
 
