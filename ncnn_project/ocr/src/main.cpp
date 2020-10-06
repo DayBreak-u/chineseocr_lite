@@ -25,9 +25,13 @@ int main(int argc, char **argv) {
 
     char* pResult;
     int nSize = COL_Recognition(pEngine, argv[1], &pResult, long_size);
-    if (nSize> 0)
+    if (nSize>= 0)
     {
         printf("%s",pResult);
+    }
+    else
+    { 
+        cout << "failed to run ocr tasks" << endl;
     }
 
     cout <<endl<<"total size: "<< nSize << endl;
