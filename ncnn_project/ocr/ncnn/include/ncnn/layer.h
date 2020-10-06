@@ -15,20 +15,19 @@
 #ifndef NCNN_LAYER_H
 #define NCNN_LAYER_H
 
-#include <stdio.h>
-#include <string>
-#include <vector>
-#include <math.h>
-#include "platform.h"
 #include "mat.h"
 #include "modelbin.h"
 #include "option.h"
 #include "paramdict.h"
+#include "platform.h"
+
+#include <math.h>
 
 #if NCNN_VULKAN
-#include <vulkan/vulkan.h>
 #include "command.h"
 #include "pipeline.h"
+
+#include <vulkan/vulkan.h>
 #endif // NCNN_VULKAN
 
 namespace ncnn {
@@ -73,6 +72,16 @@ public:
     // accept bf16
     bool support_bf16_storage;
 
+    // accept fp16
+    bool support_fp16_storage;
+
+    // shader image storage
+    bool support_image_storage;
+
+    // TODO drop these fields
+    bool use_int8_inference;
+    bool support_weight_fp16_storage;
+
 public:
     // implement inference
     // return 0 if success
@@ -95,10 +104,20 @@ public:
     virtual int forward(const std::vector<VkMat>& bottom_blobs, std::vector<VkMat>& top_blobs, VkCompute& cmd, const Option& opt) const;
     virtual int forward(const VkMat& bottom_blob, VkMat& top_blob, VkCompute& cmd, const Option& opt) const;
 
+    // implement inference
+    // return 0 if success
+    virtual int forward(const std::vector<VkImageMat>& bottom_blobs, std::vector<VkImageMat>& top_blobs, VkCompute& cmd, const Option& opt) const;
+    virtual int forward(const VkImageMat& bottom_blob, VkImageMat& top_blob, VkCompute& cmd, const Option& opt) const;
+
     // implement inplace inference
     // return 0 if success
     virtual int forward_inplace(std::vector<VkMat>& bottom_top_blobs, VkCompute& cmd, const Option& opt) const;
     virtual int forward_inplace(VkMat& bottom_top_blob, VkCompute& cmd, const Option& opt) const;
+
+    // implement inplace inference
+    // return 0 if success
+    virtual int forward_inplace(std::vector<VkImageMat>& bottom_top_blobs, VkCompute& cmd, const Option& opt) const;
+    virtual int forward_inplace(VkImageMat& bottom_top_blob, VkCompute& cmd, const Option& opt) const;
 
 public:
     // assigned immediately after creating this layer
@@ -145,8 +164,11 @@ Layer* create_layer(const char* type);
 // create layer from layer type
 Layer* create_layer(int index);
 
-#define DEFINE_LAYER_CREATOR(name) \
-    ::ncnn::Layer* name##_layer_creator() { return new name; }
+#define DEFINE_LAYER_CREATOR(name)        \
+    ::ncnn::Layer* name##_layer_creator() \
+    {                                     \
+        return new name;                  \
+    }
 
 } // namespace ncnn
 

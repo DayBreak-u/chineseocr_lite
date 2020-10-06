@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
-project(FaceDetector)
+project(cnocrlite_ncnn)
 
 add_definitions(-std=c++11)
 add_definitions("-Wall")
@@ -14,21 +14,49 @@ if(OPENMP_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
+
+IF (WIN32)
+	MESSAGE(STATUS "Now is windows")
+    add_definitions(-DWIN32)
+    add_definitions(-D__COL_DLL_EXPORT_LIBRARY)
+ELSEIF (APPLE)
+	MESSAGE(STATUS "Now is Apple systens.")
+ELSEIF (UNIX)
+	MESSAGE(STATUS "Now is UNIX-like OS's.")
+     add_definitions(-DUNIX)
+ENDIF ()
+
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/include/ncnn)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/lib)
 
 
 
-find_package( OpenCV REQUIRED )
+# need to modify this to fit in your environment.
+include_directories(E:\\ocr4win\\opencv\\build-x86\\win-install\\include)  # for opencv direcotry
+include_directories(C:\\VulkanSDK\\1.2.148.1\\Include)                     # for  vulkandk include dir , if no, comment it
 
-if (NOT OpenCV_FOUND)
-    message(FATAL_ERROR "opencv Not Found!")
-else()
-    message(STATUS "OpenCV_LIBS: ${OpenCV_LIBS}")
-    message(STATUS "OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}")
-endif (NOT OpenCV_FOUND)
+link_directories(E:\\ocr4win\\opencv\\build-x86\\win-install\\x86\\vc16\\lib) # library dir for opencv
+link_directories(C:\\VulkanSDK\\1.2.148.1\\Lib32)                              #library dir for vulkan
 
+
+
+
+
+set(SRC_LIB
+        src/cnocrlite.cpp
+        src/ocr.cpp
+        src/ZUtil.cpp
+        src/clipper.cpp
+        )
+
+
+add_library(cnocrlite SHARED ${SRC_LIB})
+
+target_link_libraries(cnocrlite ncnn )
+target_link_libraries(cnocrlite vulkan-1)  #if there's no vaulkan, please comment it
+target_link_libraries(cnocrlite opencv_world3411)
 
 set(SRC
         src/main.cpp
@@ -37,7 +65,10 @@ set(SRC
         src/clipper.cpp
         )
 
-add_executable(Text_recognition ${SRC})
+add_executable(cnocrlite_ncnn ${SRC})
 
-target_link_libraries(Text_recognition ncnn ${OpenCV_LIBS})
 
+target_link_libraries(cnocrlite_ncnn ncnn )
+target_link_libraries(cnocrlite_ncnn  cnocrlite)
+target_link_libraries(cnocrlite_ncnn vulkan-1)  #if there's no vaulkan, please comment it
+target_link_libraries(cnocrlite_ncnn opencv_world3411)

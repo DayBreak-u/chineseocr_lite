@@ -19,8 +19,6 @@
 
 #if NCNN_OPENCV
 
-#include <algorithm>
-#include <string>
 #include "mat.h"
 
 #if defined(_MSC_VER) || defined(__GNUC__)
@@ -31,13 +29,18 @@
 #endif
 
 // minimal opencv style data structure implementation
-namespace cv
-{
+namespace cv {
 
 struct Size
 {
-    Size() : width(0), height(0) {}
-    Size(int _w, int _h) : width(_w), height(_h) {}
+    Size()
+        : width(0), height(0)
+    {
+    }
+    Size(int _w, int _h)
+        : width(_w), height(_h)
+    {
+    }
 
     int width;
     int height;
@@ -46,8 +49,14 @@ struct Size
 template<typename _Tp>
 struct Rect_
 {
-    Rect_() : x(0), y(0), width(0), height(0) {}
-    Rect_(_Tp _x, _Tp _y, _Tp _w, _Tp _h) : x(_x), y(_y), width(_w), height(_h) {}
+    Rect_()
+        : x(0), y(0), width(0), height(0)
+    {
+    }
+    Rect_(_Tp _x, _Tp _y, _Tp _w, _Tp _h)
+        : x(_x), y(_y), width(_w), height(_h)
+    {
+    }
 
     _Tp x;
     _Tp y;
@@ -61,33 +70,39 @@ struct Rect_
     }
 };
 
-template<typename _Tp> static inline Rect_<_Tp>& operator &= ( Rect_<_Tp>& a, const Rect_<_Tp>& b )
+template<typename _Tp>
+static inline Rect_<_Tp>& operator&=(Rect_<_Tp>& a, const Rect_<_Tp>& b)
 {
     _Tp x1 = std::max(a.x, b.x), y1 = std::max(a.y, b.y);
     a.width = std::min(a.x + a.width, b.x + b.width) - x1;
     a.height = std::min(a.y + a.height, b.y + b.height) - y1;
-    a.x = x1; a.y = y1;
-    if( a.width <= 0 || a.height <= 0 )
+    a.x = x1;
+    a.y = y1;
+    if (a.width <= 0 || a.height <= 0)
         a = Rect_<_Tp>();
     return a;
 }
 
-template<typename _Tp> static inline Rect_<_Tp>& operator |= ( Rect_<_Tp>& a, const Rect_<_Tp>& b )
+template<typename _Tp>
+static inline Rect_<_Tp>& operator|=(Rect_<_Tp>& a, const Rect_<_Tp>& b)
 {
     _Tp x1 = std::min(a.x, b.x), y1 = std::min(a.y, b.y);
     a.width = std::max(a.x + a.width, b.x + b.width) - x1;
     a.height = std::max(a.y + a.height, b.y + b.height) - y1;
-    a.x = x1; a.y = y1;
+    a.x = x1;
+    a.y = y1;
     return a;
 }
 
-template<typename _Tp> static inline Rect_<_Tp> operator & (const Rect_<_Tp>& a, const Rect_<_Tp>& b)
+template<typename _Tp>
+static inline Rect_<_Tp> operator&(const Rect_<_Tp>& a, const Rect_<_Tp>& b)
 {
     Rect_<_Tp> c = a;
     return c &= b;
 }
 
-template<typename _Tp> static inline Rect_<_Tp> operator | (const Rect_<_Tp>& a, const Rect_<_Tp>& b)
+template<typename _Tp>
+static inline Rect_<_Tp> operator|(const Rect_<_Tp>& a, const Rect_<_Tp>& b)
 {
     Rect_<_Tp> c = a;
     return c |= b;
@@ -99,8 +114,14 @@ typedef Rect_<float> Rect2f;
 template<typename _Tp>
 struct Point_
 {
-    Point_() : x(0), y(0) {}
-    Point_(_Tp _x, _Tp _y) : x(_x), y(_y) {}
+    Point_()
+        : x(0), y(0)
+    {
+    }
+    Point_(_Tp _x, _Tp _y)
+        : x(_x), y(_y)
+    {
+    }
 
     _Tp x;
     _Tp y;
@@ -109,22 +130,27 @@ struct Point_
 typedef Point_<int> Point;
 typedef Point_<float> Point2f;
 
-#define CV_8UC1 1
-#define CV_8UC3 3
-#define CV_8UC4 4
+#define CV_8UC1  1
+#define CV_8UC3  3
+#define CV_8UC4  4
 #define CV_32FC1 4
 
 struct Mat
 {
-    Mat() : data(0), refcount(0), rows(0), cols(0), c(0) {}
+    Mat()
+        : data(0), refcount(0), rows(0), cols(0), c(0)
+    {
+    }
 
-    Mat(int _rows, int _cols, int flags) : data(0), refcount(0)
+    Mat(int _rows, int _cols, int flags)
+        : data(0), refcount(0)
     {
         create(_rows, _cols, flags);
     }
 
     // copy
-    Mat(const Mat& m) : data(m.data), refcount(m.refcount)
+    Mat(const Mat& m)
+        : data(m.data), refcount(m.refcount)
     {
         if (refcount)
             NCNN_XADD(refcount, 1);
@@ -134,7 +160,8 @@ struct Mat
         c = m.c;
     }
 
-    Mat(int _rows, int _cols, int flags, void* _data) : data((unsigned char*)_data), refcount(0)
+    Mat(int _rows, int _cols, int flags, void* _data)
+        : data((unsigned char*)_data), refcount(0)
     {
         rows = _rows;
         cols = _cols;
@@ -214,18 +241,33 @@ struct Mat
         return m;
     }
 
-    bool empty() const { return data == 0 || total() == 0; }
+    bool empty() const
+    {
+        return data == 0 || total() == 0;
+    }
 
-    int channels() const { return c; }
+    int channels() const
+    {
+        return c;
+    }
 
-    size_t total() const { return cols * rows * c; }
+    size_t total() const
+    {
+        return cols * rows * c;
+    }
 
-    const unsigned char* ptr(int y) const { return data + y * cols * c; }
+    const unsigned char* ptr(int y) const
+    {
+        return data + y * cols * c;
+    }
 
-    unsigned char* ptr(int y) { return data + y * cols * c; }
+    unsigned char* ptr(int y)
+    {
+        return data + y * cols * c;
+    }
 
     // roi
-    Mat operator()( const Rect& roi ) const
+    Mat operator()(const Rect& roi) const
     {
         if (empty())
             return Mat();
@@ -254,11 +296,10 @@ struct Mat
     int cols;
 
     int c;
-
 };
 
 #define CV_LOAD_IMAGE_GRAYSCALE 1
-#define CV_LOAD_IMAGE_COLOR 3
+#define CV_LOAD_IMAGE_COLOR     3
 Mat imread(const std::string& path, int flags);
 void imwrite(const std::string& path, const Mat& m);
 
