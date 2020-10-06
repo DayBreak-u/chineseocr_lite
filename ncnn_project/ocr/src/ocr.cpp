@@ -1,40 +1,75 @@
+#if (_MSC_VER >= 1915)
+#define no_init_all deprecated
+#endif
 #include "ocr.h"
+
+
+
 #include "ZUtil.h"
 #include <queue>
 
 
 
-OCR::OCR()
+OCR::OCR() :m_bVerbose(false)
 {
-    dbnet.load_param("../../models/dbnet_op.param");
-    dbnet.load_model("../../models/dbnet_op.bin");
 
-    crnn_net.load_param("../../models/crnn_lite_op.param");
-    crnn_net.load_model("../../models/crnn_lite_op.bin");
-
-    angle_net.load_param("../../models/angle_op.param");
-    angle_net.load_model("../../models/angle_op.bin");
-
-    //load keys
-    ifstream in("../../models/keys.txt");
-	std::string filename;
-	std::string line;
-
-	if(in) // 有该文件
-	{
-		while (getline (in, line)) // line中不包括每行的换行符
-		{
-            alphabetChinese.push_back(line);
-		}
-		alphabetChinese.push_back(" ");
-		alphabetChinese.push_back("·");
-	}
-	else // 没有该文件
-	{
-		std::cout <<"no txt file" << std::endl;
-	}
+    m_bReady = Init("../models/");
 }
 
+OCR::OCR(const char* szModelDir) :m_bVerbose(false)
+{
+    m_bReady = Init(szModelDir);
+}
+
+bool OCR::Init(const char* szModelDir)
+{
+    string strDirPath;
+    if (!szModelDir || !strlen(szModelDir))
+    {
+        strDirPath = "../models/";
+    }
+    else
+        strDirPath = szModelDir;
+
+    if (szModelDir[strlen(szModelDir) - 1] != '/' && szModelDir[strlen(szModelDir) - 1] != '\\')
+    {
+        strDirPath += "/";
+    }
+
+    dbnet.load_param((strDirPath + COL_DBNET_OP_PARAM).c_str());
+    dbnet.load_model((strDirPath + COL_DBNET_OP_BIN).c_str());
+
+    crnn_net.load_param((strDirPath + COL_CRNN_LITE_PARAM).c_str());
+    crnn_net.load_model((strDirPath + COL_CRNN_LITE_BIN).c_str());
+
+    angle_net.load_param((strDirPath + COL_ANGLE_OP_PARAM).c_str());
+    angle_net.load_model((strDirPath + COL_ANGLE_OP_BIN).c_str());
+
+    //load keys
+    ifstream in(strDirPath + COL_KEYS_FILE);
+    std::string filename;
+    std::string line;
+
+ 
+    if (in.is_open()) // 有该文件
+    {
+        while (getline(in, line)) // line中不包括每行的换行符
+        {
+            alphabetChinese.push_back(line);
+        }
+        alphabetChinese.push_back(" ");
+        alphabetChinese.push_back("·");
+
+        return true;
+    }
+    else // 没有该文件
+    {
+        if(m_bVerbose)
+            std::cout << "cannot find file: "<< (string(szModelDir) + COL_KEYS_FILE)  << std::endl;
+    }
+
+    return false;
+}
 
 
 std::vector<std::string> crnn_deocde(const ncnn::Mat score , std::vector<std::string> alphabetChinese) {
@@ -51,7 +86,7 @@ std::vector<std::string> crnn_deocde(const ncnn::Mat score , std::vector<std::st
                 max_index = j;
             }
         }
-        if (max_index >0 && (not (i>0 && max_index == last_index))  ){
+        if (max_index >0 && (! (i>0 && max_index == last_index))  ){
 //            std::cout <<  max_index - 1 << std::endl;
 //            std::string temp_str =  utf8_substr2(alphabetChinese,max_index - 1,1)  ;
             str_res.push_back(alphabetChinese[max_index-1]);
@@ -198,6 +233,7 @@ cv::Mat GetRotateCropImage(const cv::Mat &srcimage,
 void  OCR::detect(cv::Mat im_bgr,int short_size)
 {
 
+    //printf("do ocring...\r\n");
         // 图像缩放
     auto im = resize_img(im_bgr, short_size);
 
@@ -220,7 +256,9 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
     ncnn::Mat dbnet_out;
     double time1 = static_cast<double>( cv::getTickCount());
     ex.extract("out1", dbnet_out);
-    std::cout << "dbnet前向时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
+
+    if(m_bVerbose)
+        std::cout << "dbnet前向时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
     // std::cout << "网络输出尺寸 (" << preds.w << ", " << preds.h << ", " << preds.c << ")" << std::endl;
 
     time1 = static_cast<double>( cv::getTickCount());
@@ -268,16 +306,19 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         boxes.push_back(minbox);
 
  	}
-
-    std::cout << "dbnet decode 时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
-    std::cout << "boxzie" << boxes.size() << std::endl;
+    if (m_bVerbose)
+    {
+        std::cout << "dbnet decode 时间:" << (static_cast<double>(cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
+        std::cout << "boxzie" << boxes.size() << std::endl;
+    }
 
 //    auto result = draw_bbox(im_bgr, boxes);
 //    cv::imwrite("./imgs/result.jpg", result);
 
     time1 = static_cast<double>( cv::getTickCount());
     //开始行文本角度检测和文字识别
-    std::cout << "预测结果：\n";
+    if (m_bVerbose)
+        std::cout << "Result: \n";
     for (int i = boxes.size() - 1; i >=0 ; i-- ){
         std::vector<cv::Point>   temp_box = boxes[i];
 
@@ -359,14 +400,26 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
         auto res_pre = crnn_deocde(crnn_preds,alphabetChinese);
 
-        for (int i=0; i<res_pre.size();i++){
-            std::cout << res_pre[i] ;
-        }
-        std::cout  <<std::endl;
+        if (m_bVerbose)
+        {
+            for (int i = 0; i < res_pre.size(); i++) {
+                std::cout << res_pre[i];
+            }
+            std::cout << std::endl;
 
+        }
+        else
+        {
+            for (size_t i = 0; i < res_pre.size(); i++)
+            {
+                m_Result.push_back(res_pre[i]);
+            }
+        }
 
     }
-    std::cout << "文字识别总时间:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
+
+    if (m_bVerbose)
+        std::cout << "Total time:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
   
 
 
