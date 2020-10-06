@@ -19,7 +19,7 @@ Linux:
 
 cmake +ncnn 最新版本
 
-请修改目录下的CMakeList.txt 以适配你的环境，主要是opencv及vulkan的头文件或目录路径。
+请修改目录下的CMakeList.txt 以适配你的环境，主要是opencv及vulkan的头文件或库文件目录路径。
 
 
 
