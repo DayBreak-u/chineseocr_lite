@@ -3,7 +3,7 @@ int main(int argc, char **argv) {
     if (argc != 3) {
         fprintf(stderr, "Usage: %s  /path/to/image/file  longsize  models_dir \n", argv[0]);
         std::cout << "eg: " << argv[0] << " e:\\temp\\test.jpg  560" << std::endl;
-        std::cout << "Caution: please copy your models directory into  the same diirectory as your program. " << std::endl;
+        std::cout << "Caution: please copy your models directory into  the same diirectory as your program: " <<argv[0] << std::endl;
 
         return -1;
     }
@@ -28,13 +28,14 @@ int main(int argc, char **argv) {
     if (nSize>= 0)
     {
         printf("%s",pResult);
+	    cout <<endl<<"total size: "<< nSize << " Bytes"<< endl;
     }
     else
     { 
         cout << "failed to run ocr tasks" << endl;
     }
 
-    cout <<endl<<"total size: "<< nSize << endl;
+
 
     if (pResult)
         COL_FreeResult(pResult);
