@@ -338,9 +338,8 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         // part_im = cv::imread("test.jpg");
 
         cv::Mat img2 = part_im.clone();
-
-        ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(img2.data,
-                    ncnn::Mat::PIXEL_BGR2RGB, img2.cols, img2.rows , crnn_w_target, crnn_h );
+        // convert a cv::mat to ncnn:mat 
+        ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(img2.data,ncnn::Mat::PIXEL_BGR2RGB, img2.cols, img2.rows , crnn_w_target, crnn_h );
 
         //角度检测
         /*
@@ -348,11 +347,12 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
         int crnn_h = crnn_in.h;
 
         ncnn::Mat angle_in ;
-        if (crnn_w >= angle_target_w) copy_cut_border(crnn_in,angle_in,0,0,0,crnn_w-angle_target_w);
-        else copy_make_border(crnn_in,angle_in,0,0,0,angle_target_w - crnn_w,0,255.f);
+        if (crnn_w >= angle_target_w) 
+            copy_cut_border(crnn_in,angle_in,0,0,0,crnn_w-angle_target_w);
+        else 
+            copy_make_border(crnn_in,angle_in,0,0,0,angle_target_w - crnn_w,0,255.f);
 
         angle_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
-
 
         ncnn::Extractor angle_ex = angle_net.create_extractor();
         angle_ex.set_num_threads(num_thread);
@@ -365,8 +365,11 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
         float angle_score = srcdata[0];
         //判断方向
-        if (angle_score < 0.5) part_im = matRotateClockWise180(part_im);
-         */
+        if (angle_score < 0.5) 
+            part_im = matRotateClockWise180(part_im);
+         
+        */
+        // end of 角度检测
         //crnn识别
         crnn_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
        
