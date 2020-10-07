@@ -57,5 +57,5 @@
 #include "ZUtil.h"
 #include "clipper.hpp"
 #include "ocr.h"
-#include "cnocrlite.h"
+#include "chocrlite.h"
 
