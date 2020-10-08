@@ -28,6 +28,12 @@
 
 ocr/test_imgs下为测试用图片。
 
+
+
+#### 为什么开启gpu后更慢
+
+参见： https://zhuanlan.zhihu.com/p/156796191
+
 ### 运行效果
 
 命令行参数：
