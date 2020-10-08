@@ -8,7 +8,7 @@
 * 
 */
 
-int _COL_EXPORT COL_Recognition(const OCRENGINE_PTR pEngine, const char* szImageFilePath, char** szResult,const int nLongSize,double * dTotalTime)
+int _COL_EXPORT COL_Recognition(const OCRENGINE_PTR pEngine, const char* szImageFilePath, char** szResult,const int short_size,double * dTotalTime)
 {
 
     cv::Mat im_bgr = cv::imread(szImageFilePath, 1);
@@ -20,7 +20,7 @@ int _COL_EXPORT COL_Recognition(const OCRENGINE_PTR pEngine, const char* szImage
     OCR* ocrengine = static_cast<OCR *>(pEngine);
     
     double dTime = 0;
-    ocrengine->detect(im_bgr, nLongSize,dTime);
+    ocrengine->detect(im_bgr, short_size,dTime);
     *dTotalTime = dTime;
     
     vector<string>& result = ocrengine->GetResult();

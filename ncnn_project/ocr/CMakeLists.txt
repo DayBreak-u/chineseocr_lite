@@ -50,7 +50,7 @@ set(SRC_LIB
         )
 
 
-add_library(chocrlite SHARED ${SRC_LIB} "include/precomp.h")
+add_library(chocrlite SHARED ${SRC_LIB} "include/precomp.h" "include/chocrlite_warning.h")
 
 target_link_libraries(chocrlite ncnn )
 target_link_libraries(chocrlite vulkan-1)  #if there's no vaulkan, please comment it
@@ -62,7 +62,7 @@ set(SRC
         src/main.cpp
          )
 
-add_executable(chocrlite_ncnn ${SRC} "include/precomp.h")
+add_executable(chocrlite_ncnn ${SRC} "include/precomp.h" "include/chocrlite_warning.h")
 
 
 target_link_libraries(chocrlite_ncnn  chocrlite)
