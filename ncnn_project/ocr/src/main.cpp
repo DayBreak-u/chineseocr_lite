@@ -2,6 +2,17 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <sys/timeb.h>
+
+#if defined(WIN32)
+# define  TIMEB    _timeb
+# define  ftime    _ftime
+typedef __int64  TIME_T;
+#else
+#define TIMEB timeb
+typedef long long TIME_T;
+#endif
+
 using namespace std;
 int main(int argc, char **argv) {
     if (argc < 3) {
@@ -40,14 +51,30 @@ int main(int argc, char **argv) {
         COL_SetVerbose(pEngine, 1);
 
     char* pResult;
+
+
+    struct TIMEB ts1, ts2;
+    TIME_T t1, t2;
+   
+
+
+    int ti;
+    ftime(&ts1);
     int nSize = COL_Recognition(pEngine, argv[1], &pResult, long_size);
-  
+    ftime(&ts2);
+
+    t1 = (TIME_T)ts1.time * 1000 + ts1.millitm;
+    t2 = (TIME_T)ts2.time * 1000 + ts2.millitm;
+   
+
     if (nSize >= 0 && !bVerbose)
     {
               
             printf("%s", pResult);
             cout << endl << "total size: " << nSize << " Bytes" << endl;
             
+            t1 = (t2 - t1) / 1000;
+            cout << "total time: " << t1 << " seconds" << endl;
     }
         
     if(nSize <0)

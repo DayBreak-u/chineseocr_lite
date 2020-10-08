@@ -433,7 +433,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
         if (m_bVerbose)
         {
-            for (int i = 0; i < res_pre.size(); i++) {
+            for (size_t i = 0; i < res_pre.size(); i++) {
                 std::cout << res_pre[i];
             }
             std::cout << std::endl;
@@ -445,6 +445,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
             {
                 m_Result.push_back(res_pre[s]);
             }
+            m_Result.push_back("\n");
         }
 
     }
