@@ -34,7 +34,7 @@ class OCR
         ~OCR();
         OCR(const char* szModelDir, bool UseGPU=false);
         bool Init(const char* szModelDir);
-        void detect(cv::Mat im_bgr,int short_size);
+        void detect(cv::Mat im_bgr,int short_size, double& dTotalTime);
         void dbnet_decode(cv::Mat im_bgr,int long_size);
         void  InitGPU(ncnn::Net& net);
         void set_verbose(bool bVerbose)
