@@ -42,8 +42,9 @@
 #include <queue>
 
 //------------------------------
-#include "net.h"
 
+#include "net.h"
+#include "gpu.h"
 
 #include "opencv2/opencv.hpp"
 #include <opencv2/dnn.hpp>
@@ -57,5 +58,5 @@
 #include "ZUtil.h"
 #include "clipper.hpp"
 #include "ocr.h"
-#include "cnocrlite.h"
+#include "chocrlite.h"
 

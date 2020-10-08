@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(cnocrlite_ncnn)
-
-#add_definitions(-std=c++11)
+project(chocrlite_ncnn)
 add_definitions("-Wall")
-#add_definitions(-DUNICODE -D_UNICODE)
+
 
 FIND_PACKAGE( OpenMP REQUIRED)
 if(OPENMP_FOUND)
@@ -45,32 +43,26 @@ link_directories(C:\\VulkanSDK\\1.2.148.1\\Lib32)                              #
 
 
 set(SRC_LIB
-        src/cnocrlite.cpp
+        src/chocrlite.cpp
         src/ocr.cpp
         src/ZUtil.cpp
         src/clipper.cpp
         )
 
 
-add_library(cnocrlite SHARED ${SRC_LIB} "include/precomp.h")
+add_library(chocrlite SHARED ${SRC_LIB} "include/precomp.h")
 
-target_link_libraries(cnocrlite ncnn )
-target_link_libraries(cnocrlite vulkan-1)  #if there's no vaulkan, please comment it
-target_link_libraries(cnocrlite opencv_world3411)
+target_link_libraries(chocrlite ncnn )
+target_link_libraries(chocrlite vulkan-1)  #if there's no vaulkan, please comment it
+target_link_libraries(chocrlite opencv_world3411)
 
-set_target_properties(cnocrlite PROPERTIES SOVERSION 1)
+set_target_properties(chocrlite PROPERTIES SOVERSION 1)
 
 set(SRC
         src/main.cpp
-        src/ocr.cpp
-        src/ZUtil.cpp
-        src/clipper.cpp
-        )
+         )
 
-add_executable(cnocrlite_ncnn ${SRC} "include/precomp.h")
+add_executable(chocrlite_ncnn ${SRC} "include/precomp.h")
 
 
-target_link_libraries(cnocrlite_ncnn ncnn )
-target_link_libraries(cnocrlite_ncnn  cnocrlite)
-target_link_libraries(cnocrlite_ncnn vulkan-1)  #if there's no vaulkan, please comment it
-target_link_libraries(cnocrlite_ncnn opencv_world3411)
+target_link_libraries(chocrlite_ncnn  chocrlite)
