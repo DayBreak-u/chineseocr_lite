@@ -128,10 +128,12 @@ std::vector<std::string> crnn_deocde(const ncnn::Mat score , std::vector<std::st
 
 
 
-cv::Mat resize_img(cv::Mat src,const int short_size)
+cv::Mat resize_img(cv::Mat src, int short_size)
 {
     int w = src.cols;
     int h = src.rows;
+    if (short_size == 0)
+        short_size = w > h ? h : w;
     // std::cout<<"原图尺寸 (" << w << ", "<<h<<")"<<std::endl;
     float scale = 1.f;
     if (w < h)
@@ -257,7 +259,7 @@ cv::Mat GetRotateCropImage(const cv::Mat &srcimage,
 
 
 
-void  OCR::detect(cv::Mat im_bgr,int short_size)
+void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
 {
 
     //printf("do ocring...\r\n");
@@ -281,6 +283,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
     ex.set_num_threads(num_thread);
     ex.input("input0", in);
     ncnn::Mat dbnet_out;
+
     double time1 = static_cast<double>( cv::getTickCount());
     ex.extract("out1", dbnet_out);
 
@@ -336,7 +339,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
     if (m_bVerbose)
     {
         std::cout << "dbnet decode 时间:" << (static_cast<double>(cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
-        std::cout << "boxzie" << boxes.size() << std::endl;
+        std::cout << "boxzie: " << boxes.size() << std::endl;
     }
 
 //    auto result = draw_bbox(im_bgr, boxes);
@@ -433,7 +436,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 
         if (m_bVerbose)
         {
-            for (int i = 0; i < res_pre.size(); i++) {
+            for (size_t i = 0; i < res_pre.size(); i++) {
                 std::cout << res_pre[i];
             }
             std::cout << std::endl;
@@ -445,12 +448,14 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
             {
                 m_Result.push_back(res_pre[s]);
             }
+            m_Result.push_back("\n");
         }
 
     }
+    dTotalTime = (static_cast<double>(cv::getTickCount()) - time1) / cv::getTickFrequency();
 
     if (m_bVerbose)
-        std::cout << "Total time:" << (static_cast<double>( cv::getTickCount()) - time1) / cv::getTickFrequency() << "s" << std::endl;
+        std::cout << "Total time:" << dTotalTime  << "s" << std::endl;
   
 
 
