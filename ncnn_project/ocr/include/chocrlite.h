@@ -21,7 +21,7 @@ extern "C" {
 	typedef  void* OCRENGINE_PTR;
 
 	OCRENGINE_PTR _COL_EXPORT COL_InitOCREngine(const char * szOCrModelDir,int nUseGPU);
-	int _COL_EXPORT COL_Recognition(const OCRENGINE_PTR pEngine, const char* szImageFilePath, char** szResult, const int nLongSize, double* dTotalTime);
+	int _COL_EXPORT COL_Recognition(const OCRENGINE_PTR pEngine, const char* szImageFilePath, char** szResult, const int short_size, double* dTotalTime);
 	void _COL_EXPORT COL_FreeResult(void * pResult);
 	void  _COL_EXPORT COL_FreeOCREngine(OCRENGINE_PTR pEngine);
 	void  _COL_EXPORT COL_SetVerbose(OCRENGINE_PTR pEngine,int nVerbose);
