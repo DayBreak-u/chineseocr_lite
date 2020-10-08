@@ -5,16 +5,42 @@
 #include "precomp.h"
 
 
-
-
-OCR::OCR() :m_bVerbose(false), m_bReady(false)
+void OCR::InitGPU(ncnn::Net & net)
 {
+    //dbnet, crnn_net, angle_net;
+   
+    net.opt.use_vulkan_compute = 1;// line2
+    //net.opt.num_threads = 1;
+    //net.opt.use_fp16_packed = true;
+    //net.opt.use_fp16_storage = true;
+    //net.opt.use_fp16_arithmetic = true;
+    //net.opt.use_int8_storage = false;
+    //net.opt.use_int8_arithmetic = false;
+}
 
+OCR::OCR(bool bUseGPU) : m_bReady(false), m_bVerbose(false)
+{
+    m_bUseGPU = bUseGPU;
+    if (m_bUseGPU)
+    {
+        ncnn::create_gpu_instance();
+        InitGPU(dbnet);
+        InitGPU(crnn_net);
+        InitGPU(angle_net);
+    }
     m_bReady = Init("../models/");
 }
 
-OCR::OCR(const char* szModelDir) :m_bVerbose(false), m_bReady(false)
+OCR::OCR(const char* szModelDir, bool bUseGPU) :m_bReady(false), m_bVerbose(false)
 {
+    m_bUseGPU = bUseGPU;
+    if (m_bUseGPU)
+    {
+        ncnn::create_gpu_instance();
+        InitGPU(dbnet);
+        InitGPU(crnn_net);
+        InitGPU(angle_net);
+    }
     m_bReady = Init(szModelDir);
 }
 
@@ -23,6 +49,7 @@ bool OCR::Init(const char* szModelDir)
     if (m_bReady)  // cannot be initilized twice.
         return m_bReady;
 
+    
     string strDirPath;
     if (!szModelDir || !strlen(szModelDir))
     {
@@ -433,9 +460,12 @@ void  OCR::detect(cv::Mat im_bgr,int short_size)
 OCR::~OCR()
 {
 
+   
     dbnet.clear();
     crnn_net.clear();
     angle_net.clear();
+    if(m_bUseGPU)
+     ncnn::destroy_gpu_instance();
     if (m_bVerbose)
         cout << "ocr nets cleared" << endl;
 }
