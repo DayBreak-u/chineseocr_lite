@@ -30,13 +30,13 @@ struct Bbox
 class OCR
 {
     public:
-        OCR();
+        OCR(bool UseGPU=false);
         ~OCR();
-        OCR(const char* szModelDir);
+        OCR(const char* szModelDir, bool UseGPU=false);
         bool Init(const char* szModelDir);
         void detect(cv::Mat im_bgr,int short_size);
         void dbnet_decode(cv::Mat im_bgr,int long_size);
-
+        void  InitGPU(ncnn::Net& net);
         void set_verbose(bool bVerbose)
         {
             m_bVerbose = bVerbose;
@@ -49,6 +49,7 @@ class OCR
         bool m_bReady;
 
         bool m_bVerbose;
+        bool m_bUseGPU;
 
         ncnn::Net  dbnet,crnn_net,angle_net;
         ncnn::Mat  img;

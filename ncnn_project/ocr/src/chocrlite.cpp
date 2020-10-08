@@ -53,10 +53,10 @@ void _COL_EXPORT COL_FreeResult(void* pResult)
     if (pResult)
         delete[](char*)pResult;
 }
-OCRENGINE_PTR _COL_EXPORT  COL_InitOCREngine(const char* szOCrModelDir)
+OCRENGINE_PTR _COL_EXPORT  COL_InitOCREngine(const char* szOCrModelDir,int nUseGPU)
 {
 
-    OCR* ocrengine = new OCR(szOCrModelDir);
+    OCR* ocrengine = new OCR(szOCrModelDir,nUseGPU>0?true:false);
     return ocrengine;
 }
 
