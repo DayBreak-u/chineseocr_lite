@@ -67,10 +67,7 @@ class OCR
         ncnn::Net  dbnet,crnn_net,angle_net;
         ncnn::Mat  img;
         int num_thread = 4;
-   /*     int angle_target_w  = 192;
-        int angle_target_h  = 32;*/
-
-
+  
         int crnn_h = 32;
 
         const float mean_vals_dbnet[3] = { 0.485 * 255, 0.456 * 255, 0.406 * 255 };
