@@ -139,6 +139,18 @@ cv::Mat resize_img(cv::Mat src, int short_size)
     int h = src.rows;
     if (short_size == 0)
         short_size = w > h ? h : w;
+
+    //int nMax = w > h ? w : h;
+
+    //if (short_size > 1000)
+    //{
+    //    short_size = 1000;   // 我觉得缩放条件，最短边小于1000，就用最短边的值，大于1000，就用1000，不在乎速度就不缩放  by  benjaminwan
+    //}
+    //// 对于比例差距太大的，需要进一步计算
+
+    //if( ( w/h > 50 || h/w >50)  && short_size > 500 ) //长宽比例差别太大
+    //    short_size = 1000;
+
     // std::cout<<"原图尺寸 (" << w << ", "<<h<<")"<<std::endl;
     float scale = 1.f;
     if (w < h)
@@ -206,6 +218,9 @@ cv::Mat matRotateClockWise90(cv::Mat src)
 }
 
 
+
+
+
 cv::Mat GetRotateCropImage(const cv::Mat &srcimage,
                                            std::vector<cv::Point>  box) {
   cv::Mat image;
@@ -262,6 +277,37 @@ cv::Mat GetRotateCropImage(const cv::Mat &srcimage,
 }
 
 
+cv::RotatedRect getPartRect(std::vector<cv::Point>& box, float scaleWidth, float scaleHeight) {
+    cv::RotatedRect rect = cv::minAreaRect(box);
+    int minSize = rect.size.width > rect.size.height ? rect.size.height : rect.size.width;
+    if (rect.size.width > rect.size.height) {
+        rect.size.width = rect.size.width + (float)minSize * scaleWidth;
+        rect.size.height = rect.size.height + (float)minSize * scaleHeight;
+    }
+    else {
+        rect.size.width = rect.size.width + (float)minSize * scaleHeight;
+        rect.size.height = rect.size.height + (float)minSize * scaleWidth;
+    }
+    return rect;
+}
+
+// detect the angle
+
+// 相找最大值 点
+Angle scoreToAngle(ncnn::Mat& score) {
+    auto* srcData = (float*)score.data;
+    int angleIndex = 0;
+    float maxValue = -1000.0f;
+    maxValue = srcData[0];
+    for (int i = 0; i < score.w; i++) {
+        if (srcData[i] > maxValue)
+        {
+            angleIndex = i;
+            maxValue = srcData[i];
+        }
+    }
+    return Angle(angleIndex, maxValue);
+}
 
 
 void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
@@ -347,6 +393,8 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
         std::cout << "boxzie: " << boxes.size() << std::endl;
     }
 
+
+
 //    auto result = draw_bbox(im_bgr, boxes);
 //    cv::imwrite("./imgs/result.jpg", result);
 
@@ -354,60 +402,57 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
     //开始行文本角度检测和文字识别
     if (m_bVerbose)
         std::cout << "Result: \n";
-    for (int i = boxes.size() - 1; i >=0 ; i-- ){
-        std::vector<cv::Point>   temp_box = boxes[i];
+    for (int i = boxes.size() - 1; i >= 0; i--)
+    {
+        cv::Mat text_img;
+        text_img = GetRotateCropImage(im_bgr, boxes[i]);
+        int part_im_w = text_img.cols;
+        int part_im_h = text_img.rows;
 
-        cv::Mat part_im ;
-        part_im = GetRotateCropImage(im_bgr,temp_box);
-        int part_im_w = part_im.cols;
-        int part_im_h = part_im.rows;
+        // 开始文本识别
+        int crnn_w_target;
+        float scale = crnn_h * 1.0 / part_im_h;
+        crnn_w_target = int(text_img.cols * scale);
 
-         // 开始文本识别
-        int crnn_w_target ;
-        float scale  = crnn_h * 1.0/ part_im_h ;
-        crnn_w_target = int(part_im.cols * scale ) ;
 
-//        char *svavePath = new char[25];
-//        sprintf( svavePath, "debug_im/%d.jpg", i);
-//        cv::imwrite(svavePath,part_im);
-        // part_im = cv::imread("test.jpg");
+        // 角度检测
 
-        cv::Mat img2 = part_im.clone();
-        // convert a cv::mat to ncnn:mat 
-        ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(img2.data,ncnn::Mat::PIXEL_BGR2RGB, img2.cols, img2.rows , crnn_w_target, crnn_h );
+       
 
-        //角度检测
-        /*
-        int crnn_w = crnn_in.w;
-        int crnn_h = crnn_in.h;
+        ncnn::Mat  text_in = ncnn::Mat::from_pixels_resize(text_img.data, ncnn::Mat::PIXEL_BGR2RGB, text_img.cols, text_img.rows, crnn_w_target, crnn_h);
 
-        ncnn::Mat angle_in ;
-        if (crnn_w >= angle_target_w) 
-            copy_cut_border(crnn_in,angle_in,0,0,0,crnn_w-angle_target_w);
-        else 
-            copy_make_border(crnn_in,angle_in,0,0,0,angle_target_w - crnn_w,0,255.f);
+        int crnn_w = text_in.w;
+        int crnn_h = text_in.h;
+        ncnn::Mat angle_in;
+        if (crnn_w >= angle_target_w)
+            copy_cut_border(text_in, angle_in, 0, 0, 0, crnn_w - angle_target_w);
+        else
+            copy_make_border(text_in, angle_in, 0, 0, 0, angle_target_w - crnn_w, 0, 255.f);
 
-        angle_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
-
+        angle_in.substract_mean_normalize(mean_vals_crnn_angle, norm_vals_crnn_angle);
         ncnn::Extractor angle_ex = angle_net.create_extractor();
         angle_ex.set_num_threads(num_thread);
         angle_ex.input("input", angle_in);
-        ncnn::Mat angle_preds;
 
+        ncnn::Mat angle_preds;
         angle_ex.extract("out", angle_preds);
 
-        float *srcdata =(float*) angle_preds.data;
-
-        float angle_score = srcdata[0];
+        Angle angle_val=scoreToAngle(angle_preds);
+     
         //判断方向
-        if (angle_score < 0.5) 
-            part_im = matRotateClockWise180(part_im);
-         
-        */
-        // end of 角度检测
+        if (angle_val.index == 0 || angle_val.index == 2)
+            text_img = matRotateClockWise180(text_img);
+
+      
+
+
+        // 结束 角度检测
+   
+
         //crnn识别
-        crnn_in.substract_mean_normalize(mean_vals_crnn_angle,norm_vals_crnn_angle );
-       
+        ncnn::Mat  crnn_in = ncnn::Mat::from_pixels_resize(text_img.data, ncnn::Mat::PIXEL_BGR2RGB, text_img.cols, text_img.rows, crnn_w_target, crnn_h);
+        crnn_in.substract_mean_normalize(mean_vals_crnn_angle, norm_vals_crnn_angle);
+
         ncnn::Mat crnn_preds;
 
 
@@ -421,7 +466,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
 
         ncnn::Mat blob263(5531, blob162.h);
         //batch fc
-        for (int i=0; i<blob162.h; i++)
+        for (int i = 0; i < blob162.h; i++)
         {
             ncnn::Extractor crnn_ex_2 = crnn_net.create_extractor();
             crnn_ex_2.set_num_threads(num_thread);
@@ -437,7 +482,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
         crnn_preds = blob263;
 
 
-        auto res_pre = crnn_deocde(crnn_preds,alphabetChinese);
+        auto res_pre = crnn_deocde(crnn_preds, alphabetChinese);
 
         if (m_bVerbose)
         {
@@ -455,14 +500,13 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
             }
             m_Result.push_back("\n");
         }
-
     }
-    dTotalTime = (static_cast<double>(cv::getTickCount()) - time1) / cv::getTickFrequency();
+        dTotalTime = (static_cast<double>(cv::getTickCount()) - time1) / cv::getTickFrequency();
 
-    if (m_bVerbose)
-        std::cout << "Total time:" << dTotalTime  << "s" << std::endl;
-  
+        if (m_bVerbose)
+            std::cout << "Total time:" << dTotalTime << "s" << std::endl;
 
+   
 
 }
 

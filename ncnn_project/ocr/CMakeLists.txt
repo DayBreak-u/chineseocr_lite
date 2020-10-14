@@ -62,6 +62,7 @@ set(SRC_LIB
         src/ocr.cpp
         src/ZUtil.cpp
         src/clipper.cpp
+        src/RRLib.cpp
         )
 
 
