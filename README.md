@@ -7,6 +7,9 @@
 
 - linux/macos/windows
 
+## 20201011 ONNX c++ version
+
+模型用onnxruntime c++版本重写，支持所有平台。
 
 ## 20200820 更新
   dbnet + crnn_lite(新版本) ncnn 实现
