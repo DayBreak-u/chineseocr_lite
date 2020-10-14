@@ -21,6 +21,7 @@ void OCR::InitGPU(ncnn::Net & net)
 OCR::OCR(bool bUseGPU) : m_bReady(false), m_bVerbose(false)
 {
     m_bUseGPU = bUseGPU;
+#ifdef USE_GPU
     if (m_bUseGPU)
     {
         ncnn::create_gpu_instance();
@@ -28,12 +29,15 @@ OCR::OCR(bool bUseGPU) : m_bReady(false), m_bVerbose(false)
         InitGPU(crnn_net);
         InitGPU(angle_net);
     }
+#endif
     m_bReady = Init("../models/");
 }
 
 OCR::OCR(const char* szModelDir, bool bUseGPU) :m_bReady(false), m_bVerbose(false)
 {
     m_bUseGPU = bUseGPU;
+
+#ifdef USE_GPU
     if (m_bUseGPU)
     {
         ncnn::create_gpu_instance();
@@ -41,6 +45,7 @@ OCR::OCR(const char* szModelDir, bool bUseGPU) :m_bReady(false), m_bVerbose(fals
         InitGPU(crnn_net);
         InitGPU(angle_net);
     }
+#endif
     m_bReady = Init(szModelDir);
 }
 
@@ -469,8 +474,10 @@ OCR::~OCR()
     dbnet.clear();
     crnn_net.clear();
     angle_net.clear();
+#ifdef USE_GPU
     if(m_bUseGPU)
      ncnn::destroy_gpu_instance();
+#endif
     if (m_bVerbose)
         cout << "ocr nets cleared" << endl;
 }
