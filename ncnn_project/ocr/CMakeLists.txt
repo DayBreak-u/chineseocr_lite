@@ -1,7 +1,12 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.13)
 
 project(chocrlite_ncnn)
 add_definitions("-Wall")
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_compile_options(-std=c++11)
+    message(STATUS "optional:-std=c++11")   
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 
 FIND_PACKAGE( OpenMP REQUIRED)
@@ -80,6 +85,15 @@ set_target_properties(chocrlite PROPERTIES
 )
 
 
+#for being compatible with windows xp
+
+#if(CMAKE_CXX_COMPILER_ID)
+set_target_properties(chocrlite
+    PROPERTIES
+    LINK_FLAGS /VERSION:"5.1"
+    )
+#endif()
+
 set(SRC
         src/main.cpp
          )
@@ -88,8 +102,10 @@ add_executable(chocrlite_ncnn ${SRC} "include/precomp.h" "include/chocrlite_warn
 
 
 target_link_libraries(chocrlite_ncnn  chocrlite)
-#set_target_properties(chocrlite_ncnn PROPERTIES LINK_FLAGS "/VERSION:5.1")
-#target_link_options(chocrlite_ncnn PRIVATE   /VERSION:5.1)
-set_target_properties(chocrlite_ncnn PROPERTIES
-       VERSION    5.1
-)
+
+#if(CMAKE_CXX_COMPILER_ID)
+set_target_properties(chocrlite_ncnn
+    PROPERTIES
+    LINK_FLAGS /VERSION:"5.1"
+    )
+#endif()
