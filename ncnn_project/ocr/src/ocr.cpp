@@ -401,6 +401,7 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
     time1 = static_cast<double>( cv::getTickCount());
     //开始行文本角度检测和文字识别
 
+    bool bAllRevert = true;
     bool bRevert = false;
     if (m_bVerbose)
         std::cout << "Result: \n";
@@ -444,11 +445,14 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
 
       
         //判断方向
+        bRevert = false;
         if (angle_val.index == 0 || angle_val.index == 2)
         {
             text_img = matRotateClockWise180(text_img);
-            bRevert = true;
+            bRevert=true;
+            
         }
+
 
       
 
@@ -501,16 +505,25 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
         }
         else
         {
+            string strLine;
             for (size_t s = 0; s < res_pre.size(); s++)
             {
-                m_Result.push_back(res_pre[s]);
+                strLine+=res_pre[s];
             }
-            m_Result.push_back("\n");
+
+            if (!bRevert && !strLine.empty())
+            {
+                //printf("unreverting...: %s \n", strLine.c_str());
+                bAllRevert = false;
+            }
+            strLine += "\n";
+            m_Result.push_back(strLine);
         }
     }
 
-    if (bRevert)
+    if (bAllRevert)
     {
+        std::reverse(m_Result.begin(), m_Result.end());
     }
         dTotalTime = (static_cast<double>(cv::getTickCount()) - time1) / cv::getTickFrequency();
 
