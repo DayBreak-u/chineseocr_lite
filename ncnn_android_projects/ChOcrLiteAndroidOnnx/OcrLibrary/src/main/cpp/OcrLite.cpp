@@ -1,7 +1,7 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include "OcrLite.h"
-#include "Logger.h"
+#include "LogUtils.h"
 #include "RRLib.h"
 #include <iosfwd>
 
@@ -106,14 +106,6 @@ OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s,
         if (score < boxScoreThresh)
             continue;
 
-        /*std::vector<cv::Point> newBox;
-        unClip(minBox, allEdgeSize, newBox, unClipRatio);
-
-        getMiniBoxes(newBox, minBox, minEdgeSize, allEdgeSize);
-
-        if (minEdgeSize < minArea + 2)
-            continue;*/
-
         for (int j = 0; j < minBox.size(); ++j) {
             minBox[j].x = (minBox[j].x / s.scaleWidth);
             minBox[j].x = (std::min)((std::max)(minBox[j].x, 0), s.srcWidth);
@@ -158,7 +150,7 @@ Angle OcrLite::getAngle(cv::Mat &src) {
     return scoreToAngle(out);
 }
 
-TextLine OcrLite::scoreToString(ncnn::Mat &score) {
+TextLine OcrLite::scoreToTextLine(ncnn::Mat &score) {
     auto *srcData = (float *) score.data;
     std::string strRes;
     int lastIndex = 0;
@@ -166,7 +158,7 @@ TextLine OcrLite::scoreToString(ncnn::Mat &score) {
     for (int i = 0; i < score.h; i++) {
         //find max score
         int maxIndex = 0;
-        float maxValue = -1000;
+        float maxValue = -1000.f;
         for (int j = 0; j < score.w; j++) {
             if (srcData[i * score.w + j] > maxValue) {
                 maxValue = srcData[i * score.w + j];
@@ -215,28 +207,31 @@ TextLine OcrLite::getTextLine(cv::Mat &src) {
         memcpy(blob263.row(i), blob263_i, 5531 * sizeof(float));
     }
 
-    return scoreToString(blob263);
+    return scoreToTextLine(blob263);
 }
 
 std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
                             float boxScoreThresh, float boxThresh, float minArea,
                             float angleScaleWidth, float angleScaleHeight,
                             float textScaleWidth, float textScaleHeight) {
+
+    //文字框 线宽
+    int thickness = getThickness(src);
     //图像文字分割
     LOGI("=====Start detect=====");
     LOGI("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)", scale.srcWidth, scale.srcHeight,
          scale.dstWidth, scale.dstHeight,
          scale.scaleWidth, scale.scaleHeight);
-    long startTime = getCurrentTime();
+    double startTime = getCurrentTime();
     std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea);
-    LOGI("TextBoxes Size = %ld", textBoxes.size());
-    long endTimeTextBoxes = getCurrentTime();
+    LOGI("TextBoxes Size = %d", textBoxes.size());
+    double endTimeTextBoxes = getCurrentTime();
     printTime("Time getTextBoxes", startTime, endTimeTextBoxes);
 
     std::string strRes;//存放结果
     for (int i = 0; i < textBoxes.size(); ++i) {
         LOGI("-----TextBox[%d] score(%f)-----", i, textBoxes[i].score);
-        long startTextLine = getCurrentTime();
+        double startTextLine = getCurrentTime();
         cv::Mat angleImg;//用于识别文字方向
         cv::RotatedRect rectAngle = getPartRect(textBoxes[i].box, angleScaleWidth,
                                                 angleScaleHeight);//识别文字方向的范围可以小一些
@@ -250,7 +245,7 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
         LOGI("rectText(%f, %f)", rectText.size.width, rectText.size.height);
 
         //文字框
-        drawTextBox(imgBox, rectText);
+        drawTextBox(imgBox, rectText, thickness);
         for (int p = 0; p < 4; ++p) {
             LOGI("Pt%d(x: %d, y: %d)", p, textBoxes[i].box[p].x, textBoxes[i].box[p].y);
         }
@@ -274,10 +269,10 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
         LOGI("text(line=%s, scores={%s})", textLine.line.c_str(), string(txtScores.str()).c_str());
         strRes.append(textLine.line);
         strRes.append("\n");
-        long endTextLine = getCurrentTime();
+        double endTextLine = getCurrentTime();
         printTime("Time TextLine", startTextLine, endTextLine);
     }
-    long endTime = getCurrentTime();
+    double endTime = getCurrentTime();
     printTime("Time Full", startTime, endTime);
     LOGI("=====End detect=====");
     return strRes;

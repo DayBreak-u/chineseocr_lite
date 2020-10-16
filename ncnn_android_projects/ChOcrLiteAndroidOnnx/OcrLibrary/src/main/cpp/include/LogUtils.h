@@ -1,5 +1,5 @@
-#ifndef __OCR_LITE_LOGGER_H__
-#define __OCR_LITE_LOGGER_H__
+#ifndef __OCR_LITE_LOG_UTILS_H__
+#define __OCR_LITE_LOG_UTILS_H__
 
 #include <android/log.h>
 
@@ -10,7 +10,7 @@
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN,TAG,__VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,TAG,__VA_ARGS__)
 
-long getCurrentTime();
-long printTime(char *tag, long start, long end);
+double getCurrentTime();
+double printTime(char *tag, double start, double end);
 
-#endif //__OCR_LITE_LOGGER_H__
+#endif //__OCR_LITE_LOG_UTILS_H__

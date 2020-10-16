@@ -1,5 +1,5 @@
 #include "ncnn/net.h"
-#include "Logger.h"
+#include "LogUtils.h"
 #include "BitmapUtils.h"
 #include "OcrLite.h"
 #include "OcrUtil.h"
