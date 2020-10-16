@@ -7,32 +7,6 @@
 
 using namespace std;
 
-struct TextBox {
-    std::vector<cv::Point> box;
-    float score;
-
-    TextBox(std::vector<cv::Point> box,
-            float score) : box(box), score(score) {};
-};
-
-struct Angle {
-    int index;
-    float score;
-
-    Angle(int index,
-          float score
-    ) : index(index),
-        score(score) {};
-};
-
-struct TextLine {
-    std::string line;
-    std::vector<float> scores;
-
-    TextLine(std::string line,
-             std::vector<float> scores) : line(line), scores(scores) {};
-};
-
 class OcrLite {
 public:
     OcrLite(JNIEnv *env, jobject assetManager);
@@ -50,7 +24,7 @@ private:
 
     TextLine getTextLine(cv::Mat &src);
 
-    TextLine scoreToString(ncnn::Mat &score);
+    TextLine scoreToTextLine(ncnn::Mat &score);
 
     ncnn::Net dbNet, angleNet, crnnNet;
     int numThread = 4;

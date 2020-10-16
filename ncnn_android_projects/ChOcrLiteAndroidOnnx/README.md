@@ -24,29 +24,29 @@ Chineseocr Lite Android Onnx Demo，超轻量级中文OCR Android Demo，支持n
 ```
 staticLibs  
 ├── arm64-v8a  
-│   └── libncnn.a  
+│   └── libncnn.a  
 ├── armeabi-v7a  
-│   └── libncnn.a  
+│   └── libncnn.a  
 ├── x86  
-│   └── libncnn.a  
+│   └── libncnn.a  
 └── x86_64  
     └── libncnn.a  
 sharedLibs   
 ├── arm64-v8a   
-│   └── libopencv_java3.so   
+│   └── libopencv_java3.so   
 ├── armeabi-v7a   
-│   └── libopencv_java3.so   
+│   └── libopencv_java3.so   
 ├── x86   
-│   └── libopencv_java3.so   
+│   └── libopencv_java3.so   
 └── x86_64   
     └── libopencv_java3.so   
 ```
 
-#### PseNet版本
-[ChOcrLiteAndroidPseNet](https://github.com/ouyanghuiyu/chineseocr_lite/tree/master/ChOcrLiteAndroidPseNet)
+#### master分支PseNet版本
+[ChOcrLiteAndroidPseNet](https://github.com/ouyanghuiyu/chineseocr_lite/tree/master/ncnn_android_projects/ChOcrLiteAndroidPseNet)
 
-#### DBNet版本
-[ChOcrLiteAndroidDBNet](https://github.com/ouyanghuiyu/chineseocr_lite/tree/master/ChOcrLiteAndroidDBNet)
+####  master分支DBNet版本
+[ChOcrLiteAndroidDBNet](https://github.com/ouyanghuiyu/chineseocr_lite/tree/master/ncnn_android_projects/ChOcrLiteAndroidDBNet)
 
 #### Android各版本区别(仅供参考)
 1. 模型总大小对比：未压缩的情况下，PseNet版(27.3M) > DBNet版(23M) > onnx版(4.72M)。
