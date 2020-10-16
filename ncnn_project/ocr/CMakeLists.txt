@@ -40,7 +40,7 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/ncnn/lib)
 
 # need to modify this to fit in your environment.
 include_directories(E:\\ocr4win\\opencv\\build-x86\\win-install\\include)  # for opencv direcotry
-# include_directories(C:\\VulkanSDK\\1.2.148.1\\Include)                     # for  vulkandk include dir , if no, comment it
+# include_directories(C:\\VulkanSDK\\1.2.148.1\\Include)                     # for  vulkan include dir , if no, comment it
 
 link_directories(E:\\ocr4win\\opencv\\build-x86\\lib\\Release) # library dir for opencv
 
@@ -49,7 +49,7 @@ link_directories(E:\\ocr4win\\opencv\\build-x86\\3rdparty\\lib\\Release)
 
 
 
-set(GPU false)  #switch for gpu
+set(GPU false)  #switch for gpu 
 
 if(GPU)
 add_definitions(-DUSE_GPU=1)
