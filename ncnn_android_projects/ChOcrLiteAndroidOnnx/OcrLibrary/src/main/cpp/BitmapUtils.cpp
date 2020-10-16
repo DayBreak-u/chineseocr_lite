@@ -1,5 +1,5 @@
 #include "BitmapUtils.h"
-#include "Logger.h"
+#include "LogUtils.h"
 #include <android/bitmap.h>
 
 using namespace cv;
