@@ -400,6 +400,8 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
 
     time1 = static_cast<double>( cv::getTickCount());
     //开始行文本角度检测和文字识别
+
+    bool bRevert = false;
     if (m_bVerbose)
         std::cout << "Result: \n";
     for (int i = boxes.size() - 1; i >= 0; i--)
@@ -439,9 +441,14 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
 
         Angle angle_val=scoreToAngle(angle_preds);
      
+
+      
         //判断方向
         if (angle_val.index == 0 || angle_val.index == 2)
+        {
             text_img = matRotateClockWise180(text_img);
+            bRevert = true;
+        }
 
       
 
@@ -500,6 +507,10 @@ void  OCR::detect(cv::Mat im_bgr,int short_size,double & dTotalTime)
             }
             m_Result.push_back("\n");
         }
+    }
+
+    if (bRevert)
+    {
     }
         dTotalTime = (static_cast<double>(cv::getTickCount()) - time1) / cv::getTickFrequency();
 
