@@ -4,8 +4,9 @@
 [Gitee下载](https://gitee.com/benjaminwan/ch-ocr-lite-android-onnx/releases)
 
 #### 介绍
-Chineseocr Lite Android Onnx Demo，超轻量级中文OCR Android Demo，支持ncnn推理 (DBNet+AngleNet+CRNN)
+Chineseocr Lite Android Onnx To Ncnn Demo，超轻量级中文OCR Android Demo，支持ncnn推理 (DBNet+AngleNet+CRNN)
 
+把onnx模型格式转为ncnn格式，并使用ncnn推理框架进行OCR识别。
 采用ncnn神经网络前向计算框架[https://github.com/Tencent/ncnn](https://github.com/Tencent/ncnn)
 
 #### 说明
@@ -51,4 +52,4 @@ sharedLibs
 #### Android各版本区别(仅供参考)
 1. 模型总大小对比：未压缩的情况下，PseNet版(27.3M) > DBNet版(23M) > onnx版(4.72M)。
 2. PseNet与DBNet版本仅图像分割的算法不同，文字方向检测与文字识别部分完全相同。分割速度方面，DBNet版本稍微快一点点，分割效果方面，PseNet效果稍好一点点。
-3. onnx版本与其它两个版本最大不同在于模型超轻量，当然总体的效果就不如其它两个版本，没有专门针对竖向文字的模型，所以对竖向文字的识别效果比其它两个版本差(比如春联)。速度方面与DBNet版本差不多。
+3. OnnxToNcnn版本与其它两个版本最大不同在于模型超轻量，当然总体的效果就不如其它两个版本，没有专门针对竖向文字的模型，所以对竖向文字的识别效果比其它两个版本差(比如春联)。速度方面与DBNet版本差不多。
