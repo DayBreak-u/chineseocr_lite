@@ -1,7 +1,7 @@
 ## 以下内容仅代表benjaminwan个人观点 仅供参考
 
 #### PC平台onnxruntime vs ncnn对比测试介绍
-1. OcrLiteOnnx项目使用onnxruntime框架，OcrLiteOnnxToNcnn项目使用ncnn框架。
+1. OcrLiteOnnx项目使用onnxruntime框架，OcrLiteOnnxToNcnn项目使用ncnn框架，用于对比的项目均使用C++编写。
 2. 除了调用推理框架的代码，其它代码尽量保持一致。
 3. 推理框架均不使用GPU或NPU加速，仅使用CPU进行计算。
 4. 模型使用chineseocr-lite的onnx分支的模型，ncnn框架是用专用的模型格式，故需要从onnx格式转为ncnn专用格式，理论上是一样的模型，但转换可能造成精度损失。
