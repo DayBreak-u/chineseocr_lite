@@ -12,7 +12,7 @@ ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理(D
 
 详情请查看 [https://github.com/ouyanghuiyu/chineseocr_lite](https://github.com/ouyanghuiyu/chineseocr_lite)
 
-采用ncnn神经网络前向计算框架[https://github.com/Tencent/ncnn](https://github.com/Tencent/ncnn)
+采用onnxruntime框架[https://github.com/microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)
 
 整合了如下算法：
 DBNet(图像分割)+AngleNet(文字方向检测)+CRNN(文字识别)
@@ -32,19 +32,19 @@ OcrLiteOnnx/models
 ```
 OcrLiteOnnx/onnx
 ├── include
-│   └── onnx
-│       ├── cpu_provider_factory.h
-│       ├── cuda_provider_factory.h
-│       ├── onnxruntime_c_api.h
-│       ├── onnxruntime_cxx_api.h
-│       ├── onnxruntime_cxx_inline.h
-│       └── onnxruntime_session_options_config_keys.h
+│   └── onnx
+│       ├── cpu_provider_factory.h
+│       ├── cuda_provider_factory.h
+│       ├── onnxruntime_c_api.h
+│       ├── onnxruntime_cxx_api.h
+│       ├── onnxruntime_cxx_inline.h
+│       └── onnxruntime_session_options_config_keys.h
 ├── linux
-│   ├── libonnxruntime.so -> libonnxruntime.so.1.5.2
-│   └── libonnxruntime.so.1.5.2
+│   ├── libonnxruntime.so -> libonnxruntime.so.1.5.2
+│   └── libonnxruntime.so.1.5.2
 ├── macos
-│   ├── libonnxruntime.1.5.2.dylib
-│   └── libonnxruntime.dylib -> libonnxruntime.1.5.2.dylib
+│   ├── libonnxruntime.1.5.2.dylib
+│   └── libonnxruntime.dylib -> libonnxruntime.1.5.2.dylib
 └── windows
     ├── onnxruntime.dll
     ├── onnxruntime.lib
