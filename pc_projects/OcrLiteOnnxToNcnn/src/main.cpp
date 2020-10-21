@@ -3,24 +3,22 @@
 int main(int argc, char **argv) {
     if (argc <= 1) {
         fprintf(stderr,
-                "Usage: %s image/path models/dir numThread(option) padding(option) imgResize(option) boxScoreThresh(option) boxThresh(option) minArea(option) angleScaleWidth(option) angleScaleHeight(option) textScaleWidth(option) textScaleHeight(option)\n",
+                "Usage: %s image/path models/dir numThread(option) padding(option) imgResize(option) boxScoreThresh(option) boxThresh(option) minArea(option) scaleWidth(option) scaleHeight(option)\n",
                 argv[0]);
         fprintf(stderr, "Example: %s ../test/1.jpg ../models\n", argv[0]);
-        fprintf(stderr, "Example: %s ../test/1.jpg ../models 0 0 0 0.6 0.3 3 1.0 1.0 1.6 1.6\n", argv[0]);
+        fprintf(stderr, "Example: %s ../test/1.jpg ../models 4 50 0 0.6 0.3 3 1.8 1.8\n", argv[0]);
     } else {
         std::string argImgPath, imgPath, imgName, modelsDir;
         argImgPath = "../test/1.jpg";
         modelsDir = "../models";
-        int numThread = 0;
-        int padding = 0;
+        int numThread = 4;
+        int padding = 50;
         int imgResize = 0;
         float boxScoreThresh = 0.6f;
         float boxThresh = 0.3f;
         float minArea = 3.f;
-        float angleScaleWidth = 1.0f;
-        float angleScaleHeight = 1.0f;
-        float textScaleWidth = 1.6f;
-        float textScaleHeight = 1.6f;
+        float scaleWidth = 1.8f;
+        float scaleHeight = 1.8f;
 
         for (int i = 1; i < argc; ++i) {
             printf("argv[%d]=%s, ", i, argv[i]);
@@ -60,35 +58,32 @@ int main(int argc, char **argv) {
                     printf("minArea=%f\n", minArea);
                     break;
                 case 9:
-                    angleScaleWidth = strtof(argv[i], NULL);
-                    printf("angleScaleWidth=%f\n", angleScaleWidth);
+                    scaleWidth = strtof(argv[i], NULL);
+                    printf("scaleWidth=%f\n", scaleWidth);
                     break;
                 case 10:
-                    angleScaleHeight = strtof(argv[i], NULL);
-                    printf("angleScaleHeight=%f\n", angleScaleHeight);
-                    break;
-                case 11:
-                    textScaleWidth = strtof(argv[i], NULL);
-                    printf("textScaleWidth=%f\n", textScaleWidth);
-                    break;
-                case 12:
-                    textScaleHeight = strtof(argv[i], NULL);
-                    printf("textScaleHeight=%f\n", textScaleHeight);
+                    scaleHeight = strtof(argv[i], NULL);
+                    printf("scaleHeight=%f\n", scaleHeight);
                     break;
             }
         }
 
         OcrLite ocrLite(numThread);
-        ocrLite.initLogger(imgPath.c_str(), imgName.c_str(), true, true, true, true, true);
+        ocrLite.initLogger(imgPath.c_str(), imgName.c_str(),
+                           true,//isOutputConsole
+                           false,//isOutputPartImg
+                           true,//isOutputAngleImg
+                           true,//isOutputDebugImg
+                           true,//isOutputResultTxt
+                           true);//isOutputResultImg
         bool ret = ocrLite.initModels(modelsDir.c_str());
         if (!ret) return -1;
 
         OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                           padding, imgResize,
                                           boxScoreThresh, boxThresh, minArea,
-                                          angleScaleWidth,
-                                          angleScaleHeight,
-                                          textScaleWidth, textScaleHeight);
+                                          scaleWidth,
+                                          scaleHeight);
         printf("%s\n", result.strRes.c_str());
     }
 

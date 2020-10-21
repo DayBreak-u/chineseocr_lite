@@ -136,6 +136,7 @@ cmake-build-debug/
 build/
 build-win/
 test_imgs/*-part-*.jpg
+test_imgs/*-angle-*.jpg
 test_imgs/*-debug-*.jpg
 test_imgs/*-result.jpg
 test_imgs/*-result.txt
