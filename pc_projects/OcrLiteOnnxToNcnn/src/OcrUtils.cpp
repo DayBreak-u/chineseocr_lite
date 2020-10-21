@@ -226,14 +226,8 @@ std::string getResultImgFilePath(const char *path, const char *imgName) {
     return filePath;
 }
 
-std::string getPartImgFilePath(const char *path, const char *imgName, int i) {
+std::string getDebugImgFilePath(const char *path, const char *imgName, int i, const char *tag) {
     std::string filePath;
-    filePath.append(path).append(imgName).append("-part-").append(std::to_string(i)).append(".jpg");
-    return filePath;
-}
-
-std::string getDebugImgFilePath(const char *path, const char *imgName, int i) {
-    std::string filePath;
-    filePath.append(path).append(imgName).append("-debug-").append(std::to_string(i)).append(".jpg");
+    filePath.append(path).append(imgName).append(tag).append(std::to_string(i)).append(".jpg");
     return filePath;
 }
