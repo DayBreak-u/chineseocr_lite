@@ -1,4 +1,4 @@
-# OcrLiteOnnx
+# OcrLiteOnnxToNcnn
 
 #### Demo下载(win、mac、linux)
 [Gitee下载](https://gitee.com/benjaminwan/ocr-lite-onnx-to-ncnn/releases)

@@ -4,7 +4,9 @@
 #include "OcrLite.h"
 #include "OcrUtils.h"
 
-OcrLite::OcrLite() {}
+OcrLite::OcrLite(int numOfThread) {
+    numThread = numOfThread;
+}
 
 OcrLite::~OcrLite() {
     if (isOutputResultTxt) {
@@ -59,6 +61,7 @@ bool OcrLite::initModels(const char *path) {
     } else {
         Logger("The keys.txt file was not found\n");
     }
+
     Logger("keys size(%d)\n", keysSize);
     if (keysSize == 0) return false;
     Logger("Init Models Success!\n");
@@ -66,7 +69,8 @@ bool OcrLite::initModels(const char *path) {
 }
 
 void OcrLite::Logger(const char *format, ...) {
-    char buffer[128] = {0};
+    if (!(isOutputConsole || isOutputResultTxt)) return;
+    char *buffer = (char *) malloc(4096);
     va_list args;
     va_start(args, format);
     vsprintf(buffer, format, args);
@@ -159,6 +163,7 @@ Angle OcrLite::getAngle(cv::Mat &src) {
 TextLine OcrLite::scoreToTextLine(const float *srcData, int h, int w) {
     std::string strRes;
     int lastIndex = 0;
+    int keySize = keys.size();
     std::vector<float> scores;
     for (int i = 0; i < h; i++) {
         //find max score
@@ -170,7 +175,7 @@ TextLine OcrLite::scoreToTextLine(const float *srcData, int h, int w) {
                 maxIndex = j;
             }
         }
-        if (maxIndex > 0 && (!(i > 0 && maxIndex == lastIndex))) {
+        if (maxIndex > 0 && maxIndex < keySize && (!(i > 0 && maxIndex == lastIndex))) {
             scores.emplace_back(maxValue);
             strRes.append(keys[maxIndex - 1]);
         }
@@ -217,30 +222,42 @@ TextLine OcrLite::getTextLine(cv::Mat &src) {
     return scoreToTextLine((float *) blob263.data, blob263.h, blob263.w);
 }
 
-OcrResult OcrLite::detect(const char *path, const char *imgName, const float imgScale,
+cv::Mat makePadding(cv::Mat &src, const int padding) {
+    if (padding <= 0) return src;
+    cv::Scalar paddingScalar = {255, 255, 255};
+    cv::Mat paddingSrc;
+    cv::copyMakeBorder(src, paddingSrc, padding, padding, padding, padding, cv::BORDER_ISOLATED, paddingScalar);
+    return paddingSrc;
+}
+
+OcrResult OcrLite::detect(const char *path, const char *imgName,
+                          const int padding, const float imgScale,
                           float boxScoreThresh, float boxThresh, float minArea,
                           float angleScaleWidth, float angleScaleHeight,
                           float textScaleWidth, float textScaleHeight) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
-    cv::Mat src = cv::imread(imgFile);
-    cv::Mat imgBox = src.clone();
+    cv::Mat originSrc = cv::imread(imgFile);
+    cv::Rect originRect(padding, padding, originSrc.cols, originSrc.rows);
+    cv::Mat src = makePadding(originSrc, padding);
 
     ScaleParam scale = getScaleParam(src, imgScale);
 
-    return detect(path, imgName, src, imgBox, scale,
+    return detect(path, imgName, src, originRect, scale,
                   boxScoreThresh, boxThresh, minArea, angleScaleWidth,
                   angleScaleHeight, textScaleWidth, textScaleHeight);
 }
 
-OcrResult OcrLite::detect(const char *path, const char *imgName, const int imgResize,
+OcrResult OcrLite::detect(const char *path, const char *imgName,
+                          const int padding, const int imgResize,
                           float boxScoreThresh, float boxThresh, float minArea,
                           float angleScaleWidth, float angleScaleHeight,
                           float textScaleWidth, float textScaleHeight) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
-    cv::Mat src = cv::imread(imgFile);
-    cv::Mat imgBox = src.clone();
+    cv::Mat originSrc = cv::imread(imgFile);
+    cv::Rect originRect(padding, padding, originSrc.cols, originSrc.rows);
+    cv::Mat src = makePadding(originSrc, padding);
 
     int resize;
     if (imgResize <= 0) {
@@ -251,27 +268,28 @@ OcrResult OcrLite::detect(const char *path, const char *imgName, const int imgRe
 
     ScaleParam scale = getScaleParam(src, resize);
 
-    OcrResult result = detect(path, imgName, src, imgBox, scale,
+    OcrResult result = detect(path, imgName, src, originRect, scale,
                               boxScoreThresh, boxThresh, minArea, angleScaleWidth,
                               angleScaleHeight, textScaleWidth, textScaleHeight);
     /*double startTest = getCurrentTime();
-    for (int i = 0; i < 1000; ++i) {
-        detect(path, imgName, src, imgBox, scale,
+    for (int i = 0; i < 500; ++i) {
+        detect(path, imgName, src, originRect, scale,
                boxScoreThresh, boxThresh, minArea, angleScaleWidth,
                angleScaleHeight, textScaleWidth, textScaleHeight);
     }
     double endTest = getCurrentTime();
-    printf("time=%f\n", (endTest - startTest) / 1000);*/
+    printf("time=%f\n", (endTest - startTest) / 500);*/
 
     return result;
 }
 
 OcrResult OcrLite::detect(const char *path, const char *imgName,
-                          cv::Mat &src, cv::Mat &imgBox, ScaleParam &scale,
+                          cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                           float boxScoreThresh, float boxThresh, float minArea,
                           float angleScaleWidth, float angleScaleHeight,
                           float textScaleWidth, float textScaleHeight) {
 
+    cv::Mat textBoxPaddingImg = src.clone();
     int thickness = getThickness(src);
 
     Logger("=====Start detect=====\n");
@@ -312,7 +330,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
                rectText.angle);
 
         //drawTextBox
-        drawTextBox(imgBox, rectText, thickness);
+        drawTextBox(textBoxPaddingImg, rectText, thickness);
         Logger("TextBoxPos([x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d])\n",
                textBoxes[i].box[0].x, textBoxes[i].box[0].y,
                textBoxes[i].box[1].x, textBoxes[i].box[1].y,
@@ -379,14 +397,23 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         strRes.append("\n");
     }
     double endTime = getCurrentTime();
+    double fullTime = endTime - startTime;
     Logger("=====End detect=====\n");
-    Logger("FullDetectTime(%fms)\n", endTime - startTime);
+    Logger("FullDetectTime(%fms)\n", fullTime);
+
+    //cropped to original size
+    cv::Mat textBoxImg;
+    if (originRect.x > 0 && originRect.y > 0) {
+        textBoxPaddingImg(originRect).copyTo(textBoxImg);
+    } else {
+        textBoxImg = textBoxPaddingImg;
+    }
 
     //Save result.jpg
     if (isOutputResultImg) {
         std::string resultImgFile = getResultImgFilePath(path, imgName);
-        cv::imwrite(resultImgFile, imgBox);
+        cv::imwrite(resultImgFile, textBoxImg);
     }
 
-    return OcrResult(textBoxes, textBoxesTime, angles, textLines, strRes);
+    return OcrResult(textBoxes, textBoxesTime, angles, textLines, textBoxImg, strRes, fullTime);
 }

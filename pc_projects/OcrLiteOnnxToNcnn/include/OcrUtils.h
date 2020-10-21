@@ -6,6 +6,8 @@
 
 double getCurrentTime();
 
+std::wstring strToWstr(std::string str);
+
 ScaleParam getScaleParam(cv::Mat &src, const float scale);
 
 ScaleParam getScaleParam(cv::Mat &src, const int targetSize);

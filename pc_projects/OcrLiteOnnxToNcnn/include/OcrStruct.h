@@ -60,17 +60,20 @@ struct OcrResult {
     double textBoxesTime;
     std::vector<Angle> angles;
     std::vector<TextLine> lines;
+    cv::Mat textBoxImg;
     std::string strRes;
-    double fullTime;
+    double fullTime = 0.f;
 
     OcrResult(
             std::vector<TextBox> textBoxes,
             double textBoxesTime,
             std::vector<Angle> angles,
             std::vector<TextLine> lines,
-            std::string strRes
-    ) : textBoxes(textBoxes), textBoxesTime(textBoxesTime), angles(angles), lines(lines), strRes(strRes),
-        fullTime(fullTime) {};
+            cv::Mat textBoxImg,
+            std::string strRes,
+            double fullTime
+    ) : textBoxes(textBoxes), textBoxesTime(textBoxesTime), angles(angles),
+        lines(lines), textBoxImg(textBoxImg), strRes(strRes), fullTime(fullTime) {};
 };
 
 #endif //__OCR_STRUCT_H__
