@@ -5,6 +5,14 @@ double getCurrentTime() {
     return (static_cast<double>(cv::getTickCount())) / cv::getTickFrequency() * 1000;//单位毫秒
 }
 
+std::wstring strToWstr(std::string str) {
+    if (str.length() == 0)
+        return L"";
+    std::wstring wstr;
+    wstr.assign(str.begin(), str.end());
+    return wstr;
+}
+
 ScaleParam getScaleParam(cv::Mat &src, const float scale) {
     int srcWidth = src.cols;
     int srcHeight = src.rows;

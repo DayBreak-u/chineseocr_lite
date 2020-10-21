@@ -32,19 +32,19 @@ OcrLiteOnnx/models
 ```
 OcrLiteOnnx/onnx
 ├── include
-│   └── onnx
-│       ├── cpu_provider_factory.h
-│       ├── cuda_provider_factory.h
-│       ├── onnxruntime_c_api.h
-│       ├── onnxruntime_cxx_api.h
-│       ├── onnxruntime_cxx_inline.h
-│       └── onnxruntime_session_options_config_keys.h
+│   └── onnx
+│       ├── cpu_provider_factory.h
+│       ├── cuda_provider_factory.h
+│       ├── onnxruntime_c_api.h
+│       ├── onnxruntime_cxx_api.h
+│       ├── onnxruntime_cxx_inline.h
+│       └── onnxruntime_session_options_config_keys.h
 ├── linux
-│   ├── libonnxruntime.so -> libonnxruntime.so.1.5.2
-│   └── libonnxruntime.so.1.5.2
+│   ├── libonnxruntime.so -> libonnxruntime.so.1.5.2
+│   └── libonnxruntime.so.1.5.2
 ├── macos
-│   ├── libonnxruntime.1.5.2.dylib
-│   └── libonnxruntime.dylib -> libonnxruntime.1.5.2.dylib
+│   ├── libonnxruntime.1.5.2.dylib
+│   └── libonnxruntime.dylib -> libonnxruntime.1.5.2.dylib
 └── windows
     ├── onnxruntime.dll
     ├── onnxruntime.lib
@@ -106,3 +106,11 @@ textScores(各个文字的置信度)、
 getTextLineTime(文字识别耗时)、
 TextBoxTime(方向识别+文字识别耗时)
 FullDetectTime（整张图片总耗时）
+
+#### 关于设置线程数
+onnxruntime设置线程数分为2个部分:
+1. execution within nodes，这个线程数是通过openmp的环境变量设置
+```set OMP_NUM_THREADS=<CPU逻辑核心数量>```
+2. execution of the graph，这个线程数可以通过代码设置
+```sessionOptions.SetInterOpNumThreads(numThread);```
+测试脚本通过检查当前的CPU逻辑核心数量，设置环境变量来配置第一个线程数，通过命令行传入第三个参数numThread来配置第二个线程数
