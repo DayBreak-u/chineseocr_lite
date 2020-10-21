@@ -17,5 +17,5 @@ set OMP_NUM_THREADS=$NUM_THREADS
 
 ##### run test on MacOS or Linux
 pushd build
-./OcrLiteOnnx ../../test_imgs/1.jpg ../models $NUM_THREADS 50 0 0.6 0.3 3 1.0 1.0 1.6 1.6
+./OcrLiteOnnx ../../test_imgs/1.jpg ../models $NUM_THREADS 50 0 0.6 0.3 3 1.8 1.8
 popd

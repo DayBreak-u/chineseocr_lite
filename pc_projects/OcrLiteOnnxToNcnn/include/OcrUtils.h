@@ -39,8 +39,6 @@ std::string getResultTxtFilePath(const char *path, const char *imgName);
 
 std::string getResultImgFilePath(const char *path, const char *imgName);
 
-std::string getPartImgFilePath(const char *path, const char *imgName, int i);
-
-std::string getDebugImgFilePath(const char *path, const char *imgName, int i);
+std::string getDebugImgFilePath(const char *path, const char *imgName, int i, const char *tag);
 
 #endif //__OCR_UTILS_H__
