@@ -57,6 +57,27 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/paddingTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="padding:0" />
+
+        <SeekBar
+            android:id="@+id/paddingSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:min="0"
+            android:progress="0" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
             android:id="@+id/boxScoreThreshTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -120,18 +141,18 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/angleWidthTv"
+            android:id="@+id/scaleWidthTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AngleWidth:1.3" />
+            android:text="ScaleWidth:1.8" />
 
         <SeekBar
-            android:id="@+id/angleWidthSeekBar"
+            android:id="@+id/scaleWidthSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="20"
+            android:max="30"
             android:min="10"
-            android:progress="13" />
+            android:progress="18" />
 
     </LinearLayout>
 
@@ -141,60 +162,18 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/angleHeightTv"
+            android:id="@+id/scaleHeightTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AngleHeight:1.3" />
+            android:text="ScaleHeight:1.8" />
 
         <SeekBar
-            android:id="@+id/angleHeightSeekBar"
+            android:id="@+id/scaleHeightSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="20"
+            android:max="30"
             android:min="10"
-            android:progress="13" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textWidthTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextWidth:1.6" />
-
-        <SeekBar
-            android:id="@+id/textWidthSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="20"
-            android:min="10"
-            android:progress="16" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textHeightTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextHeight:1.6" />
-
-        <SeekBar
-            android:id="@+id/textHeightSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="20"
-            android:min="10"
-            android:progress="16" />
+            android:progress="18" />
 
     </LinearLayout>
 
