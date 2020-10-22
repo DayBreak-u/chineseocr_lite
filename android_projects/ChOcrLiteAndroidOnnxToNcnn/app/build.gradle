@@ -16,11 +16,11 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.benjaminwan.ocr.onnx"
+        applicationId "com.benjaminwan.ocr.onnxtoncnn"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 2
-        versionName "1.0.1.20201016"
+        versionCode 3
+        versionName "1.0.2.20201022"
         signingConfig signingConfigs.ocr
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
