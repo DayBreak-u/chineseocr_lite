@@ -1,8 +1,7 @@
-#ifndef __OCR_LITE_OCR_STRUCT_H__
-#define __OCR_LITE_OCR_STRUCT_H__
+#ifndef __OCR_STRUCT_H__
+#define __OCR_STRUCT_H__
 
 #include "opencv2/core.hpp"
-#include "ncnn/net.h"
 #include <vector>
 
 struct ScaleParam {
@@ -29,16 +28,17 @@ struct ScaleParam {
 };
 
 struct TextBox {
-    std::vector <cv::Point> box;
+    std::vector<cv::Point> box;
     float score;
 
-    TextBox(std::vector <cv::Point> box,
+    TextBox(std::vector<cv::Point> box,
             float score) : box(box), score(score) {};
 };
 
 struct Angle {
     int index;
     float score;
+    double time;
 
     Angle(int index,
           float score
@@ -49,9 +49,31 @@ struct Angle {
 struct TextLine {
     std::string line;
     std::vector<float> scores;
+    double time;
 
     TextLine(std::string line,
              std::vector<float> scores) : line(line), scores(scores) {};
 };
 
-#endif //__OCR_LITE_OCR_STRUCT_H__
+struct OcrResult {
+    std::vector<TextBox> textBoxes;
+    double textBoxesTime;
+    std::vector<Angle> angles;
+    std::vector<TextLine> lines;
+    cv::Mat textBoxImg;
+    std::string strRes;
+    double fullTime = 0.f;
+
+    OcrResult(
+            std::vector<TextBox> textBoxes,
+            double textBoxesTime,
+            std::vector<Angle> angles,
+            std::vector<TextLine> lines,
+            cv::Mat textBoxImg,
+            std::string strRes,
+            double fullTime
+    ) : textBoxes(textBoxes), textBoxesTime(textBoxesTime), angles(angles),
+        lines(lines), textBoxImg(textBoxImg), strRes(strRes), fullTime(fullTime) {};
+};
+
+#endif //__OCR_STRUCT_H__

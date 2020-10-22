@@ -1,5 +1,9 @@
-#include "OcrUtil.h"
+#include "OcrUtils.h"
 #include "RRLib.h"
+
+double getCurrentTime() {
+    return (static_cast<double>(cv::getTickCount())) / cv::getTickFrequency() * 1000;//单位毫秒
+}
 
 ScaleParam getScaleParam(cv::Mat &src, const float scale) {
     int srcWidth = src.cols;
@@ -8,11 +12,11 @@ ScaleParam getScaleParam(cv::Mat &src, const float scale) {
     int dstHeight = int((float) srcHeight * scale);
     if (dstWidth % 32 != 0) {
         dstWidth = (dstWidth / 32 - 1) * 32;
-        dstWidth = std::max(dstWidth, 32);
+        dstWidth = (std::max)(dstWidth, 32);
     }
     if (dstHeight % 32 != 0) {
         dstHeight = (dstHeight / 32 - 1) * 32;
-        dstHeight = std::max(dstHeight, 32);
+        dstHeight = (std::max)(dstHeight, 32);
     }
     float scaleWidth = (float) dstWidth / (float) srcWidth;
     float scaleHeight = (float) dstHeight / (float) srcHeight;
@@ -37,11 +41,11 @@ ScaleParam getScaleParam(cv::Mat &src, const int targetSize) {
     }
     if (dstWidth % 32 != 0) {
         dstWidth = (dstWidth / 32 - 1) * 32;
-        dstWidth = std::max(dstWidth, 32);
+        dstWidth = (std::max)(dstWidth, 32);
     }
     if (dstHeight % 32 != 0) {
         dstHeight = (dstHeight / 32 - 1) * 32;
-        dstHeight = std::max(dstHeight, 32);
+        dstHeight = (std::max)(dstHeight, 32);
     }
     float scaleWidth = (float) dstWidth / (float) srcWidth;
     float scaleHeight = (float) dstHeight / (float) srcHeight;
@@ -75,21 +79,15 @@ void drawTextBox(cv::Mat &boxImg, cv::RotatedRect &rect, int thickness) {
     //cv::polylines(srcmat, textpoint, true, cv::Scalar(0, 255, 0), 2);
 }
 
-cv::Mat matRotateClockWise180(cv::Mat src) {//顺时针180
-    //0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
-    flip(src, src,
-         0);// 翻转模式，flipCode == 0垂直翻转（沿X轴翻转），flipCode>0水平翻转（沿Y轴翻转），flipCode<0水平垂直翻转（先沿X轴翻转，再沿Y轴翻转，等价于旋转180°）
+cv::Mat matRotateClockWise180(cv::Mat src) {
+    flip(src, src, 0);
     flip(src, src, 1);
     return src;
-    //transpose(src, src);// 矩阵转置
 }
 
 cv::Mat matRotateClockWise90(cv::Mat src) {
-    // 矩阵转置
     transpose(src, src);
-    //0: 沿X轴翻转； >0: 沿Y轴翻转； <0: 沿X轴和Y轴翻转
-    flip(src, src,
-         1);// 翻转模式，flipCode == 0垂直翻转（沿X轴翻转），flipCode>0水平翻转（沿Y轴翻转），flipCode<0水平垂直翻转（先沿X轴翻转，再沿Y轴翻转，等价于旋转180°）
+    flip(src, src, 1);
     return src;
 }
 

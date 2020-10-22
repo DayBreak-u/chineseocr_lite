@@ -1,4 +1,4 @@
-package com.benjaminwan.ocr.onnx
+package com.benjaminwan.ocr.onnxtoncnn
 
 import android.graphics.Bitmap
 
