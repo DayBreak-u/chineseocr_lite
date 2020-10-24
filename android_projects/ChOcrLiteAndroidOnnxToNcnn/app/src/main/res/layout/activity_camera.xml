@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/viewFinder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:scaleType="fillCenter" />
+
+        <jsc.kit.cameramask.CameraLensView
+            android:id="@+id/cameraLensView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:clvCameraLensGravity="center"
+            app:clvCameraLensHeightWeight="{9,10}"
+            app:clvCameraLensShape="rectangle"
+            app:clvCameraLensTopMargin="0dp"
+            app:clvCameraLensWidthWeight="{9,10}"
+            app:clvShowBoxAngle="true"
+            app:clvText="请把要识别的内容对准扫描框"
+            app:clvTextLocation="belowCameraLens"
+            app:clvTextMathParent="true"
+            app:clvTextSize="12sp"
+            app:clvTextVerticalMargin="6dp" />
+
+        <ImageView
+            android:id="@+id/loadingImg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/timeTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="识别时间:"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/scaleTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Size:0(100%)" />
+
+        <SeekBar
+            android:id="@+id/scaleSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="200"
+            android:min="10"
+            android:progress="100" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/paddingTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="padding:0" />
+
+        <SeekBar
+            android:id="@+id/paddingSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:min="0"
+            android:progress="0" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/boxScoreThreshTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/box_score_thresh" />
+
+        <SeekBar
+            android:id="@+id/boxScoreThreshSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:min="1"
+            android:progress="60" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/boxThreshTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BoxThresh:0.3" />
+
+        <SeekBar
+            android:id="@+id/boxThreshSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:min="1"
+            android:progress="30" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/minAreaTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/min_area" />
+
+        <SeekBar
+            android:id="@+id/minAreaSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="10"
+            android:min="1"
+            android:progress="3" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/scaleWidthTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/box_scale_width" />
+
+        <SeekBar
+            android:id="@+id/scaleWidthSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="30"
+            android:min="10"
+            android:progress="18" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/scaleHeightTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/box_scale_height" />
+
+        <SeekBar
+            android:id="@+id/scaleHeightSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="30"
+            android:min="10"
+            android:progress="18" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/clearBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清除"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/detectBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="识别"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/resultBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="识别结果"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/debugBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="调试信息"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+
+</LinearLayout>
