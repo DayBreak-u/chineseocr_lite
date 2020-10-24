@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
         ocrLite.initLogger(imgPath.c_str(), imgName.c_str(),
                            true,//isOutputConsole
                            false,//isOutputPartImg
-                           true,//isOutputAngleImg
+                           false,//isOutputAngleImg
                            true,//isOutputDebugImg
                            true,//isOutputResultTxt
                            true);//isOutputResultImg
