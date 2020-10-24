@@ -1,7 +1,19 @@
-#pragma once
+#ifndef __OCR_UTILS_H__
+#define __OCR_UTILS_H__
 
 #include <opencv2/core.hpp>
 #include "OcrStruct.h"
+
+#include <android/log.h>
+
+#define TAG "OcrLite"
+#define LOGV(...) __android_log_print(ANDROID_LOG_VERBOSE,TAG,__VA_ARGS__)
+#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,TAG,__VA_ARGS__)
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,TAG,__VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN,TAG,__VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,TAG,__VA_ARGS__)
+
+double getCurrentTime();
 
 ScaleParam getScaleParam(cv::Mat &src, const float scale);
 
@@ -24,3 +36,4 @@ int getMiniBoxes(std::vector<cv::Point> &invec,
 
 float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box);
 
+#endif //__OCR_UTILS_H__
