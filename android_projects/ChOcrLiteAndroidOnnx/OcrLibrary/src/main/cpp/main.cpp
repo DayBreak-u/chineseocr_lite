@@ -1,3 +1,4 @@
+#include "OcrResultUtils.h"
 #include "BitmapUtils.h"
 #include "OcrLite.h"
 #include "OcrUtils.h"
@@ -22,7 +23,7 @@ cv::Mat makePadding(cv::Mat &src, const int padding) {
 }
 
 extern "C"
-JNIEXPORT jstring JNICALL
+JNIEXPORT jobject JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jobject input,
                                                  jobject output,
                                                  jint padding, jint reSize,
@@ -42,8 +43,8 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jobj
                                           boxScoreThresh, boxThresh, minArea,
                                           scaleWidth, scaleHeight);
 
-    cv::cvtColor(ocrResult.textBoxImg, imgOut, cv::COLOR_BGR2RGBA);
+    cv::cvtColor(ocrResult.boxImg, imgOut, cv::COLOR_BGR2RGBA);
     matToBitmap(env, imgOut, output);
 
-    return env->NewStringUTF(ocrResult.strRes.c_str());
+    return OcrResultUtils(env, ocrResult, output).getJObject();
 }
