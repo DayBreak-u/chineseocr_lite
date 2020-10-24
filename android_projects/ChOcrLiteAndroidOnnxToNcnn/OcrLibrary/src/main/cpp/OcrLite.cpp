@@ -246,21 +246,21 @@ OcrResult OcrLite::detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
          scale.scaleWidth, scale.scaleHeight);
 
     double startTime = getCurrentTime();
-    std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea);
+    std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh,
+                                                  minArea);
     LOGI("TextBoxesSize(%ld)\n", textBoxes.size());
 
-    double endTextBoxesTime = getCurrentTime();
-    double textBoxesTime = endTextBoxesTime - startTime;
-    LOGI("getTextBoxesTime(%fms)\n", textBoxesTime);
+    double endDbNetTime = getCurrentTime();
+    double dbNetTime = endDbNetTime - startTime;
+    LOGI("dbNetTime(%fms)\n", dbNetTime);
 
-    std::vector<Angle> angles;
-    std::vector<TextLine> textLines;
+    std::vector<TextBlock> textBlocks;
     std::string strRes;
     for (int i = 0; i < textBoxes.size(); ++i) {
         LOGI("-----TextBox[%d] score(%f)-----\n", i, textBoxes[i].score);
         double startTextBox = getCurrentTime();
         cv::Mat partImg;
-        cv::RotatedRect partRect = getPartRect(textBoxes[i].box, scaleWidth,
+        cv::RotatedRect partRect = getPartRect(textBoxes[i].boxPoint, scaleWidth,
                                                scaleHeight);
         LOGI("partRect(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
              partRect.center.x, partRect.center.y,
@@ -272,10 +272,10 @@ OcrResult OcrLite::detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
         //drawTextBox
         drawTextBox(textBoxPaddingImg, partRect, thickness);
         LOGI("TextBoxPos([x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d])\n",
-             textBoxes[i].box[0].x, textBoxes[i].box[0].y,
-             textBoxes[i].box[1].x, textBoxes[i].box[1].y,
-             textBoxes[i].box[2].x, textBoxes[i].box[2].y,
-             textBoxes[i].box[3].x, textBoxes[i].box[3].y);
+             textBoxes[i].boxPoint[0].x, textBoxes[i].boxPoint[0].y,
+             textBoxes[i].boxPoint[1].x, textBoxes[i].boxPoint[1].y,
+             textBoxes[i].boxPoint[2].x, textBoxes[i].boxPoint[2].y,
+             textBoxes[i].boxPoint[3].x, textBoxes[i].boxPoint[3].y);
 
         //Rotate Img
         if (partImg.rows > 1.5 * partImg.cols) {
@@ -292,7 +292,6 @@ OcrResult OcrLite::detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
         //Log Angle
         LOGI("angle(index=%d, score=%f)\n", angle.index, angle.score);
         LOGI("getAngleTime(%fms)\n", angle.time);
-        angles.push_back(angle);
 
         //Rotate Img
         if (angle.index == 0) {
@@ -300,29 +299,33 @@ OcrResult OcrLite::detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
         }
 
         //getTextLine
-        double startTextLine = getCurrentTime();
+        double startCrnnTime = getCurrentTime();
         TextLine textLine = getTextLine(partImg);
-        double endTextLine = getCurrentTime();
-        textLine.time = endTextLine - startTextLine;
+        double endCrnnTime = getCurrentTime();
+        textLine.time = endCrnnTime - startCrnnTime;
 
         //Log textLine
-        LOGI("textLine(%s)\n", textLine.line.c_str());
+        LOGI("textLine(%s)\n", textLine.text.c_str());
         std::ostringstream txtScores;
-        for (int s = 0; s < textLine.scores.size(); ++s) {
-            if (s == 0) txtScores << textLine.scores[s];
-            txtScores << " ," << textLine.scores[s];
+        for (int s = 0; s < textLine.charScores.size(); ++s) {
+            if (s == 0) txtScores << textLine.charScores[s];
+            txtScores << " ," << textLine.charScores[s];
         }
         LOGI("textScores{%s}\n", std::string(txtScores.str()).c_str());
-        LOGI("getTextLineTime(%fms)\n", textLine.time);
-        textLines.push_back(textLine);
+        LOGI("crnnTime(%fms)\n", textLine.time);
 
         //Log TextBox[i]Time
         double endTextBox = getCurrentTime();
         double timeTextBox = endTextBox - startTextBox;
         LOGI("TextBox[%i]Time(%fms)\n", i, timeTextBox);
 
-        strRes.append(textLine.line);
+        strRes.append(textLine.text);
         strRes.append("\n");
+
+        TextBlock textBlock(textBoxes[i].boxPoint, textBoxes[i].score, angle.index, angle.score,
+                            angle.time, textLine.text, textLine.charScores, textLine.time,
+                            timeTextBox);
+        textBlocks.emplace_back(textBlock);
     }
     double endTime = getCurrentTime();
     double fullTime = endTime - startTime;
@@ -337,5 +340,5 @@ OcrResult OcrLite::detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
         textBoxImg = textBoxPaddingImg;
     }
 
-    return OcrResult(textBoxes, textBoxesTime, angles, textLines, textBoxImg, strRes, fullTime);
+    return OcrResult(textBlocks, dbNetTime, textBoxImg, fullTime, strRes);
 }

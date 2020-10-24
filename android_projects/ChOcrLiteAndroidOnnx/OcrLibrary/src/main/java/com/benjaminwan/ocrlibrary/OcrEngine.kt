@@ -34,6 +34,6 @@ class OcrEngine(context: Context) {
         input: Bitmap, output: Bitmap, padding: Int, reSize: Int,
         boxScoreThresh: Float, boxThresh: Float, miniArea: Float,
         scaleWidth: Float, scaleHeight: Float
-    ): String
+    ): OcrResult
 
 }
