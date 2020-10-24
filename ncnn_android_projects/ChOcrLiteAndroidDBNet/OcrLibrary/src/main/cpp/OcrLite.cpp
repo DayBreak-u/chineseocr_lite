@@ -1,8 +1,8 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
-#include "OcrLite.h"
-#include "LogUtils.h"
 #include "RRLib.h"
+#include "OcrLite.h"
+#include "OcrUtils.h"
 #include <iosfwd>
 
 using namespace RRLib;
@@ -33,7 +33,8 @@ char *readKeysFromAssets(AAssetManager *mgr) {
     return buffer;
 }
 
-OcrLite::OcrLite(JNIEnv *env, jobject assetManager) {
+OcrLite::OcrLite(JNIEnv *env, jobject assetManager, int numOfThread) {
+    numThread = numOfThread;
     AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
     if (mgr == NULL) {
         LOGE(" %s", "AAssetManager==NULL");
@@ -54,27 +55,35 @@ OcrLite::OcrLite(JNIEnv *env, jobject assetManager) {
         LOGE("# %d  %d  %d  %d %d  %d  %d  %d", ret1, ret2, ret3, ret4, ret5, ret6, ret7, ret8);
     }
     //int lineCount = 0;
+    //load keys
     char *buffer = readKeysFromAssets(mgr);
-    if (buffer != NULL) {//有该文件
+    if (buffer != NULL) {
         std::istringstream inStr(buffer);
         std::string line;
         //LOGI(" txt file  found");
-        while (getline(inStr, line)) { // line中不包括每行的换行符
+        while (getline(inStr, line)) {
             keys.emplace_back(line);
             //lineCount++;
         }
         //LOGI("lineCount = %d", lineCount);
         free(buffer);
-    } else {// 没有该文件
+    } else {
         LOGE(" txt file not found");
     }
-    //LOGI("初始化完成!");
+    LOGI("Init Models Success!");
+}
+
+OcrLite::~OcrLite() {
+    dbNet.clear();
+    angleNet.clear();
+    crnnNet.clear();
 }
 
 std::vector<TextBox>
 OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s,
                       float boxScoreThresh, float boxThresh, float minArea) {
-    std::vector<TextBox> rsBoxes;
+    cv::Mat srcResize;
+    cv::resize(src, srcResize, cv::Size(s.dstWidth, s.dstHeight));
     ncnn::Mat input = ncnn::Mat::from_pixels_resize(src.data, ncnn::Mat::PIXEL_BGR2RGB,
                                                     src.cols, src.rows,
                                                     s.dstWidth, s.dstHeight);
@@ -89,10 +98,9 @@ OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s,
     cv::Mat fMapMat(s.dstHeight, s.dstWidth, CV_32FC1);
     memcpy(fMapMat.data, (float *) out.data, s.dstWidth * s.dstHeight * sizeof(float));
 
+    std::vector<TextBox> rsBoxes;
     cv::Mat norfMapMat;
-
     norfMapMat = fMapMat > boxThresh;
-
     rsBoxes.clear();
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(norfMapMat, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
@@ -118,15 +126,14 @@ OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s,
 
         rsBoxes.emplace_back(TextBox(minBox, score));
     }
-    reverse(rsBoxes.begin(), rsBoxes.end());//反转，调整顺序
+    reverse(rsBoxes.begin(), rsBoxes.end());
     return rsBoxes;
 }
 
-Angle scoreToAngle(ncnn::Mat &score) {
-    auto *srcData = (float *) score.data;
+Angle scoreToAngle(const float *srcData, int w) {
     int angleIndex = 0;
     float maxValue = -1000.0f;
-    for (int i = 0; i < score.w; i++) {
+    for (int i = 0; i < w; i++) {
         if (i == 0)maxValue = srcData[i];
         else if (srcData[i] > maxValue) {
             angleIndex = i;
@@ -137,37 +144,34 @@ Angle scoreToAngle(ncnn::Mat &score) {
 }
 
 Angle OcrLite::getAngle(cv::Mat &src) {
-    float scale = (float) angleDstHeight / (float) src.rows;
-    int angleDstWidth = int((float) src.cols * scale);
-    ncnn::Mat input = ncnn::Mat::from_pixels_resize(
+    ncnn::Mat input = ncnn::Mat::from_pixels(
             src.data, ncnn::Mat::PIXEL_BGR2RGB,
-            src.cols, src.rows,
-            angleDstWidth, angleDstHeight);
+            src.cols, src.rows);
     input.substract_mean_normalize(meanValsAngle, normValsAngle);
     ncnn::Extractor extractor = angleNet.create_extractor();
     extractor.set_num_threads(numThread);
     extractor.input("input", input);
     ncnn::Mat out;
     extractor.extract("out", out);
-    return scoreToAngle(out);
+    return scoreToAngle((float *) out.data, out.w);
 }
 
-TextLine OcrLite::scoreToTextLine(ncnn::Mat &score) {
-    auto *srcData = (float *) score.data;
+TextLine OcrLite::scoreToTextLine(const float *srcData, int h, int w) {
     std::string strRes;
     int lastIndex = 0;
+    int keySize = keys.size();
     std::vector<float> scores;
-    for (int i = 0; i < score.h; i++) {
+    for (int i = 0; i < h; i++) {
         //find max score
         int maxIndex = 0;
         float maxValue = -1000.f;
-        for (int j = 0; j < score.w; j++) {
-            if (srcData[i * score.w + j] > maxValue) {
-                maxValue = srcData[i * score.w + j];
+        for (int j = 0; j < w; j++) {
+            if (srcData[i * w + j] > maxValue) {
+                maxValue = srcData[i * w + j];
                 maxIndex = j;
             }
         }
-        if (maxIndex > 0 && (not(i > 0 && maxIndex == lastIndex))) {
+        if (maxIndex > 0 && maxIndex < keySize && (!(i > 0 && maxIndex == lastIndex))) {
             scores.emplace_back(maxValue);
             strRes.append(keys[maxIndex - 1]);
         }
@@ -185,13 +189,15 @@ ncnn::Extractor OcrLite::getExtractor(int angleIndex) {
 }
 
 TextLine OcrLite::getTextLine(cv::Mat &src, int angleIndex) {
-    // 开始文本识别
     float scale = (float) crnnDstHeight / (float) src.rows;
     int dstWidth = int((float) src.cols * scale);
 
-    ncnn::Mat input = ncnn::Mat::from_pixels_resize(
-            src.data, ncnn::Mat::PIXEL_BGR2GRAY,
-            src.cols, src.rows, dstWidth, crnnDstHeight);
+    cv::Mat srcResize;
+    cv::resize(src, srcResize, cv::Size(dstWidth, crnnDstHeight));
+
+    ncnn::Mat input = ncnn::Mat::from_pixels(
+            srcResize.data, ncnn::Mat::PIXEL_BGR2GRAY,
+            srcResize.cols, srcResize.rows);
 
     input.substract_mean_normalize(meanValsCrnn, normValsCrnn);
 
@@ -236,14 +242,30 @@ TextLine OcrLite::getTextLine(cv::Mat &src, int angleIndex) {
         memcpy(blob263.row(i), blob263_i, 5530 * sizeof(float));
     }
 
-    return scoreToTextLine(blob263);
+    return scoreToTextLine((float *) blob263.data, blob263.h, blob263.w);
 }
 
-std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
-                            float boxScoreThresh, float boxThresh, float minArea,
-                            float angleScaleWidth, float angleScaleHeight,
-                            float textScaleWidth, float textScaleHeight) {
+cv::Mat adjustAngleImg(cv::Mat &src, int dstWidth, int dstHeight) {
+    cv::Mat srcResize;
+    float scale = (float) dstHeight / (float) src.rows;
+    int angleWidth = int((float) src.cols * scale);
+    cv::resize(src, srcResize, cv::Size(angleWidth, dstHeight));
+    cv::Mat srcFit = cv::Mat(dstHeight, dstWidth, CV_8UC3, cv::Scalar(255, 255, 255));
+    if (angleWidth < dstWidth) {
+        cv::Rect rect(0, 0, srcResize.cols, srcResize.rows);
+        srcResize.copyTo(srcFit(rect));
+    } else {
+        cv::Rect rect(0, 0, dstWidth, dstHeight);
+        srcResize(rect).copyTo(srcFit);
+    }
+    return srcFit;
+}
 
+OcrResult OcrLite::detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
+                          float boxScoreThresh, float boxThresh, float minArea,
+                          float scaleWidth, float scaleHeight) {
+
+    cv::Mat textBoxPaddingImg = src.clone();
     //文字框 线宽
     int thickness = getThickness(src);
     //图像文字分割
@@ -251,58 +273,101 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
     LOGI("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)", scale.srcWidth, scale.srcHeight,
          scale.dstWidth, scale.dstHeight,
          scale.scaleWidth, scale.scaleHeight);
+
     double startTime = getCurrentTime();
-    std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea);
-    LOGI("TextBoxes Size = %d", textBoxes.size());
-    double endTimeTextBoxes = getCurrentTime();
-    printTime("Time getTextBoxes", startTime, endTimeTextBoxes);
+    std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh,
+                                                  minArea);
+    LOGI("TextBoxesSize(%ld)\n", textBoxes.size());
 
-    std::string strRes;//存放结果
+    double endDbNetTime = getCurrentTime();
+    double dbNetTime = endDbNetTime - startTime;
+    LOGI("dbNetTime(%fms)\n", dbNetTime);
+
+    std::vector<TextBlock> textBlocks;
+    std::string strRes;
     for (int i = 0; i < textBoxes.size(); ++i) {
-        LOGI("-----TextBox[%d] score(%f)-----", i, textBoxes[i].score);
-        double startTextLine = getCurrentTime();
-        cv::Mat angleImg;//用于识别文字方向
-        cv::RotatedRect rectAngle = getPartRect(textBoxes[i].box, angleScaleWidth,
-                                                angleScaleHeight);//识别文字方向的范围可以小一些
-        RRLib::getRotRectImg(rectAngle, src, angleImg);
-        LOGI("rectAngle(%f, %f)", rectAngle.size.width, rectAngle.size.height);
+        LOGI("-----TextBox[%d] score(%f)-----\n", i, textBoxes[i].score);
+        double startTextBox = getCurrentTime();
+        cv::Mat partImg;
+        cv::RotatedRect partRect = getPartRect(textBoxes[i].boxPoint, scaleWidth,
+                                               scaleHeight);
+        LOGI("partRect(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
+             partRect.center.x, partRect.center.y,
+             partRect.size.width, partRect.size.height,
+             partRect.angle);
 
-        cv::Mat textImg;//用于识别文字
-        cv::RotatedRect rectText = getPartRect(textBoxes[i].box, textScaleWidth,
-                                               textScaleHeight);//识别文字的范围需要加大一些
-        RRLib::getRotRectImg(rectText, src, textImg);
-        LOGI("rectText(%f, %f)", rectText.size.width, rectText.size.height);
+        RRLib::getRotRectImg(partRect, src, partImg);
 
-        //文字框
-        drawTextBox(imgBox, rectText, thickness);
-        for (int p = 0; p < 4; ++p) {
-            LOGI("Pt%d(x: %d, y: %d)", p, textBoxes[i].box[p].x, textBoxes[i].box[p].y);
+        //drawTextBox
+        drawTextBox(textBoxPaddingImg, partRect, thickness);
+        LOGI("TextBoxPos([x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d])\n",
+             textBoxes[i].boxPoint[0].x, textBoxes[i].boxPoint[0].y,
+             textBoxes[i].boxPoint[1].x, textBoxes[i].boxPoint[1].y,
+             textBoxes[i].boxPoint[2].x, textBoxes[i].boxPoint[2].y,
+             textBoxes[i].boxPoint[3].x, textBoxes[i].boxPoint[3].y);
+
+        //Rotate Img
+        if (partImg.rows > 1.5 * partImg.cols) {
+            partImg = matRotateClockWise90(partImg);
         }
 
-        //文字方向识别
-        if (angleImg.rows > 1.5 * angleImg.cols) {//把竖向的图统一转为横向
-            angleImg = matRotateClockWise90(angleImg);
-            textImg = matRotateClockWise90(textImg);
-        }
+        //getAngle
+        double startAngle = getCurrentTime();
+        auto angleImg = adjustAngleImg(partImg, angleDstWidth, angleDstHeight);
         Angle angle = getAngle(angleImg);
-        if (angle.index == 0 || angle.index == 2)
-            textImg = matRotateClockWise180(textImg); //把文字的方向统一
-        LOGI("angle(index=%d, score=%f)", angle.index, angle.score);
+        double endAngle = getCurrentTime();
+        angle.time = endAngle - startAngle;
 
-        //文字识别
-        TextLine textLine = getTextLine(textImg, angle.index);
-        std::ostringstream txtScores;
-        for (int s = 0; s < textLine.scores.size(); ++s) {
-            txtScores << textLine.scores[s] << ",";
+        //Log Angle
+        LOGI("angle(index=%d, score=%f)\n", angle.index, angle.score);
+        LOGI("getAngleTime(%fms)\n", angle.time);
+
+        //Rotate Img
+        if (angle.index == 0 || angle.index == 2) {
+            partImg = matRotateClockWise180(partImg);
         }
-        LOGI("text(line=%s, scores={%s})", textLine.line.c_str(), string(txtScores.str()).c_str());
-        strRes.append(textLine.line);
+
+        //getTextLine
+        double startCrnnTime = getCurrentTime();
+        TextLine textLine = getTextLine(partImg, angle.index);
+        double endCrnnTime = getCurrentTime();
+        textLine.time = endCrnnTime - startCrnnTime;
+
+        //Log textLine
+        LOGI("textLine(%s)\n", textLine.text.c_str());
+        std::ostringstream txtScores;
+        for (int s = 0; s < textLine.charScores.size(); ++s) {
+            if (s == 0) txtScores << textLine.charScores[s];
+            txtScores << " ," << textLine.charScores[s];
+        }
+        LOGI("textScores{%s}\n", std::string(txtScores.str()).c_str());
+        LOGI("crnnTime(%fms)\n", textLine.time);
+
+        //Log TextBox[i]Time
+        double endTextBox = getCurrentTime();
+        double timeTextBox = endTextBox - startTextBox;
+        LOGI("TextBox[%i]Time(%fms)\n", i, timeTextBox);
+
+        strRes.append(textLine.text);
         strRes.append("\n");
-        double endTextLine = getCurrentTime();
-        printTime("Time TextLine", startTextLine, endTextLine);
+
+        TextBlock textBlock(textBoxes[i].boxPoint, textBoxes[i].score, angle.index, angle.score,
+                            angle.time, textLine.text, textLine.charScores, textLine.time,
+                            timeTextBox);
+        textBlocks.emplace_back(textBlock);
     }
     double endTime = getCurrentTime();
-    printTime("Time Full", startTime, endTime);
-    LOGI("=====End detect=====");
-    return strRes;
+    double fullTime = endTime - startTime;
+    LOGI("=====End detect=====\n");
+    LOGI("FullDetectTime(%fms)\n", fullTime);
+
+    //cropped to original size
+    cv::Mat textBoxImg;
+    if (originRect.x > 0 && originRect.y > 0) {
+        textBoxPaddingImg(originRect).copyTo(textBoxImg);
+    } else {
+        textBoxImg = textBoxPaddingImg;
+    }
+
+    return OcrResult(textBlocks, dbNetTime, textBoxImg, fullTime, strRes);
 }

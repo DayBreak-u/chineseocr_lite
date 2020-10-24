@@ -1,8 +1,7 @@
-#ifndef __OCR_LITE_OCR_STRUCT_H__
-#define __OCR_LITE_OCR_STRUCT_H__
+#ifndef __OCR_STRUCT_H__
+#define __OCR_STRUCT_H__
 
 #include "opencv2/core.hpp"
-#include "ncnn/net.h"
 #include <vector>
 
 struct ScaleParam {
@@ -29,16 +28,17 @@ struct ScaleParam {
 };
 
 struct TextBox {
-    std::vector <cv::Point> box;
+    std::vector<cv::Point> boxPoint;
     float score;
 
-    TextBox(std::vector <cv::Point> box,
-            float score) : box(box), score(score) {};
+    TextBox(std::vector<cv::Point> boxPoint,
+            float score) : boxPoint(boxPoint), score(score) {};
 };
 
 struct Angle {
     int index;
     float score;
+    double time;
 
     Angle(int index,
           float score
@@ -47,11 +47,50 @@ struct Angle {
 };
 
 struct TextLine {
-    std::string line;
-    std::vector<float> scores;
+    std::string text;
+    std::vector<float> charScores;
+    double time;
 
     TextLine(std::string line,
-             std::vector<float> scores) : line(line), scores(scores) {};
+             std::vector<float> scores) : text(line), charScores(scores) {};
 };
 
-#endif //__OCR_LITE_OCR_STRUCT_H__
+struct TextBlock {
+    std::vector<cv::Point> boxPoint;
+    float boxScore;
+    int angleIndex;
+    float angleScore;
+    double angleTime;
+    std::string text;
+    std::vector<float> charScores;
+    double crnnTime;
+    double blockTime;
+
+    TextBlock(
+            std::vector<cv::Point> boxPoint, float boxScore,
+            int angleIndex, float angleScore, double angleTime,
+            std::string text, std::vector<float> charScores, double crnnTime,
+            double blockTime
+    ) : boxPoint(boxPoint), boxScore(boxScore), angleIndex(angleIndex), angleScore(angleScore),
+        angleTime(angleTime),
+        text(text), charScores(charScores), crnnTime(crnnTime), blockTime(blockTime) {};
+};
+
+struct OcrResult {
+    double dbNetTime;
+    std::vector<TextBlock> textBlocks;
+    cv::Mat boxImg;
+    double detectTime;
+    std::string strRes;
+
+    OcrResult(
+            std::vector<TextBlock> textBlocks,
+            double dbNetTime,
+            cv::Mat boxImg,
+            double detectTime,
+            std::string strRes
+    ) : textBlocks(textBlocks), dbNetTime(dbNetTime),
+        boxImg(boxImg), detectTime(detectTime), strRes(strRes) {};
+};
+
+#endif //__OCR_STRUCT_H__

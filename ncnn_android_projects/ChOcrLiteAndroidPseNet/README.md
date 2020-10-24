@@ -45,10 +45,7 @@ sharedLibs
 #### DBNet版本
 [ChOcrLiteAndroidDBNet](https://github.com/ouyanghuiyu/chineseocr_lite/tree/master/ncnn_android_projects/ChOcrLiteAndroidDBNet)
 
-#### onnx分支版本
-[ChOcrLiteAndroidOnnx](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx//ncnn_android_projectsChOcrLiteAndroidOnnx)
-
 #### Android各版本区别(仅供参考)
 1. 模型总大小对比：未压缩的情况下，PseNet版(27.3M) > DBNet版(23M) > onnx版(4.72M)。
 2. PseNet与DBNet版本仅图像分割的算法不同，文字方向检测与文字识别部分完全相同。分割速度方面，DBNet版本稍微快一点点，分割效果方面，PseNet效果稍好一点点。
-3. onnx版本与其它两个版本最大不同在于模型超轻量，当然总体的效果就不如其它两个版本，没有专门针对竖向文字的模型，所以对竖向文字的识别效果比其它两个版本差(比如春联)。速度方面与DBNet版本差不多。
+
