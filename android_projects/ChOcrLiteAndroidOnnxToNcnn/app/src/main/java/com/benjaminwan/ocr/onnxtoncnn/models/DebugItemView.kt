@@ -1,12 +1,11 @@
 package com.benjaminwan.ocr.onnxtoncnn.models
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
-import androidx.annotation.ColorInt
-import com.airbnb.epoxy.*
+import com.airbnb.epoxy.AfterPropsSet
+import com.airbnb.epoxy.ModelView
+import com.airbnb.epoxy.TextProp
 import com.benjaminwan.ocr.onnxtoncnn.R
 import kotlinx.android.synthetic.main.rv_debug_item_content.view.*
 import kotlinx.android.synthetic.main.rv_debug_view_item.view.*
