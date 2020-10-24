@@ -372,7 +372,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         }
 
         //Rotate Img
-        if (angle.index == 0 || angle.index == 2) {
+        if (angle.index == 0) {
             partImg = matRotateClockWise180(partImg);
         }
 
