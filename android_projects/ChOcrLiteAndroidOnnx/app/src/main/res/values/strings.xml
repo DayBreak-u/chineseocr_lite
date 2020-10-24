@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">OcrLiteOnnx</string>
+
+    <string name="box_score_thresh">框置信度门限</string>
+    <string name="min_area">最小区域门限</string>
+    <string name="box_scale_width">文字框宽</string>
+    <string name="box_scale_height">文字框高</string>
+
+    <string name="app_permission">获取相机权限</string>
 </resources>
