@@ -15,7 +15,7 @@ python backend/main.py
 
 ## [ncnn推理](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnxToNcnn)
 
-## [onnx c++推理]*(https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
+## [onnx c++推理](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
 
 ## [android](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/android_projects)
 
