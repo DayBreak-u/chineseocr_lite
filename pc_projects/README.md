@@ -1,3 +1,5 @@
+## 因如下测试结果，OcrLiteOnnx项目将会继续更新，OcrLiteOnnxToNcnn项目停止更新
+
 ## 以下内容仅代表benjaminwan个人观点 仅供参考
 
 #### PC平台onnxruntime vs ncnn对比测试介绍

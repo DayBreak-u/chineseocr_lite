@@ -17,5 +17,8 @@ set OMP_NUM_THREADS=$NUM_THREADS
 
 ##### run test on MacOS or Linux
 pushd build
-./OcrLiteOnnx ../../test_imgs/1.jpg ../models $NUM_THREADS 50 0 0.6 0.3 3 1.8 1.8
+./OcrLiteOnnx --models ../models --image ../../test_imgs/1.jpg \
+--numThread $NUM_THREADS --padding 50 --imgResize 0 \
+--boxScoreThresh 0.6 --boxThresh 0.3 --minArea 3 \
+--unClipRatio 2.0
 popd
