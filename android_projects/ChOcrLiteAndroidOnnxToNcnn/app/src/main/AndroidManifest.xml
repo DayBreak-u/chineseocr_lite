@@ -3,6 +3,7 @@
     package="com.benjaminwan.ocr.onnxtoncnn">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".app.App"
@@ -26,6 +27,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".CameraActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ImeiActivity"
             android:screenOrientation="portrait" />
     </application>
 
