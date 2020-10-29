@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_enabled="true"
+        android:state_checked="true"
+        android:state_pressed="false"
+        android:color="@color/material_blue_300"
+        />
+    <item
+        android:state_enabled="true"
+        android:state_checked="false"
+        android:state_pressed="false"
+        android:color="@color/material_blue_300"
+        />
+    <item
+        android:state_enabled="true"
+        android:state_pressed="true"
+        android:color="@color/material_blue_500"
+        />
+    <item
+        android:state_enabled="false"
+        android:color="@color/material_blue_200"
+        />
+</selector>
