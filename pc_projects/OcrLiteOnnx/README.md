@@ -32,19 +32,19 @@ OcrLiteOnnx/models
 ```
 OcrLiteOnnx/onnx
 ├── include
-│   └── onnx
-│       ├── cpu_provider_factory.h
-│       ├── cuda_provider_factory.h
-│       ├── onnxruntime_c_api.h
-│       ├── onnxruntime_cxx_api.h
-│       ├── onnxruntime_cxx_inline.h
-│       └── onnxruntime_session_options_config_keys.h
+│   └── onnx
+│       ├── cpu_provider_factory.h
+│       ├── cuda_provider_factory.h
+│       ├── onnxruntime_c_api.h
+│       ├── onnxruntime_cxx_api.h
+│       ├── onnxruntime_cxx_inline.h
+│       └── onnxruntime_session_options_config_keys.h
 ├── linux
-│   ├── libonnxruntime.so -> libonnxruntime.so.1.5.2
-│   └── libonnxruntime.so.1.5.2
+│   ├── libonnxruntime.so -> libonnxruntime.so.1.5.2
+│   └── libonnxruntime.so.1.5.2
 ├── macos
-│   ├── libonnxruntime.1.5.2.dylib
-│   └── libonnxruntime.dylib -> libonnxruntime.1.5.2.dylib
+│   ├── libonnxruntime.1.5.2.dylib
+│   └── libonnxruntime.dylib -> libonnxruntime.1.5.2.dylib
 └── windows
     ├── onnxruntime.dll
     ├── onnxruntime.lib
@@ -114,3 +114,8 @@ onnxruntime设置线程数分为2个部分:
 2. execution of the graph，这个线程数可以通过代码设置
 ```sessionOptions.SetInterOpNumThreads(numThread);```
 测试脚本通过检查当前的CPU逻辑核心数量，设置环境变量来配置第一个线程数，通过命令行传入第三个参数numThread来配置第二个线程数
+
+#### 关于输入参数
+请参考main.h中的命令行参数说明
+特别说明:```-a --doAngle```参数用于开关文字方向检测
+只有图片倒置的情况下(相对于正常方向旋转90~270度的图片)，才需要启用文字方向检测。

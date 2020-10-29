@@ -1,5 +1,7 @@
+#include <opencv2/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 #include "OcrUtils.h"
-#include "RRLib.h"
+#include "clipper.hpp"
 
 double getCurrentTime() {
     return (static_cast<double>(cv::getTickCount())) / cv::getTickFrequency() * 1000;//单位毫秒
@@ -24,7 +26,6 @@ ScaleParam getScaleParam(cv::Mat &src, const float scale) {
 }
 
 ScaleParam getScaleParam(cv::Mat &src, const int targetSize) {
-
     int srcWidth, srcHeight, dstWidth, dstHeight;
     srcWidth = dstWidth = src.cols;
     srcHeight = dstHeight = src.rows;
@@ -79,6 +80,14 @@ void drawTextBox(cv::Mat &boxImg, cv::RotatedRect &rect, int thickness) {
     //cv::polylines(srcmat, textpoint, true, cv::Scalar(0, 255, 0), 2);
 }
 
+void drawTextBox(cv::Mat &boxImg, const std::vector<cv::Point> &box, int thickness) {
+    auto color = cv::Scalar(0, 0, 255);
+    cv::line(boxImg, box[0], box[1], color, thickness);
+    cv::line(boxImg, box[1], box[2], color, thickness);
+    cv::line(boxImg, box[2], box[3], color, thickness);
+    cv::line(boxImg, box[3], box[0], color, thickness);
+}
+
 cv::Mat matRotateClockWise180(cv::Mat src) {
     flip(src, src, 0);
     flip(src, src, 1);
@@ -91,29 +100,99 @@ cv::Mat matRotateClockWise90(cv::Mat src) {
     return src;
 }
 
+cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
+    cv::Mat image;
+    src.copyTo(image);
+    std::vector<cv::Point> points = box;
+
+    int collectX[4] = {box[0].x, box[1].x, box[2].x, box[3].x};
+    int collectY[4] = {box[0].y, box[1].y, box[2].y, box[3].y};
+    int left = int(*std::min_element(collectX, collectX + 4));
+    int right = int(*std::max_element(collectX, collectX + 4));
+    int top = int(*std::min_element(collectY, collectY + 4));
+    int bottom = int(*std::max_element(collectY, collectY + 4));
+
+    cv::Mat imgCrop;
+    image(cv::Rect(left, top, right - left, bottom - top)).copyTo(imgCrop);
+
+    for (int i = 0; i < points.size(); i++) {
+        points[i].x -= left;
+        points[i].y -= top;
+    }
+
+    int imgCropWidth = int(sqrt(pow(points[0].x - points[1].x, 2) +
+                                pow(points[0].y - points[1].y, 2)));
+    int imgCropHeight = int(sqrt(pow(points[0].x - points[3].x, 2) +
+                                 pow(points[0].y - points[3].y, 2)));
+
+    cv::Point2f ptsDst[4];
+    ptsDst[0] = cv::Point2f(0., 0.);
+    ptsDst[1] = cv::Point2f(imgCropWidth, 0.);
+    ptsDst[2] = cv::Point2f(imgCropWidth, imgCropHeight);
+    ptsDst[3] = cv::Point2f(0.f, imgCropHeight);
+
+    cv::Point2f ptsSrc[4];
+    ptsSrc[0] = cv::Point2f(points[0].x, points[0].y);
+    ptsSrc[1] = cv::Point2f(points[1].x, points[1].y);
+    ptsSrc[2] = cv::Point2f(points[2].x, points[2].y);
+    ptsSrc[3] = cv::Point2f(points[3].x, points[3].y);
+
+    cv::Mat M = cv::getPerspectiveTransform(ptsSrc, ptsDst);
+
+    cv::Mat partImg;
+    cv::warpPerspective(imgCrop, partImg, M,
+                        cv::Size(imgCropWidth, imgCropHeight),
+                        cv::BORDER_REPLICATE);
+
+    if (float(partImg.rows) >= float(partImg.cols) * 1.5) {
+        cv::Mat srcCopy = cv::Mat(partImg.rows, partImg.cols, partImg.depth());
+        cv::transpose(partImg, srcCopy);
+        cv::flip(srcCopy, srcCopy, 0);
+        return srcCopy;
+    } else {
+        return partImg;
+    }
+}
+
+cv::Mat adjustAngleImg(cv::Mat &src, int dstWidth, int dstHeight) {
+    cv::Mat srcResize;
+    float scale = (float) dstHeight / (float) src.rows;
+    int angleWidth = int((float) src.cols * scale);
+    cv::resize(src, srcResize, cv::Size(angleWidth, dstHeight));
+    cv::Mat srcFit = cv::Mat(dstHeight, dstWidth, CV_8UC3, cv::Scalar(255, 255, 255));
+    if (angleWidth < dstWidth) {
+        cv::Rect rect(0, 0, srcResize.cols, srcResize.rows);
+        srcResize.copyTo(srcFit(rect));
+    } else {
+        cv::Rect rect(0, 0, dstWidth, dstHeight);
+        srcResize(rect).copyTo(srcFit);
+    }
+    return srcFit;
+}
+
 bool cvPointCompare(cv::Point a, cv::Point b) {
     return a.x < b.x;
 }
 
 int
-getMiniBoxes(std::vector<cv::Point> &invec, std::vector<cv::Point> &minboxvec, float &minedgesize,
-             float &alledgesize) {
-    cv::RotatedRect textrect = cv::minAreaRect(invec);
+getMiniBoxes(std::vector<cv::Point> &inVec, std::vector<cv::Point> &minBoxVec, float &minEdgeSize,
+             float &allEdgeSize) {
+    cv::RotatedRect textRect = cv::minAreaRect(inVec);
     cv::Mat boxPoints2f;
-    cv::boxPoints(textrect, boxPoints2f);
+    cv::boxPoints(textRect, boxPoints2f);
 
     float *p1 = (float *) boxPoints2f.data;
-    std::vector<cv::Point> tmpvev;
+    std::vector<cv::Point> tmpVec;
     for (int i = 0; i < 4; ++i, p1 += 2) {
-        tmpvev.emplace_back((int) (p1[0]), (int) (p1[1]));
+        tmpVec.emplace_back((int) (p1[0]), (int) (p1[1]));
     }
 
-    std::sort(tmpvev.begin(), tmpvev.end(), cvPointCompare);
+    std::sort(tmpVec.begin(), tmpVec.end(), cvPointCompare);
 
-    minboxvec.clear();
+    minBoxVec.clear();
 
     int index1 = 0, index2 = 0, index3 = 0, index4 = 0;
-    if (tmpvev[1].y > tmpvev[0].y) {
+    if (tmpVec[1].y > tmpVec[0].y) {
         index1 = 0;
         index4 = 1;
     } else {
@@ -121,7 +200,7 @@ getMiniBoxes(std::vector<cv::Point> &invec, std::vector<cv::Point> &minboxvec, f
         index4 = 0;
     }
 
-    if (tmpvev[3].y > tmpvev[2].y) {
+    if (tmpVec[3].y > tmpVec[2].y) {
         index2 = 2;
         index3 = 3;
     } else {
@@ -129,16 +208,15 @@ getMiniBoxes(std::vector<cv::Point> &invec, std::vector<cv::Point> &minboxvec, f
         index3 = 2;
     }
 
-    minboxvec.clear();
+    minBoxVec.clear();
 
-    minboxvec.push_back(tmpvev[index1]);
-    minboxvec.push_back(tmpvev[index2]);
-    minboxvec.push_back(tmpvev[index3]);
-    minboxvec.push_back(tmpvev[index4]);
+    minBoxVec.push_back(tmpVec[index1]);
+    minBoxVec.push_back(tmpVec[index2]);
+    minBoxVec.push_back(tmpVec[index3]);
+    minBoxVec.push_back(tmpVec[index4]);
 
-    minedgesize = (std::min)(textrect.size.width, textrect.size.height);
-    alledgesize = 2.f * (textrect.size.width + textrect.size.height);
-
+    minEdgeSize = (std::min)(textRect.size.width, textRect.size.height);
+    allEdgeSize = 2.f * (textRect.size.width + textRect.size.height);
 
     return 1;
 }
@@ -185,4 +263,30 @@ float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box) {
     return cv::mean(mapmat(cv::Rect(cv::Point(xmin, ymin), cv::Point(xmax + 1, ymax + 1))).clone(),
                     maskmat).val[0];
 
+}
+
+// use clipper
+void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec, float unClipRatio) {
+    ClipperLib::Path poly;
+
+    for (int i = 0; i < minBoxVec.size(); ++i) {
+        poly.push_back(ClipperLib::IntPoint(minBoxVec[i].x, minBoxVec[i].y));
+    }
+
+    double distance = unClipRatio * ClipperLib::Area(poly) / (double) allEdgeSize;
+
+    ClipperLib::ClipperOffset clipperOffset;
+    clipperOffset.AddPath(poly, ClipperLib::JoinType::jtRound, ClipperLib::EndType::etClosedPolygon);
+    ClipperLib::Paths polys;
+    polys.push_back(poly);
+    clipperOffset.Execute(polys, distance);
+
+    outVec.clear();
+    std::vector<cv::Point> rsVec;
+    for (int i = 0; i < polys.size(); ++i) {
+        ClipperLib::Path tmpPoly = polys[i];
+        for (int j = 0; j < tmpPoly.size(); ++j) {
+            outVec.emplace_back(tmpPoly[j].X, tmpPoly[j].Y);
+        }
+    }
 }

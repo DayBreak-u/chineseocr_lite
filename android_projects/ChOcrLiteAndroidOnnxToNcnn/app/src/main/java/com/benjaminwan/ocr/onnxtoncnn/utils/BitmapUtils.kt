@@ -1,4 +1,4 @@
-package com.benjaminwan.ocr.onnxtoncnn
+package com.benjaminwan.ocr.onnxtoncnn.utils
 
 import android.content.Context
 import android.graphics.Bitmap

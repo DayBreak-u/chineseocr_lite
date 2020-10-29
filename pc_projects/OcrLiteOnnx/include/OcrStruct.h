@@ -28,11 +28,11 @@ struct ScaleParam {
 };
 
 struct TextBox {
-    std::vector<cv::Point> box;
+    std::vector<cv::Point> boxPoint;
     float score;
 
-    TextBox(std::vector<cv::Point> box,
-            float score) : box(box), score(score) {};
+    TextBox(std::vector<cv::Point> boxPoint,
+            float score) : boxPoint(boxPoint), score(score) {};
 };
 
 struct Angle {
@@ -47,33 +47,50 @@ struct Angle {
 };
 
 struct TextLine {
-    std::string line;
-    std::vector<float> scores;
+    std::string text;
+    std::vector<float> charScores;
     double time;
 
     TextLine(std::string line,
-             std::vector<float> scores) : line(line), scores(scores) {};
+             std::vector<float> scores) : text(line), charScores(scores) {};
+};
+
+struct TextBlock {
+    std::vector<cv::Point> boxPoint;
+    float boxScore;
+    int angleIndex;
+    float angleScore;
+    double angleTime;
+    std::string text;
+    std::vector<float> charScores;
+    double crnnTime;
+    double blockTime;
+
+    TextBlock(
+            std::vector<cv::Point> boxPoint, float boxScore,
+            int angleIndex, float angleScore, double angleTime,
+            std::string text, std::vector<float> charScores, double crnnTime,
+            double blockTime
+    ) : boxPoint(boxPoint), boxScore(boxScore), angleIndex(angleIndex), angleScore(angleScore),
+        angleTime(angleTime),
+        text(text), charScores(charScores), crnnTime(crnnTime), blockTime(blockTime) {};
 };
 
 struct OcrResult {
-    std::vector<TextBox> textBoxes;
-    double textBoxesTime;
-    std::vector<Angle> angles;
-    std::vector<TextLine> lines;
-    cv::Mat textBoxImg;
+    double dbNetTime;
+    std::vector<TextBlock> textBlocks;
+    cv::Mat boxImg;
+    double detectTime;
     std::string strRes;
-    double fullTime = 0.f;
 
     OcrResult(
-            std::vector<TextBox> textBoxes,
-            double textBoxesTime,
-            std::vector<Angle> angles,
-            std::vector<TextLine> lines,
-            cv::Mat textBoxImg,
-            std::string strRes,
-            double fullTime
-    ) : textBoxes(textBoxes), textBoxesTime(textBoxesTime), angles(angles),
-        lines(lines), textBoxImg(textBoxImg), strRes(strRes), fullTime(fullTime) {};
+            std::vector<TextBlock> textBlocks,
+            double dbNetTime,
+            cv::Mat boxImg,
+            double detectTime,
+            std::string strRes
+    ) : textBlocks(textBlocks), dbNetTime(dbNetTime),
+        boxImg(boxImg), detectTime(detectTime), strRes(strRes) {};
 };
 
 #endif //__OCR_STRUCT_H__
