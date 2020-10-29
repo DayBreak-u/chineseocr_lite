@@ -20,8 +20,8 @@ android {
         applicationId "com.benjaminwan.ocr.onnxtoncnn"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 4
-        versionName "1.1.0.20201024"
+        versionCode 7
+        versionName "1.3.1.20201029"
         signingConfig signingConfigs.ocr
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,7 +64,7 @@ dependencies {
     //Android
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    //implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     //glide
@@ -100,4 +100,7 @@ dependencies {
     //runWithPermissions 申请权限
     implementation 'com.afollestad.assent:core:3.0.0-RC4'
     implementation 'com.afollestad.assent:rationales:3.0.0-RC4'
+
+    //Logger
+    implementation 'com.orhanobut:logger:2.2.0'
 }

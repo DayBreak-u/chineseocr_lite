@@ -13,11 +13,16 @@ public:
 
     ~OcrLite();
 
+    void initLogger(bool isDebug);
+
+    void Logger(const char *format, ...);
+
     OcrResult detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                      float boxScoreThresh, float boxThresh, float minArea,
-                     float scaleWidth, float scaleHeight);
+                     float unClipRatio, bool doAngle);
 
 private:
+    bool isLOG = true;
     ncnn::Net dbNet, angleNet, crnnNet;
     int numThread = 4;
 
@@ -36,7 +41,7 @@ private:
     std::vector<std::string> keys;
 
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s,
-                                      float boxScoreThresh, float boxThresh, float minArea);
+                                      float boxScoreThresh, float boxThresh, float minArea, float unClipRatio);
 
     Angle getAngle(cv::Mat &src);
 
