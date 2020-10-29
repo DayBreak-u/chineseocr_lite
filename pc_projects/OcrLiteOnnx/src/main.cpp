@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
 
     std::string modelsDir, argImgPath, imgPath, imgName;
     modelsDir = "../models";
-    argImgPath = "../test_imgs/1.jpg";
+    argImgPath = "../../test_imgs/1.jpg";
     int numThread = 4;
     int padding = 50;
     int imgResize = 0;
@@ -32,10 +32,11 @@ int main(int argc, char **argv) {
     float minArea = 3.f;
     float unClipRatio = 2.0f;
     bool doAngle = true;
+    int flagAngle = 1;
 
     int opt;
     int optionIndex = 0;
-    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:nV?", long_options, &optionIndex)) != -1) {
+    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:V?", long_options, &optionIndex)) != -1) {
         //printf("option(-%c)=%s\n", opt, optarg);
         switch (opt) {
             case 'd':
@@ -76,9 +77,14 @@ int main(int argc, char **argv) {
                 unClipRatio = strtof(optarg, NULL);
                 printf("unClipRatio=%f\n", unClipRatio);
                 break;
-            case 'n':
-                doAngle = false;
-                printf("noAngle=%d\n", !doAngle);
+            case 'a':
+                flagAngle = (int) strtol(optarg, NULL, 10);
+                if (flagAngle == 0) {
+                    doAngle = false;
+                } else {
+                    doAngle = true;
+                }
+                printf("doAngle=%d\n", doAngle);
                 break;
             case '?':
                 printHelp(stdout, argv[0]);

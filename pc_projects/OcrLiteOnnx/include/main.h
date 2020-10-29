@@ -13,7 +13,7 @@ static const struct option long_options[] = {
         {"boxThresh",      required_argument, NULL, 'o'},
         {"minArea",        required_argument, NULL, 'm'},
         {"unClipRatio",    required_argument, NULL, 'u'},
-        {"noAngle",        no_argument,       NULL, 'n'},
+        {"doAngle",        required_argument, NULL, 'a'},
         {"help",           no_argument,       NULL, '?'},
         {NULL,             no_argument,       NULL, 0}
 };
@@ -33,12 +33,12 @@ const char *optionalMsg = "-t --numThread: value of numThread(int), default: 4\n
                           "-o --boxThresh: value of boxThresh(float), default: 0.3\n" \
                           "-m --minArea: value of minArea(float), default: 3.0\n" \
                           "-u --unClipRatio: value of unClipRatio(float), default: 2.0\n" \
-                          "-n --noAngle: Disable Angle Net, default: Enable\n\n";
+                          "-a --doAngle: Enable(1)/Disable(0) Angle Net, default: Enable\n\n";
 
 const char *otherMsg = "-? --help: print this help\n\n";
 
 
 const char *example1Msg = "Example1: %s --models models --image 1.jpg\n";
-const char *example2Msg = "Example1: %s -d models -i 1.jpg -t 4 -p 50 -s 0 -b 0.6 -o 0.3 -m 3 -u 2.0\n";
+const char *example2Msg = "Example1: %s -d models -i 1.jpg -t 4 -p 50 -s 0 -b 0.6 -o 0.3 -m 3 -u 2.0 -a 1\n";
 
 #endif //__MAIN_H__
