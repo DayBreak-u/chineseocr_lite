@@ -30,15 +30,15 @@ dbnet(图像分割)+anglenet(文字方向检测)+crnn(文字识别)
 ```
 ChOcrLiteAndroidOnnx/OcrLibrary/src/main/sharedLibs
 ├── arm64-v8a
-│   └── libopencv_java3.so
+│   └── libopencv_java3.so
 ├── armeabi-v7a
-│   └── libopencv_java3.so
+│   └── libopencv_java3.so
 ├── x86
-│   └── libopencv_java3.so
+│   └── libopencv_java3.so
 └── x86_64
     └── libopencv_java3.so
 ```
-5.  [模型下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/ncnn_project/models)
+5.  [模型下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/models_ncnn)
 ```
 ChOcrLiteAndroidOnnxToNcnn/OcrLibrary/src/main/assets
 ├── angle_op.bin
@@ -53,11 +53,11 @@ ChOcrLiteAndroidOnnxToNcnn/OcrLibrary/src/main/assets
 ```
 ChOcrLiteAndroidOnnxToNcnn/OcrLibrary/src/main/staticLibs
 ├── arm64-v8a
-│   └── libncnn.a
+│   └── libncnn.a
 ├── armeabi-v7a
-│   └── libncnn.a
+│   └── libncnn.a
 ├── x86
-│   └── libncnn.a
+│   └── libncnn.a
 └── x86_64
     └── libncnn.a
 

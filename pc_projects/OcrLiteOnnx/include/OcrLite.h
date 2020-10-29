@@ -16,15 +16,17 @@ public:
 
     bool initModels(const char *path);
 
+    void Logger(const char *format, ...);
+
     OcrResult detect(const char *path, const char *imgName,
                      int padding, float imgScale,
                      float boxScoreThresh, float boxThresh, float minArea,
-                     float scaleWidth, float scaleHeight);
+                     float unClipRatio, bool doAngle);
 
     OcrResult detect(const char *path, const char *imgName,
                      int padding, int imgResize,
                      float boxScoreThresh, float boxThresh, float minArea,
-                     float scaleWidth, float scaleHeight);
+                     float unClipRatio, bool doAngle);
 
 private:
     bool isOutputConsole = true;
@@ -59,10 +61,8 @@ private:
 
     std::vector<std::string> keys;
 
-    void Logger(const char *format, ...);
-
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s,
-                                      float boxScoreThresh, float boxThresh, float minArea);
+                                      float boxScoreThresh, float boxThresh, float minArea, float unClipRatio);
 
     Angle getAngle(cv::Mat &src);
 
@@ -73,7 +73,7 @@ private:
     OcrResult detect(const char *path, const char *imgName,
                      cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                      float boxScoreThresh = 0.6f, float boxThresh = 0.3f, float minArea = 3.f,
-                     float scaleWidth = 1.8f, float scaleHeight = 1.8f);
+                     float unClipRatio = 2.0f, bool doAngle = true);
 };
 
 #endif //__OCR_LITE_H__

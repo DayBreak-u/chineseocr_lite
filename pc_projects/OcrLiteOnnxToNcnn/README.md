@@ -35,50 +35,50 @@ OcrLiteOnnxToNcnn/models
 ```
 OcrLiteOnnxToNcnn/ncnn
 ├── include
-│   └── ncnn
-│       ├── allocator.h
-│       ├── benchmark.h
-│       ├── blob.h
-│       ├── c_api.h
-│       ├── command.h
-│       ├── cpu.h
-│       ├── datareader.h
-│       ├── gpu.h
-│       ├── layer.h
-│       ├── layer_shader_type.h
-│       ├── layer_shader_type_enum.h
-│       ├── layer_type.h
-│       ├── layer_type_enum.h
-│       ├── mat.h
-│       ├── modelbin.h
-│       ├── net.h
-│       ├── opencv.h
-│       ├── option.h
-│       ├── paramdict.h
-│       ├── pipeline.h
-│       ├── pipelinecache.h
-│       ├── platform.h
-│       └── simplestl.h
+│   └── ncnn
+│       ├── allocator.h
+│       ├── benchmark.h
+│       ├── blob.h
+│       ├── c_api.h
+│       ├── command.h
+│       ├── cpu.h
+│       ├── datareader.h
+│       ├── gpu.h
+│       ├── layer.h
+│       ├── layer_shader_type.h
+│       ├── layer_shader_type_enum.h
+│       ├── layer_type.h
+│       ├── layer_type_enum.h
+│       ├── mat.h
+│       ├── modelbin.h
+│       ├── net.h
+│       ├── opencv.h
+│       ├── option.h
+│       ├── paramdict.h
+│       ├── pipeline.h
+│       ├── pipelinecache.h
+│       ├── platform.h
+│       └── simplestl.h
 ├── linux
-│   ├── cmake
-│   │   └── ncnn
-│   │       ├── ncnn-release.cmake
-│   │       ├── ncnn.cmake
-│   │       └── ncnnConfig.cmake
-│   └── libncnn.a
+│   ├── cmake
+│   │   └── ncnn
+│   │       ├── ncnn-release.cmake
+│   │       ├── ncnn.cmake
+│   │       └── ncnnConfig.cmake
+│   └── libncnn.a
 ├── macos
-│   ├── cmake
-│   │   └── ncnn
-│   │       ├── ncnn-release.cmake
-│   │       ├── ncnn.cmake
-│   │       └── ncnnConfig.cmake
-│   └── libncnn.a
+│   ├── cmake
+│   │   └── ncnn
+│   │       ├── ncnn-release.cmake
+│   │       ├── ncnn.cmake
+│   │       └── ncnnConfig.cmake
+│   └── libncnn.a
 └── windows
     ├── cmake
-    │   └── ncnn
-    │       ├── ncnn-release.cmake
-    │       ├── ncnn.cmake
-    │       └── ncnnConfig.cmake
+    │   └── ncnn
+    │       ├── ncnn-release.cmake
+    │       ├── ncnn.cmake
+    │       └── ncnnConfig.cmake
     └── ncnn.lib
 ```
 **注意：如果你要使用此处下载的预编译库，请选择VS2019来编译。如果你打算自己编译，则可以选择低版本VS**
