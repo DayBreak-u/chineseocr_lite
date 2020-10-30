@@ -325,11 +325,11 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
     return inputTensorValues;
 }
 
-std::vector<int> getAngleIndexes(std::vector<TextBlock> &textBlocks) {
+std::vector<int> getAngleIndexes(std::vector<Angle> &angles) {
     std::vector<int> angleIndexes;
-    angleIndexes.reserve(textBlocks.size());
-    for (int i = 0; i < textBlocks.size(); ++i) {
-        angleIndexes.push_back(textBlocks[i].angleIndex);
+    angleIndexes.reserve(angles.size());
+    for (int i = 0; i < angles.size(); ++i) {
+        angleIndexes.push_back(angles[i].index);
     }
     return angleIndexes;
 }

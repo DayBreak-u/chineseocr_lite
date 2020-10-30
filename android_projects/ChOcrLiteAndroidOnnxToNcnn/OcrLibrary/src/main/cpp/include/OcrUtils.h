@@ -42,5 +42,9 @@ int getMiniBoxes(std::vector<cv::Point> &inVec,
 
 float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box);
 
-void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec, float unClipRatio);
+void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec,
+            float unClipRatio);
+
+std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
+
 #endif //__OCR_UTILS_H__

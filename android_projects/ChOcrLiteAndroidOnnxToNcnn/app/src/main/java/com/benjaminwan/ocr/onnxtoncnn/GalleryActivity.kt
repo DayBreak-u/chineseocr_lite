@@ -39,6 +39,7 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
         resultBtn.setOnClickListener(this)
         debugBtn.setOnClickListener(this)
         doAngleSw.isChecked = App.ocrEngine.doAngle
+        mostAngleSw.isChecked = App.ocrEngine.mostAngle
         updatePadding(App.ocrEngine.padding)
         updateBoxScoreThresh((App.ocrEngine.boxScoreThresh * 100).toInt())
         updateBoxThresh((App.ocrEngine.boxThresh * 100).toInt())
@@ -52,6 +53,10 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
         scaleUnClipRatioSeekBar.setOnSeekBarChangeListener(this)
         doAngleSw.setOnCheckedChangeListener { _, isChecked ->
             App.ocrEngine.doAngle = isChecked
+            mostAngleSw.isEnabled = isChecked
+        }
+        mostAngleSw.setOnCheckedChangeListener { _, isChecked ->
+            App.ocrEngine.mostAngle = isChecked
         }
     }
 
@@ -209,7 +214,7 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
                 val options =
                     RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
                 Glide.with(this).load(t1.boxImg).apply(options).into(imageView)
-                Logger.i( "$t1")
+                Logger.i("$t1")
             }
     }
 
