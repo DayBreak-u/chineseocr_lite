@@ -166,6 +166,20 @@
             android:textOff="Off"
             android:textOn="On" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="角度投票" />
+
+        <Switch
+            android:id="@+id/mostAngleSw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:textOff="Off"
+            android:textOn="On" />
+
     </LinearLayout>
 
     <LinearLayout

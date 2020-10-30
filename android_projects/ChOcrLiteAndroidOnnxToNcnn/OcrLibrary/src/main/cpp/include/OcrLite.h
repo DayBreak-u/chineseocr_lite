@@ -19,7 +19,7 @@ public:
 
     OcrResult detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                      float boxScoreThresh, float boxThresh, float minArea,
-                     float unClipRatio, bool doAngle);
+                     float unClipRatio, bool doAngle, bool mostAngle);
 
 private:
     bool isLOG = true;
@@ -41,11 +41,20 @@ private:
     std::vector<std::string> keys;
 
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s,
-                                      float boxScoreThresh, float boxThresh, float minArea, float unClipRatio);
+                                      float boxScoreThresh, float boxThresh, float minArea,
+                                      float unClipRatio);
 
     Angle getAngle(cv::Mat &src);
 
     TextLine getTextLine(cv::Mat &src);
+
+    void drawTextBoxes(cv::Mat &boxImg, std::vector<TextBox> &textBoxes, int thickness);
+
+    std::vector<cv::Mat> getPartImages(cv::Mat &src, std::vector<TextBox> &textBoxes);
+
+    std::vector<Angle> getAngles(std::vector<cv::Mat> &partImgs, bool doAngle, bool mostAngle);
+
+    std::vector<TextLine> getTextLines(std::vector<cv::Mat> &partImg);
 
     TextLine scoreToTextLine(const float *srcData, int h, int w);
 

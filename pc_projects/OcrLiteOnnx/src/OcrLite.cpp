@@ -363,7 +363,7 @@ cv::Mat makePadding(cv::Mat &src, const int padding) {
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const float imgScale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool doAngle) {
+                          float unClipRatio, bool doAngle, bool mostAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -373,13 +373,13 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, imgScale);
 
     return detect(path, imgName, src, originRect, scale,
-                  boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle);
+                  boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
 }
 
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           const int padding, const int imgResize,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool doAngle) {
+                          float unClipRatio, bool doAngle, bool mostAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat originSrc = cv::imread(imgFile);
@@ -396,15 +396,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     ScaleParam scale = getScaleParam(src, resize);
 
     OcrResult result = detect(path, imgName, src, originRect, scale,
-                              boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle);
-
-    /*double startTest = getCurrentTime();
-    for (int i = 0; i < 500; ++i) {
-        detect(path, imgName, src, originRect, scale,
-                              boxScoreThresh, boxThresh, minArea, unClipRatio, noAngle);
-    }
-    double endTest = getCurrentTime();
-    printf("time=%f\n", (endTest - startTest) / 500);*/
+                              boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
 
     return result;
 }
@@ -426,10 +418,124 @@ double getStdev(std::vector<T> &input, double mean) {
     return stdev;
 }
 
+void OcrLite::drawTextBoxes(cv::Mat &boxImg, std::vector<TextBox> &textBoxes, int thickness) {
+    for (int i = 0; i < textBoxes.size(); ++i) {
+        drawTextBox(boxImg, textBoxes[i].boxPoint, thickness);
+        Logger("TextBoxPos[%d]([x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d])\n", i,
+               textBoxes[i].boxPoint[0].x, textBoxes[i].boxPoint[0].y,
+               textBoxes[i].boxPoint[1].x, textBoxes[i].boxPoint[1].y,
+               textBoxes[i].boxPoint[2].x, textBoxes[i].boxPoint[2].y,
+               textBoxes[i].boxPoint[3].x, textBoxes[i].boxPoint[3].y);
+    }
+}
+
+std::vector<cv::Mat>
+OcrLite::getPartImages(cv::Mat &src, std::vector<TextBox> &textBoxes, const char *path, const char *imgName) {
+    std::vector<cv::Mat> partImages;
+    for (int i = 0; i < textBoxes.size(); ++i) {
+        cv::Mat partImg = GetRotateCropImage(src, textBoxes[i].boxPoint);
+        partImages.emplace_back(partImg);
+        //OutPut DebugImg
+        if (isOutputPartImg) {
+            std::string debugImgFile = getDebugImgFilePath(path, imgName, i, "-part-");
+            saveImg(partImg, debugImgFile.c_str());
+        }
+    }
+    return partImages;
+}
+
+std::vector<Angle>
+OcrLite::getAngles(std::vector<cv::Mat> &partImgs, const char *path, const char *imgName, bool doAngle,
+                   bool mostAngle) {
+    std::vector<Angle> angles;
+    if (doAngle) {
+        for (int i = 0; i < partImgs.size(); ++i) {
+            //getAngle
+            double startAngle = getCurrentTime();
+            auto angleImg = adjustAngleImg(partImgs[i], angleDstWidth, angleDstHeight);
+            Angle angle = getAngle(angleImg);
+            double endAngle = getCurrentTime();
+            angle.time = endAngle - startAngle;
+
+            //Log Angle
+            Logger("angle[%d](index=%d, score=%f time=%fms) \n", i, angle.index, angle.score, angle.time);
+            angles.emplace_back(angle);
+
+            //OutPut AngleImg
+            if (isOutputAngleImg) {
+                std::string angleImgFile = getDebugImgFilePath(path, imgName, i, "-angle-");
+                saveImg(angleImg, angleImgFile.c_str());
+            }
+        }
+    } else {
+        for (int i = 0; i < partImgs.size(); ++i) {
+            Angle angle(-1, 0.f);
+            //Log Angle
+            Logger("angle[%d]Disabled(index=%d, score=%f time=%fms) \n", i, angle.index, angle.score, angle.time);
+            angles.emplace_back(angle);
+        }
+    }
+    //Most Possible AngleIndex
+    if (doAngle && mostAngle) {
+        auto angleIndexes = getAngleIndexes(angles);
+        double sum = std::accumulate(angleIndexes.begin(), angleIndexes.end(), 0.0);
+        double halfPercent = angles.size() / 2.0f;
+        int mostAngleIndex;
+        if (sum < halfPercent) {//all angle set to 0
+            mostAngleIndex = 0;
+        } else {//all angle set to 1
+            mostAngleIndex = 1;
+        }
+        Logger("Set All Angle to mostAngleIndex(%d)\n", mostAngleIndex);
+        for (int i = 0; i < angles.size(); ++i) {
+            Angle angle = angles[i];
+            angle.index = mostAngleIndex;
+            angles.at(i) = angle;
+        }
+    }
+    //Rotate partImgs
+    for (int i = 0; i < partImgs.size(); ++i) {
+        if (angles[i].index == 0) {
+            partImgs.at(i) = matRotateClockWise180(partImgs[i]);
+        }
+    }
+
+    return angles;
+}
+
+std::vector<TextLine> OcrLite::getTextLines(std::vector<cv::Mat> &partImg, const char *path, const char *imgName) {
+    std::vector<TextLine> textLines;
+    for (int i = 0; i < partImg.size(); ++i) {
+        //OutPut DebugImg
+        if (isOutputDebugImg) {
+            std::string debugImgFile = getDebugImgFilePath(path, imgName, i, "-debug-");
+            saveImg(partImg[i], debugImgFile.c_str());
+        }
+
+        //getTextLine
+        double startCrnnTime = getCurrentTime();
+        TextLine textLine = getTextLine(partImg[i]);
+        double endCrnnTime = getCurrentTime();
+        textLine.time = endCrnnTime - startCrnnTime;
+
+        //Log textLine
+        Logger("textLine[%d](%s)\n", i, textLine.text.c_str());
+        textLines.emplace_back(textLine);
+        std::ostringstream txtScores;
+        for (int s = 0; s < textLine.charScores.size(); ++s) {
+            if (s == 0) txtScores << textLine.charScores[s];
+            txtScores << " ," << textLine.charScores[s];
+        }
+        Logger("textScores[%d]{%s}\n", i, std::string(txtScores.str()).c_str());
+        Logger("crnnTime[%d](%fms)\n", i, textLine.time);
+    }
+    return textLines;
+}
+
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                           float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool doAngle) {
+                          float unClipRatio, bool doAngle, bool mostAngle) {
 
     cv::Mat textBoxPaddingImg = src.clone();
     int thickness = getThickness(src);
@@ -439,103 +545,35 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
            scale.dstWidth, scale.dstHeight,
            scale.scaleWidth, scale.scaleHeight);
 
+    Logger("---------- step: dbNet getTextBoxes ----------\n");
     double startTime = getCurrentTime();
     std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea, unClipRatio);
     Logger("TextBoxesSize(%ld)\n", textBoxes.size());
-
     double endDbNetTime = getCurrentTime();
     double dbNetTime = endDbNetTime - startTime;
     Logger("dbNetTime(%fms)\n", dbNetTime);
 
+    Logger("---------- step: drawTextBoxes ----------\n");
+    drawTextBoxes(textBoxPaddingImg, textBoxes, thickness);
+
+    //---------- getPartImages ----------
+    std::vector<cv::Mat> partImages = getPartImages(src, textBoxes, path, imgName);
+
+    Logger("---------- step: angleNet getAngles ----------\n");
+    std::vector<Angle> angles;
+    angles = getAngles(partImages, path, imgName, doAngle, mostAngle);
+
+    Logger("---------- step: crnnNet getTextLine ----------\n");
+    std::vector<TextLine> textLines = getTextLines(partImages, path, imgName);
+
     std::vector<TextBlock> textBlocks;
-
-    for (int i = 0; i < textBoxes.size(); ++i) {
-        Logger("-----TextBox[%d] score(%f)-----\n", i, textBoxes[i].score);
-        double startTextBox = getCurrentTime();
-        cv::Mat partImg;
-
-        //use RRLib
-        /*cv::RotatedRect partRect = getPartRect(textBoxes[i].boxPoint, scaleWidth,
-                                               scaleHeight);
-        Logger("partRect(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
-             partRect.center.x, partRect.center.y,
-             partRect.size.width, partRect.size.height,
-             partRect.angle);
-
-        RRLib::getRotRectImg(partRect, src, partImg);
-        drawTextBox(textBoxPaddingImg, partRect, thickness);*/
-        //use clipper
-        partImg = GetRotateCropImage(src, textBoxes[i].boxPoint);
-        drawTextBox(textBoxPaddingImg, textBoxes[i].boxPoint, thickness);
-
-        Logger("TextBoxPos([x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d], [x: %d, y: %d])\n",
-               textBoxes[i].boxPoint[0].x, textBoxes[i].boxPoint[0].y,
-               textBoxes[i].boxPoint[1].x, textBoxes[i].boxPoint[1].y,
-               textBoxes[i].boxPoint[2].x, textBoxes[i].boxPoint[2].y,
-               textBoxes[i].boxPoint[3].x, textBoxes[i].boxPoint[3].y);
-
-        //OutPut PartImg
-        if (isOutputPartImg) {
-            std::string partImgFile = getDebugImgFilePath(path, imgName, i, "-part-");
-            saveImg(partImg, partImgFile.c_str());
-        }
-
-        Angle angle(-1, 0.f);
-        if (doAngle) {
-            //getAngle
-            double startAngle = getCurrentTime();
-            auto angleImg = adjustAngleImg(partImg, angleDstWidth, angleDstHeight);
-            angle = getAngle(angleImg);
-            double endAngle = getCurrentTime();
-            angle.time = endAngle - startAngle;
-
-            //Log Angle
-            Logger("angle(index=%d, score=%f time=%fms) \n", angle.index, angle.score, angle.time);
-
-            //OutPut AngleImg
-            if (isOutputAngleImg) {
-                std::string angleImgFile = getDebugImgFilePath(path, imgName, i, "-angle-");
-                saveImg(angleImg, angleImgFile.c_str());
-            }
-
-            //Rotate Img
-            if (angle.index == 0) {
-                partImg = matRotateClockWise180(partImg);
-            }
-        }
-
-        //OutPut DebugImg
-        if (isOutputDebugImg) {
-            std::string debugImgFile = getDebugImgFilePath(path, imgName, i, "-debug-");
-            saveImg(partImg, debugImgFile.c_str());
-        }
-
-        //getTextLine
-        double startCrnnTime = getCurrentTime();
-        TextLine textLine = getTextLine(partImg);
-        double endCrnnTime = getCurrentTime();
-        textLine.time = endCrnnTime - startCrnnTime;
-
-        //Log textLine
-        Logger("textLine(%s)\n", textLine.text.c_str());
-        std::ostringstream txtScores;
-        for (int s = 0; s < textLine.charScores.size(); ++s) {
-            if (s == 0) txtScores << textLine.charScores[s];
-            txtScores << " ," << textLine.charScores[s];
-        }
-        Logger("textScores{%s}\n", std::string(txtScores.str()).c_str());
-        Logger("crnnTime(%fms)\n", textLine.time);
-
-        //Log TextBox[i]Time
-        double endTextBox = getCurrentTime();
-        double timeTextBox = endTextBox - startTextBox;
-        Logger("TextBox[%i]Time(%fms)\n", i, timeTextBox);
-
-        TextBlock textBlock(textBoxes[i].boxPoint, textBoxes[i].score, angle.index, angle.score,
-                            angle.time, textLine.text, textLine.charScores, textLine.time,
-                            timeTextBox);
+    for (int i = 0; i < textLines.size(); ++i) {
+        TextBlock textBlock(textBoxes[i].boxPoint, textBoxes[i].score, angles[i].index, angles[i].score,
+                            angles[i].time, textLines[i].text, textLines[i].charScores, textLines[i].time,
+                            angles[i].time + textLines[i].time);
         textBlocks.emplace_back(textBlock);
     }
+
     double endTime = getCurrentTime();
     double fullTime = endTime - startTime;
     Logger("=====End detect=====\n");
