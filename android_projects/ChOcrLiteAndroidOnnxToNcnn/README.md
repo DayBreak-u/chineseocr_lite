@@ -67,3 +67,6 @@ ChOcrLiteAndroidOnnxToNcnn/OcrLibrary/src/main/staticLibs
 #### onnx版本
 [https://gitee.com/benjaminwan/ch-ocr-lite-android-onnx](https://gitee.com/benjaminwan/ch-ocr-lite-android-onnx)
 
+#### 输入参数说明
+请参考[OcrLiteOnnx项目](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
+

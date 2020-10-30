@@ -32,11 +32,13 @@ int main(int argc, char **argv) {
     float minArea = 3.f;
     float unClipRatio = 2.0f;
     bool doAngle = true;
-    int flagAngle = 1;
+    int flagDoAngle = 1;
+    bool mostAngle = true;
+    int flagMostAngle = 1;
 
     int opt;
     int optionIndex = 0;
-    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:V?", long_options, &optionIndex)) != -1) {
+    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:A:?", long_options, &optionIndex)) != -1) {
         //printf("option(-%c)=%s\n", opt, optarg);
         switch (opt) {
             case 'd':
@@ -78,13 +80,22 @@ int main(int argc, char **argv) {
                 printf("unClipRatio=%f\n", unClipRatio);
                 break;
             case 'a':
-                flagAngle = (int) strtol(optarg, NULL, 10);
-                if (flagAngle == 0) {
+                flagDoAngle = (int) strtol(optarg, NULL, 10);
+                if (flagDoAngle == 0) {
                     doAngle = false;
                 } else {
                     doAngle = true;
                 }
                 printf("doAngle=%d\n", doAngle);
+                break;
+            case 'A':
+                flagMostAngle = (int) strtol(optarg, NULL, 10);
+                if (flagMostAngle == 0) {
+                    mostAngle = false;
+                } else {
+                    mostAngle = true;
+                }
+                printf("mostAngle=%d\n", mostAngle);
                 break;
             case '?':
                 printHelp(stdout, argv[0]);
@@ -97,7 +108,7 @@ int main(int argc, char **argv) {
     OcrLite ocrLite(numThread);
     ocrLite.initLogger(imgPath.c_str(), imgName.c_str(),
                        true,//isOutputConsole
-                       false,//isOutputPartImg
+                       true,//isOutputPartImg
                        false,//isOutputAngleImg
                        false,//isOutputDebugImg
                        true,//isOutputResultTxt
@@ -108,7 +119,7 @@ int main(int argc, char **argv) {
     OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                       padding, imgResize,
                                       boxScoreThresh, boxThresh, minArea,
-                                      unClipRatio, doAngle);
+                                      unClipRatio, doAngle, mostAngle);
     ocrLite.Logger("%s\n", result.strRes.c_str());
 
     return 0;
