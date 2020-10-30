@@ -290,3 +290,12 @@ void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv
         }
     }
 }
+
+std::vector<int> getAngleIndexes(std::vector<Angle> &angles) {
+    std::vector<int> angleIndexes;
+    angleIndexes.reserve(angles.size());
+    for (int i = 0; i < angles.size(); ++i) {
+        angleIndexes.push_back(angles[i].index);
+    }
+    return angleIndexes;
+}

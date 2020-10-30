@@ -10,7 +10,7 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_init(JNIEnv *env, jobject thiz, jobjec
                                                jint numThread) {
 
     ocrLite = new OcrLite(env, assetManager, numThread);
-    ocrLite->initLogger(false);
+    ocrLite->initLogger(true);
     return JNI_TRUE;
 }
 
@@ -30,9 +30,10 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jobj
                                                  jint padding, jint reSize,
                                                  jfloat boxScoreThresh, jfloat boxThresh,
                                                  jfloat minArea, jfloat unClipRatio,
-                                                 jboolean doAngle) {
-    ocrLite->Logger("padding=%d,reSize=%d,boxScoreThresh=%f,boxThresh=%f,minArea=%f,unClipRatio=%f",
-                    padding, reSize, boxScoreThresh, boxThresh, minArea, unClipRatio);
+                                                 jboolean doAngle, jboolean mostAngle) {
+    ocrLite->Logger(
+            "padding=%d,reSize=%d,boxScoreThresh=%f,boxThresh=%f,minArea=%f,unClipRatio=%f,doAngle=%d,mostAngle=%d",
+            padding, reSize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
     cv::Mat imgRGBA, imgBGR, imgOut;
     bitmapToMat(env, input, imgRGBA);
     cv::cvtColor(imgRGBA, imgBGR, cv::COLOR_RGBA2BGR);
@@ -42,7 +43,7 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jobj
     ScaleParam s = getScaleParam(src, reSize);//例：按长或宽缩放 src.cols=不缩放，src.cols/2=长度缩小一半
     OcrResult ocrResult = ocrLite->detect(src, originRect, s,
                                           boxScoreThresh, boxThresh, minArea,
-                                          unClipRatio, doAngle);
+                                          unClipRatio, doAngle,mostAngle);
 
     cv::cvtColor(ocrResult.boxImg, imgOut, cv::COLOR_BGR2RGBA);
     matToBitmap(env, imgOut, output);

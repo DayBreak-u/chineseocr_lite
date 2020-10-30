@@ -41,7 +41,7 @@ void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv
 
 std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, const float *normVals);
 
-std::vector<int> getAngleIndexes(std::vector<TextBlock> &textBlocks);
+std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
 
 int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double stdev);
 
