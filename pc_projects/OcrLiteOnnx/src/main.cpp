@@ -1,3 +1,6 @@
+#ifndef __JNI__
+
+#include "version.h"
 #include "OcrLite.h"
 #include "main.h"
 
@@ -38,7 +41,7 @@ int main(int argc, char **argv) {
 
     int opt;
     int optionIndex = 0;
-    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:A:?", long_options, &optionIndex)) != -1) {
+    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:A:v?", long_options, &optionIndex)) != -1) {
         //printf("option(-%c)=%s\n", opt, optarg);
         switch (opt) {
             case 'd':
@@ -97,22 +100,27 @@ int main(int argc, char **argv) {
                 }
                 printf("mostAngle=%d\n", mostAngle);
                 break;
+            case 'v':
+                printf("%s\n", VERSION);
+                return 0;
             case '?':
                 printHelp(stdout, argv[0]);
-                break;
+                return 0;
             default:
                 printf("other option %c :%s\n", opt, optarg);
         }
     }
 
     OcrLite ocrLite(numThread);
-    ocrLite.initLogger(imgPath.c_str(), imgName.c_str(),
-                       true,//isOutputConsole
-                       true,//isOutputPartImg
-                       false,//isOutputAngleImg
-                       false,//isOutputDebugImg
-                       true,//isOutputResultTxt
-                       true);//isOutputResultImg
+    ocrLite.initLogger(
+            true,//isOutputConsole
+            false,//isOutputPartImg
+            false,//isOutputAngleImg
+            false,//isOutputDebugImg
+            true);//isOutputResultImg
+
+    ocrLite.enableResultTxt(imgPath.c_str(), imgName.c_str());
+
     bool ret = ocrLite.initModels(modelsDir.c_str());
     if (!ret) return -1;
 
@@ -124,3 +132,5 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
+#endif

@@ -50,7 +50,8 @@ OcrLiteOnnx/onnx
     ├── onnxruntime.lib
     └── onnxruntime.pdb
 ```
-3. opencv动态库版本3.4.x以上
+3. opencv 3
+4. jdk1.8(可选)，编译为供java调用的动态运行库时，需要安装，编译为可执行文件无需安装java。
 
 ##### Windows编译说明
 1.  Windows10 x64 /VS2019或VS2017
@@ -66,10 +67,17 @@ OcrLiteOnnx/opencv
 ```
 4.  VS2017/2019安装时，至少选中"使用C++的桌面开发"
 5.  开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
-6.  运行```build-win.cmd```
+6.  运行```build-win.cmd```编译为命令行可执行文件
 7.  编译完成后运行```run-test-win.cmd```进行测试
 8.  如果提示缺少"VCRUNTIME140_1.dll"，下载安装适用于 Visual Studio 2015、2017 和 2019 的 Microsoft Visual C++ 可再发行软件包，
 [下载地址](https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads)
+9. 编译动态运行库(可选，可用于java调用)
+* 下载jdk-8u221-windows-x64.exe，安装选项默认(确保“源代码”项选中)，安装完成后，打开“系统”属性->高级->环境变量
+* 新建“系统变量”，变量名```JAVA_HOME``` ，变量值```C:\Program Files\Java\jdk1.8.0_221``
+* 新建“系统变量”，变量名```CLASSPATH``` ，变量值```.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;``
+* 编辑“系统变量”Path，Win7在变量值头部添加```%JAVA_HOME%\bin;``` ，win10直接添加一行```%JAVA_HOME%\bin```
+* 开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
+* 运行```build-lib-win.cmd```编译为动态运行库
 
 ##### Mac编译说明
 1.  macOS Catalina 10.15.x
@@ -79,9 +87,14 @@ OcrLiteOnnx/opencv
 brew install opencv@3
 brew ln opencv3 --force
 ```
+* 编辑用户目录下的隐藏文件```.zshrc``` ，添加```export OpenCV_DIR="/usr/local/Cellar/opencv@3/3.4.10_4"```
 4.  libomp: ```brew install libomp```
 5.  编译：```./build.sh```
 6.  测试：```./run-test.sh```
+7. 编译动态运行库(可选，可用于java调用)
+* 下载jdk-8u221-macosx-x64.dmg，安装。
+* 编辑用户目录下的隐藏文件```.zshrc``` ，添加```export JAVA_HOME=$(/usr/libexec/java_home)```
+* 运行```build-lib.sh```编译为动态运行库
 
 ##### Linux编译说明
 1.  Deepin 20 或其它发行版
@@ -89,6 +102,9 @@ brew ln opencv3 --force
 3.  下载opencv：各发行版不大一样，略……
 4.  编译：```./build.sh```
 5.  测试：```./run-test.sh```
+6. 编译动态运行库(可选，可用于java调用)
+* 下载安装jdk，略……
+* 运行```build-lib.sh```编译为动态运行库
 
 #### 测试结果说明
 1.  *-part-x.jpg为分割后的图片
@@ -96,16 +112,16 @@ brew ln opencv3 --force
 3.  *-result.jpg为图像分割画框的结果
 4.  *-result.txt为识别的最终结果
 5.  最终结果包含：
-getTextBoxesTime(图像分割耗时)、
-TextBoxScore(文字框置信度)、
-TextBoxPos(文字框坐标)、
-Angle(方向索引、方向置信度)、
-getAngleTime(方向识别耗时)、
-textLine(识别到的文字)
-textScores(各个文字的置信度)、
-getTextLineTime(文字识别耗时)、
-TextBoxTime(方向识别+文字识别耗时)
-FullDetectTime（整张图片总耗时）
+* getTextBoxesTime(图像分割耗时)、
+* TextBoxScore(文字框置信度)、
+* TextBoxPos(文字框坐标)、
+* Angle(方向索引、方向置信度)、
+* AngleTime(方向识别耗时)、
+* textLine(识别到的文字)
+* textScores(各个文字的置信度)、
+* getTextLineTime(文字识别耗时)、
+* TextBoxTime(方向识别+文字识别耗时)
+* FullDetectTime（整张图片总耗时）
 
 #### 关于设置线程数
 onnxruntime设置线程数分为2个部分:
@@ -116,8 +132,8 @@ onnxruntime设置线程数分为2个部分:
 测试脚本通过检查当前的CPU逻辑核心数量，设置环境变量来配置第一个线程数，通过命令行传入第三个参数numThread来配置第二个线程数
 
 #### 输入参数说明
-请参考main.h中的命令行参数说明。
-每个参数有一个段参数名和一个长参数名，用短的或长的均可。
+* 请参考main.h中的命令行参数说明。
+* 每个参数有一个短参数名和一个长参数名，用短的或长的均可。
 1. ```-d或--models```：模型所在文件夹路径，可以相对路径也可以绝对路径。
 2. ```-i或--image```：目标图片路径，可以相对路径也可以绝对路径。
 3. ```-t或--numThread```：线程数量。
