@@ -22,20 +22,21 @@ OcrLite::~OcrLite() {
     crnnNet->release();
 }
 
-void OcrLite::initLogger(const char *path, const char *imgName, bool isConsole,
-                         bool isPartImg, bool isAngleImg, bool isDebugImg, bool isResultTxt, bool isResultImg) {
+void OcrLite::initLogger(bool isConsole, bool isPartImg, bool isAngleImg, bool isDebugImg, bool isResultImg) {
     isOutputConsole = isConsole;
     isOutputPartImg = isPartImg;
     isOutputAngleImg = isAngleImg;
     isOutputDebugImg = isDebugImg;
-    isOutputResultTxt = isResultTxt;
     isOutputResultImg = isResultImg;
-    if (isResultTxt) {
-        std::string resultTxtPath = getResultTxtFilePath(path, imgName);
-        printf("resultTxtPath(%s)\n", resultTxtPath.c_str());
-        resultTxt = fopen(resultTxtPath.c_str(), "w");
-    }
 }
+
+void OcrLite::enableResultTxt(const char *path, const char *imgName) {
+    isOutputResultTxt = true;
+    std::string resultTxtPath = getResultTxtFilePath(path, imgName);
+    printf("resultTxtPath(%s)\n", resultTxtPath.c_str());
+    resultTxt = fopen(resultTxtPath.c_str(), "w");
+}
+
 
 std::vector<const char *> getInputNames(std::unique_ptr<Ort::Session> &session) {
     Ort::AllocatorWithDefaultOptions allocator;

@@ -15,6 +15,7 @@ static const struct option long_options[] = {
         {"unClipRatio",    required_argument, NULL, 'u'},
         {"doAngle",        required_argument, NULL, 'a'},
         {"mostAngle",      required_argument, NULL, 'A'},
+        {"version",        no_argument,       NULL, 'v'},
         {"help",           no_argument,       NULL, '?'},
         {NULL,             no_argument,       NULL, 0}
 };
@@ -37,10 +38,10 @@ const char *optionalMsg = "-t --numThread: value of numThread(int), default: 4\n
                           "-a --doAngle: Enable(1)/Disable(0) Angle Net, default: Enable\n" \
                           "-A --mostAngle: Enable(1)/Disable(0) Most Possible AngleIndex, default: Enable\n\n";
 
-const char *otherMsg = "-? --help: print this help\n\n";
-
+const char *otherMsg = "-v --version: show version\n" \
+                       "-? --help: print this help\n\n";
 
 const char *example1Msg = "Example1: %s --models models --image 1.jpg\n";
-const char *example2Msg = "Example1: %s -d models -i 1.jpg -t 4 -p 50 -s 0 -b 0.6 -o 0.3 -m 3 -u 2.0 -a 1 -A 1\n";
+const char *example2Msg = "Example2: %s -d models -i 1.jpg -t 4 -p 50 -s 0 -b 0.6 -o 0.3 -m 3 -u 2.0 -a 1 -A 1\n";
 
 #endif //__MAIN_H__

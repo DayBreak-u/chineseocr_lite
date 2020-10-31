@@ -130,17 +130,20 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+.gradle
+
 #idea
 .idea
 cmake-build-debug/
 build/
 build-win/
-test_imgs/*-part-*.jpg
-test_imgs/*-angle-*.jpg
-test_imgs/*-debug-*.jpg
-test_imgs/*-result.jpg
-test_imgs/*-result.txt
-/models/*.onnx
-/onnx
-/build-lib
-/build-lib-win
+/run-test/test_imgs/*-part-*.jpg
+/run-test/test_imgs/*-angle-*.jpg
+/run-test/test_imgs/*-debug-*.jpg
+/run-test/test_imgs/*-result.jpg
+/run-test/test_imgs/*-result.txt
+/run-test/models/*.onnx
+/run-test/*.dll
+/run-test/*.jar
+/run-test/*.dylib
+/out

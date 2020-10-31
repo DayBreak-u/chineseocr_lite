@@ -1,6 +1,14 @@
 ﻿cmake_minimum_required(VERSION 2.8)
 project(OcrLiteOnnx)
 
+option(OCR_LITE_LIB "OcrLite Jni Support" OFF)
+
+#set(OCR_LITE_LIB ON)
+
+if (APPLE)
+    set(CMAKE_MACOSX_RPATH ON)
+endif ()
+
 add_definitions(-std=c++11)
 add_definitions("-Wall")
 add_definitions(-DUNICODE -D_UNICODE)
@@ -64,6 +72,19 @@ else ()
     message(FATAL_ERROR "opencv Not Found!")
 endif (OpenCV_FOUND)
 
+#JNI
+if (OCR_LITE_LIB)
+    find_package(JNI REQUIRED)
+    if (JNI_FOUND)
+        message("JNI FOUND")
+        message(STATUS "JNI_LIBS: ${JNI_LIBS}")
+        message(STATUS "JNI_INCLUDE_DIRS: ${JNI_INCLUDE_DIRS}")
+        include_directories(${JNI_INCLUDE_DIRS})
+    else ()
+        message(FATAL_ERROR "JNI Not Found!")
+    endif ()
+endif ()
+
 #project include
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -71,6 +92,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB OCR_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 set(OCR_COMPILE_CODE ${OCR_SRC})
 
-add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
-
-target_link_libraries(OcrLiteOnnx onnxruntime ${OpenCV_LIBS})
+if (OCR_LITE_LIB)
+    add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
+    target_compile_definitions(OcrLiteOnnx PRIVATE __JNI__)
+    target_link_libraries(OcrLiteOnnx onnxruntime ${OpenCV_LIBS} ${JNI_LIBS})
+else ()
+    add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
+    target_link_libraries(OcrLiteOnnx onnxruntime ${OpenCV_LIBS})
+endif ()
