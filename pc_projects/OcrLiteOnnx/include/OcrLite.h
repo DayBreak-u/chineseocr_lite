@@ -11,8 +11,9 @@ public:
 
     ~OcrLite();
 
-    void initLogger(const char *path, const char *imgName, bool isConsole,
-                    bool isPartImg, bool isAngleImg, bool isDebugImg, bool isResultTxt, bool isResultImg);
+    void initLogger(bool isConsole, bool isPartImg, bool isAngleImg, bool isDebugImg, bool isResultImg);
+
+    void enableResultTxt(const char *path, const char *imgName);
 
     bool initModels(const char *path);
 
@@ -29,12 +30,12 @@ public:
                      float unClipRatio, bool doAngle, bool mostAngle);
 
 private:
-    bool isOutputConsole = true;
-    bool isOutputPartImg = true;
-    bool isOutputAngleImg = true;
-    bool isOutputDebugImg = true;
-    bool isOutputResultTxt = true;
-    bool isOutputResultImg = true;
+    bool isOutputConsole = false;
+    bool isOutputPartImg = false;
+    bool isOutputAngleImg = false;
+    bool isOutputDebugImg = false;
+    bool isOutputResultTxt = false;
+    bool isOutputResultImg = false;
     FILE *resultTxt;
 
     Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "OcrLite");
