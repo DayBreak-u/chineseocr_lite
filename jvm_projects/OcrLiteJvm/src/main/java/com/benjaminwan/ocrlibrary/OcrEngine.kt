@@ -19,8 +19,6 @@ class OcrEngine() {
     var doAngle: Boolean = true
     var mostAngle: Boolean = true
 
-    external fun getStr(input: String): String
-
     fun detect(input: String, reSize: Int) = detect(
         input, padding, reSize,
         boxScoreThresh, boxThresh, miniArea,
