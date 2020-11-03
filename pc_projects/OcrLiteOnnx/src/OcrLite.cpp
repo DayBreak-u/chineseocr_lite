@@ -301,15 +301,30 @@ TextLine OcrLite::scoreToTextLine(const float *srcData, int h, int w) {
     int keySize = keys.size();
     std::vector<float> scores;
     for (int i = 0; i < h; i++) {
-        //find max score
         int maxIndex = 0;
         float maxValue = -1000.f;
+        //do softmax
+        std::vector<float> exps(w);
         for (int j = 0; j < w; j++) {
+            float expSingle = exp(srcData[i * w + j]);
+            exps.at(j) = expSingle;
+        }
+        float partition = std::accumulate(exps.begin(), exps.end(), 0.0);//row sum
+        for (int j = 0; j < w; j++) {
+            float softmax = exps[j] / partition;
+            if (softmax > maxValue) {
+                maxValue = softmax;
+                maxIndex = j;
+            }
+        }
+
+        //no softmax
+        /*for (int j = 0; j < w; j++) {
             if (srcData[i * w + j] > maxValue) {
                 maxValue = srcData[i * w + j];
                 maxIndex = j;
             }
-        }
+        }*/
         if (maxIndex > 0 && maxIndex < keySize && (!(i > 0 && maxIndex == lastIndex))) {
             scores.emplace_back(maxValue);
             strRes.append(keys[maxIndex - 1]);
@@ -453,7 +468,7 @@ OcrLite::getAngles(std::vector<cv::Mat> &partImgs, const char *path, const char 
         for (int i = 0; i < partImgs.size(); ++i) {
             //getAngle
             double startAngle = getCurrentTime();
-            auto angleImg = adjustAngleImg(partImgs[i], angleDstWidth, angleDstHeight);
+            auto angleImg = adjustTargetImg(partImgs[i], angleDstWidth, angleDstHeight);
             Angle angle = getAngle(angleImg);
             double endAngle = getCurrentTime();
             angle.time = endAngle - startAngle;
@@ -524,8 +539,11 @@ std::vector<TextLine> OcrLite::getTextLines(std::vector<cv::Mat> &partImg, const
         textLines.emplace_back(textLine);
         std::ostringstream txtScores;
         for (int s = 0; s < textLine.charScores.size(); ++s) {
-            if (s == 0) txtScores << textLine.charScores[s];
-            txtScores << " ," << textLine.charScores[s];
+            if (s == 0) {
+                txtScores << textLine.charScores[s];
+            } else {
+                txtScores << " ," << textLine.charScores[s];
+            }
         }
         Logger("textScores[%d]{%s}\n", i, std::string(txtScores.str()).c_str());
         Logger("crnnTime[%d](%fms)\n", i, textLine.time);
@@ -542,7 +560,7 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     int thickness = getThickness(src);
 
     Logger("=====Start detect=====\n");
-    Logger("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)\n", scale.srcWidth, scale.srcHeight,
+    Logger("ScaleParam(sw:%d,sh:%d,dw:%d,dh:%d,%f,%f)\n", scale.srcWidth, scale.srcHeight,
            scale.dstWidth, scale.dstHeight,
            scale.scaleWidth, scale.scaleHeight);
 
