@@ -36,3 +36,14 @@
 windows:run-test-java.cmd
 mac或linx:./run-test-java.sh
 ```
+
+##### 其它问题
+如果运行显示错误can’t find dependent libraries
+1. 检查是否安装C++运行环境，https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads
+下载 x64： vc_redist.x64.exe
+2. 检查dll目录是否缺了onnxruntime.dll和opencv_world3411.dll
+3. 尝试在OcrEngine()的init方法里添加
+```
+System.loadLibrary("onnxruntime")
+System.loadLibrary("opencv_world3411")
+```

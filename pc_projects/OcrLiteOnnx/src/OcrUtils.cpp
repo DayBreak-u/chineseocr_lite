@@ -173,7 +173,7 @@ cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
     }
 }
 
-cv::Mat adjustAngleImg(cv::Mat &src, int dstWidth, int dstHeight) {
+cv::Mat adjustTargetImg(cv::Mat &src, int dstWidth, int dstHeight) {
     cv::Mat srcResize;
     float scale = (float) dstHeight / (float) src.rows;
     int angleWidth = int((float) src.cols * scale);
