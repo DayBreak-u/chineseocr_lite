@@ -28,7 +28,7 @@ cv::Mat matRotateClockWise90(cv::Mat src);
 
 cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box);
 
-cv::Mat adjustAngleImg(cv::Mat &src, int dstWidth, int dstHeight);
+cv::Mat adjustTargetImg(cv::Mat &src, int dstWidth, int dstHeight);
 
 int getMiniBoxes(std::vector<cv::Point> &inVec,
                  std::vector<cv::Point> &minBoxVec,

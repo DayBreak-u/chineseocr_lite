@@ -4,8 +4,27 @@
 #include <jni.h>
 #include "OcrLite.h"
 #include "OcrResultUtils.h"
+
 static OcrLite *ocrLite;
 
+#ifdef _WIN32
+const char *jstringToChar(JNIEnv *env, jstring jstr) {
+    char *rtn = NULL;
+    jclass clsstring = env->FindClass("java/lang/String");
+    jstring strencode = env->NewStringUTF("gbk");
+    jmethodID mid = env->GetMethodID(clsstring, "getBytes", "(Ljava/lang/String;)[B");
+    jbyteArray barr = (jbyteArray) env->CallObjectMethod(jstr, mid, strencode);
+    jsize alen = env->GetArrayLength(barr);
+    jbyte *ba = env->GetByteArrayElements(barr, JNI_FALSE);
+    if (alen > 0) {
+        rtn = (char *) malloc(alen + 1);
+        memcpy(rtn, ba, alen);
+        rtn[alen] = 0;
+    }
+    env->ReleaseByteArrayElements(barr, ba, 0);
+    return rtn;
+}
+#else
 const char *jstringToChar(JNIEnv *env, jstring input) {
     const char *str;
     jboolean isCopy = false;
@@ -16,6 +35,7 @@ const char *jstringToChar(JNIEnv *env, jstring input) {
     env->ReleaseStringUTFChars(input, str);
     return str;
 }
+#endif
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_getVersion(JNIEnv *env, jobject thiz) {
