@@ -2,7 +2,6 @@ package com.benjaminwan.ocr.onnxtoncnn
 
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +17,6 @@ import com.benjaminwan.ocr.onnxtoncnn.app.App
 import com.benjaminwan.ocr.onnxtoncnn.dialog.DebugDialog
 import com.benjaminwan.ocr.onnxtoncnn.dialog.TextResultDialog
 import com.benjaminwan.ocr.onnxtoncnn.utils.showToast
-import com.benjaminwan.ocrlibrary.OcrEngine
 import com.benjaminwan.ocrlibrary.OcrResult
 import com.bumptech.glide.Glide
 import com.orhanobut.logger.Logger
@@ -27,22 +25,6 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.activity_camera.boxScoreThreshSeekBar
-import kotlinx.android.synthetic.main.activity_camera.boxScoreThreshTv
-import kotlinx.android.synthetic.main.activity_camera.boxThreshSeekBar
-import kotlinx.android.synthetic.main.activity_camera.boxThreshTv
-import kotlinx.android.synthetic.main.activity_camera.debugBtn
-import kotlinx.android.synthetic.main.activity_camera.detectBtn
-import kotlinx.android.synthetic.main.activity_camera.minAreaSeekBar
-import kotlinx.android.synthetic.main.activity_camera.minAreaTv
-import kotlinx.android.synthetic.main.activity_camera.paddingSeekBar
-import kotlinx.android.synthetic.main.activity_camera.paddingTv
-import kotlinx.android.synthetic.main.activity_camera.resultBtn
-import kotlinx.android.synthetic.main.activity_camera.scaleSeekBar
-import kotlinx.android.synthetic.main.activity_camera.scaleTv
-import kotlinx.android.synthetic.main.activity_camera.scaleUnClipRatioSeekBar
-import kotlinx.android.synthetic.main.activity_camera.unClipRatioTv
-import kotlinx.android.synthetic.main.activity_camera.timeTV
 import kotlin.math.max
 
 class CameraActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener {
@@ -273,7 +255,7 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeek
                 camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
                 preview?.setSurfaceProvider(viewFinder.surfaceProvider)
             } catch (exc: Exception) {
-                Log.e("Use case binding failed", exc.message.toString())
+                Logger.e("Use case binding failed", exc.message.toString())
             }
 
         }, ContextCompat.getMainExecutor(this))
