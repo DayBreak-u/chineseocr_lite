@@ -46,7 +46,7 @@
         android:text="开始识别"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/mResultText"
+        app:layout_constraintBottom_toTopOf="@+id/resultText"
         app:layout_constraintEnd_toStartOf="@+id/stopBtn"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,14 +65,14 @@
         android:textColor="@android:color/white"
         android:textSize="16sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/startBtn"
-        app:layout_constraintBottom_toTopOf="@+id/mResultText"
+        app:layout_constraintBottom_toTopOf="@+id/resultText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/startBtn"
         app:layout_constraintTop_toBottomOf="@+id/viewFinder" />
 
     <TextView
-        android:id="@+id/mResultText"
+        android:id="@+id/resultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
@@ -99,10 +99,10 @@
         android:hint="请编辑内容"
         android:text=""
         android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/mResultText"
+        app:layout_constraintBaseline_toBaselineOf="@+id/resultText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/mResultText"
+        app:layout_constraintStart_toEndOf="@+id/resultText"
         app:layout_constraintTop_toBottomOf="@+id/startBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
