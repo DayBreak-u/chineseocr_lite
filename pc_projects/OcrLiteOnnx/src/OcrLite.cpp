@@ -169,7 +169,7 @@ bool OcrLite::initModels(const char *path) {
     }
 
     Logger("keys size(%d)\n", keysSize);
-    if (keysSize == 0) return false;
+    if (keysSize != 5531) return false;
     Logger("Init Models Success!\n");
     return true;
 }

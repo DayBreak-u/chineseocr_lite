@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +11,6 @@ import com.benjaminwan.ocr.onnxtoncnn.app.App
 import com.benjaminwan.ocr.onnxtoncnn.dialog.DebugDialog
 import com.benjaminwan.ocr.onnxtoncnn.dialog.TextResultDialog
 import com.benjaminwan.ocr.onnxtoncnn.utils.decodeUri
-import com.benjaminwan.ocrlibrary.OcrEngine
 import com.benjaminwan.ocrlibrary.OcrResult
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
