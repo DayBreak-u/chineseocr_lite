@@ -191,6 +191,53 @@ namespace RRLib {
         myGetQuadrangleSubPix(img, dst, m);
     }
     //----------------------------------------------------------
+    // Extracts rotated region and returns it as dst image
+    //----------------------------------------------------------
+    void getRotRectImg(std::vector<cv::Point> bbox, Mat &img, Mat& dst)
+    {
+        std::vector<cv::Point3f> pt;
+        std::vector<cv::Point2f> r_pt;
+        cv::Rect rect = cv::boundingRect(bbox);
+        rect.x      -= 50;
+        rect.y      -= 50;
+        rect.width  += 100;
+        rect.height += 100;
+        if (rect.x < 0) rect.x = 0;
+        if (rect.y < 0) rect.y = 0;
+        if (rect.width+rect.x > img.cols) rect.width = img.cols-rect.x;
+        if (rect.height+rect.y > img.rows) rect.height = img.rows-rect.y;
+        cv::Mat roi_bbox = img(cv::Rect(rect.x, rect.y, rect.width, rect.height));
+        cv::RotatedRect rrect = cv::minAreaRect(bbox);
+
+        float ang = rrect.angle;
+        if (ang < -45) ang += 90;
+        cv::Point2f center(roi_bbox.cols / 2.0, roi_bbox.rows / 2.0);
+        cv::Mat M = cv::getRotationMatrix2D(center, ang, 1.0);
+        for (auto i:bbox)
+        {
+            // cout << i.x << "	" << i.y << endl;
+            pt.emplace_back(i.x-rect.x, i.y-rect.y, 1);
+        }
+        for(auto i:pt)
+        {
+            cv::Mat pt_mat = cv::Mat(i, CV_32F);
+            cv::Mat m;
+            cv::Mat mm;
+            M.convertTo(m, CV_32F);
+            mm = m*pt_mat;
+            r_pt.push_back(cv::Point(mm.at<float>(0), mm.at<float>(1)));
+        }
+        // cout << r_pt << endl;
+        cv::Rect rect_roi = cv::boundingRect(r_pt);
+        if (rect_roi.x < 0) rect_roi.x = 0;
+        if (rect_roi.y < 0) rect_roi.y = 0;
+        if (rect_roi.width +rect_roi.x > rect.width)  rect_roi.width  = rect.width -rect_roi.x;
+        if (rect_roi.height+rect_roi.y > rect.height) rect_roi.height = rect.height-rect_roi.y;
+        cv::warpAffine(roi_bbox, dst, M, rect.size());
+        // cout << "!!!!!!!!!!!!!!!!!!!!!!!!" << endl;
+        dst = dst(cv::Rect(rect_roi.x, rect_roi.y, rect_roi.width, rect_roi.height));
+    }
+    //----------------------------------------------------------
     // Copies image region (src_roi) from src image, to rotated region on image dst  
     //----------------------------------------------------------
     void copyToRotRectImg(cv::Rect src_roi, cv::RotatedRect rr, Mat &src, Mat& dst)

@@ -104,7 +104,7 @@ cv::Mat matRotateClockWise180(cv::Mat src) {
 
 cv::Mat matRotateClockWise90(cv::Mat src) {
     transpose(src, src);
-    flip(src, src, 1);
+    flip(src, src, 0);
     return src;
 }
 
