@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:layoutDirection="ltr"
+    tools:context=".ui.CmiitActivity">
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/viewFinder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="h,856:540"
+        app:layout_constraintTop_toTopOf="parent"
+        app:scaleType="fillCenter" />
+
+    <com.mywork.idcardview.IdCardFrontView
+        android:id="@+id/idCardFrontView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:AddressHeight="155"
+        app:AddressLeft="60"
+        app:AddressTop="260"
+        app:AddressWidth="465"
+        app:BirthHeight="60"
+        app:BirthLeft="60"
+        app:BirthTop="195"
+        app:BirthWidth="400"
+        app:BoxBorderColor="@color/material_light_green_A400"
+        app:BoxBorderWidth="1dp"
+        app:CalcHeight="540"
+        app:CalcWidth="856"
+        app:GenderHeight="60"
+        app:GenderLeft="60"
+        app:GenderTop="130"
+        app:GenderWidth="170"
+        app:HeadHeight="320"
+        app:HeadLeft="530"
+        app:HeadTop="80"
+        app:HeadWidth="260"
+        app:NameHeight="65"
+        app:NameLeft="60"
+        app:NameTop="60"
+        app:NameWidth="400"
+        app:NationHeight="60"
+        app:NationLeft="230"
+        app:NationTop="130"
+        app:NationWidth="230"
+        app:NumberHeight="70"
+        app:NumberLeft="60"
+        app:NumberTop="420"
+        app:NumberWidth="710"
+        app:layout_constraintBottom_toBottomOf="@+id/viewFinder"
+        app:layout_constraintDimensionRatio="h,856:540"
+        app:layout_constraintTop_toTopOf="parent"
+        app:showBox="true" />
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/controlLayout"
+        app:layout_constraintTop_toBottomOf="@+id/viewFinder">
+
+        <LinearLayout
+            android:id="@+id/resultLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/controlLayout"
+            app:layout_constraintTop_toBottomOf="@+id/viewFinder">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:gravity="center_vertical"
+                    android:text="姓名: "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/nameEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:gravity="start|center_vertical"
+                    android:hint="请编辑内容"
+                    android:text=""
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/clearNameBtn"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/btn_blue5_to_blue7" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:gravity="center_vertical"
+                    android:text="性别: "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/genderEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:gravity="start|center_vertical"
+                    android:hint="请编辑内容"
+                    android:text=""
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/clearGenderBtn"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/btn_blue5_to_blue7" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:gravity="center_vertical"
+                    android:text="民族: "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/nationEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:gravity="start|center_vertical"
+                    android:hint="请编辑内容"
+                    android:text=""
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/cleaNationBtn"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/btn_blue5_to_blue7" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:gravity="center_vertical"
+                    android:text="出生: "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/birthDateEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:gravity="start|center_vertical"
+                    android:hint="请编辑内容"
+                    android:text=""
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/clearBirthBtn"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/btn_blue5_to_blue7" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:gravity="center_vertical"
+                    android:text="住址: "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/addressEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:gravity="start|center_vertical"
+                    android:hint="请编辑内容"
+                    android:lines="3"
+                    android:maxLines="3"
+                    android:text=""
+                    android:textSize="12sp" />
+
+                <ImageButton
+                    android:id="@+id/clearAddressBtn"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/btn_blue5_to_blue7" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:gravity="center_vertical"
+                    android:text="号码: "
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/numberEdit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:gravity="start|center_vertical"
+                    android:hint="请编辑内容"
+                    android:text=""
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/clearNumberBtn"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_marginEnd="2dp"
+                    android:background="@android:color/transparent"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/btn_blue5_to_blue7" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/controlLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/startBtn"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_blue3_to_blue5"
+            android:text="开始识别"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/stopBtn"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_margin="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_blue3_to_blue5"
+            android:text="停止识别"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

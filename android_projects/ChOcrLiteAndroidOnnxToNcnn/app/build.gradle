@@ -20,8 +20,8 @@ android {
         applicationId "com.benjaminwan.ocr.onnxtoncnn"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10
-        versionName "1.3.4.20201104"
+        versionCode 11
+        versionName "1.4.0.20201106"
         signingConfig signingConfigs.ocr
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +51,12 @@ android {
             variant.outputs.all {
                 outputFileName = "${rootProject.name}-${defaultConfig.versionName}-${variant.buildType.name}.apk"
             }
+    }
+}
+
+repositories {
+    flatDir {
+        dirs '../common-aar', 'libs'
     }
 }
 
@@ -103,4 +109,6 @@ dependencies {
 
     //Logger
     implementation 'com.orhanobut:logger:2.2.0'
+
+    implementation(name: 'IdCardView-1.0', ext: 'aar')
 }
