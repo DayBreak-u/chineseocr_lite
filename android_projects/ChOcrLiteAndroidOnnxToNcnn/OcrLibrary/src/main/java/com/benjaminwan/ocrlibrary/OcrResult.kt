@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-sealed class OcrOutput
+open class OcrOutput
 
 object OcrStop : OcrOutput()
 object OcrFailed : OcrOutput()

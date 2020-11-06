@@ -31,6 +31,12 @@
         <activity
             android:name=".ImeiActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".PlateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".IdCardFrontActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
