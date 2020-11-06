@@ -25,4 +25,16 @@
         android:layout_height="wrap_content"
         android:text="手机IMEI号识别" />
 
+    <Button
+        android:id="@+id/plateBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="车牌识别" />
+
+    <Button
+        android:id="@+id/idCardBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="身份证人像面识别" />
+
 </LinearLayout>
