@@ -14,6 +14,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         galleryBtn.setOnClickListener(this)
         cameraBtn.setOnClickListener(this)
         imeiBtn.setOnClickListener(this)
+        plateBtn.setOnClickListener(this)
+        idCardBtn.setOnClickListener(this)
     }
 
     override fun onClick(view: View?) {
@@ -27,6 +29,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.imeiBtn -> {
                 startActivity(Intent(this, ImeiActivity::class.java))
+            }
+            R.id.plateBtn -> {
+                startActivity(Intent(this, PlateActivity::class.java))
+            }
+            R.id.idCardBtn -> {
+                startActivity(Intent(this, IdCardFrontActivity::class.java))
             }
             else -> {
             }
