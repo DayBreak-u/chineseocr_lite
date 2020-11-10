@@ -355,7 +355,7 @@ OcrResult OcrLite::detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
     int thickness = getThickness(src);
 
     Logger("=====Start detect=====");
-    Logger("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)", scale.srcWidth, scale.srcHeight,
+    Logger("ScaleParam(sw:%d,sh:%d,dw:%d,dh:%d,%f,%f)", scale.srcWidth, scale.srcHeight,
            scale.dstWidth, scale.dstHeight,
            scale.scaleWidth, scale.scaleHeight);
 
