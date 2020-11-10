@@ -141,6 +141,10 @@ test_imgs/*-debug-*.jpg
 test_imgs/*-result.jpg
 test_imgs/*-result.txt
 /models/*.onnx
-/onnx
+/onnx/include
+/onnx/linux
+/onnx/macos
+/onnx/windows
 /build-lib
 /build-lib-win
+/opencv
