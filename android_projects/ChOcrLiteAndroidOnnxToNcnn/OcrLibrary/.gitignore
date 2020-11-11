@@ -4,3 +4,4 @@
 /src/main/staticLibs
 /src/main/assets/*.bin
 /src/main/assets/*.param
+/src/sdk
