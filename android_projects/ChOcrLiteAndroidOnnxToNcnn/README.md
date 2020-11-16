@@ -71,9 +71,9 @@ ChOcrLiteAndroidOnnxToNcnn/OcrLibrary/src/main/staticLibs
 请参考[OcrLiteOnnx项目](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
 
 #### 编译opencv3，裁剪不需要的模块，减小包体积
-也可以直接下载编译好的sdk包，在顶部的下载地址内找opencv-3.4.11-android-sdk-static.zip。
-因为只是用opencv做一些图像处理和变换，所以不需要它自带的推理模块，video模块等等，去掉这些模块后，最终的apk包体积能减少40MB
-同步opencv源码，如果github访问很慢，可以使用镜像站hub.fastgit.org或者通过https://gitclone.com/缓存加速
+* 也可以直接下载编译好的sdk包，在顶部的下载地址内找opencv-3.4.11-android-sdk-static.zip。
+* 因为只是用opencv做一些图像处理和变换，所以不需要它自带的推理模块，video模块等等，去掉这些模块后，最终的apk包体积能减少40MB
+* 同步opencv源码，如果github访问很慢，可以使用镜像站hub.fastgit.org或者通过https://gitclone.com/缓存加速
 
 ##### gitclone缓存加速
 ```
@@ -92,8 +92,8 @@ git checkout 3.4.11
 ```
 
 ##### 准备用于编译静态库的shell脚本(仅linux或mac)
-scrips文件夹里的build-opencv3-static-android.sh复制到opencv文件夹，其中ANDROID_NDK路径要改为你的实际路径。
-注意:下载ndk版本17.2.4988734，太新的ndk可能不支持
+* scrips文件夹里的build-opencv3-static-android.sh复制到opencv文件夹，其中ANDROID_NDK路径要改为你的实际路径。
+* 注意:下载ndk版本17.2.4988734，太新的ndk可能不支持
 
 ##### 开始编译
 ```
@@ -102,8 +102,8 @@ chmod a+x build-opencv3-static-android.sh
 ```
 
 ##### 整合包
-编译完成后，opencv目录下会有4个build开头的文件夹，对应了4种android的abi
-把4个build-android-xxx下的install/sdk复制出来合并，合并后的sdk目录结构如下
+* 编译完成后，opencv目录下会有4个build开头的文件夹，对应了4种android的abi
+* 把4个build-android-xxx下的install/sdk复制出来合并，合并后的sdk目录结构如下
 ```
 sdk
 └── native
