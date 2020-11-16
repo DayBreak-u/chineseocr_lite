@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1267
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcrLiteOnnxForm", "OcrLiteOnnxForm\OcrLiteOnnxForm.csproj", "{56F142A0-DE89-497C-BB20-872E6BEBB176}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A1647DA-83CD-4F9D-9FFA-F663BB55FF6A} = {3A1647DA-83CD-4F9D-9FFA-F663BB55FF6A}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OcrLiteLib", "OcrLiteLib\OcrLiteLib.csproj", "{3A1647DA-83CD-4F9D-9FFA-F663BB55FF6A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56F142A0-DE89-497C-BB20-872E6BEBB176}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56F142A0-DE89-497C-BB20-872E6BEBB176}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56F142A0-DE89-497C-BB20-872E6BEBB176}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56F142A0-DE89-497C-BB20-872E6BEBB176}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A1647DA-83CD-4F9D-9FFA-F663BB55FF6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A1647DA-83CD-4F9D-9FFA-F663BB55FF6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A1647DA-83CD-4F9D-9FFA-F663BB55FF6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A1647DA-83CD-4F9D-9FFA-F663BB55FF6A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {492CDFF0-E638-46FB-BEA2-2C473641E8E6}
+	EndGlobalSection
+EndGlobal

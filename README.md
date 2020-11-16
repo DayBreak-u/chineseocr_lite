@@ -12,12 +12,12 @@
 cd chineseocr_lite## 进入chineseocr目录
 python backend/main.py 
 ```
-
-## [ncnn推理](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnxToNcnn)
-
-## [onnx c++推理](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
-
-## [android](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/android_projects)
+## 以下为从Python代码翻译为各种语言的Demo，仅供参考:
+* ~~[C++ ncnn Demo停止更新](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnxToNcnn)~~
+* [C++ onnx Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
+* [Android ncnn Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/android_projects)
+* [.Net Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/dotnet_projects)
+* [Jvm Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/jvm_projects)
 
 ## 在线体验(lite版本<模型还在训练中>，支持竖排，空格识别，文字行方向旋转)： http://ocr.timeline229.com:8089/
 
