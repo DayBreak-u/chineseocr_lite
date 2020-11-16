@@ -35,7 +35,7 @@ namespace OcrLiteOnnxCs
             using (var dlg = new OpenFileDialog())
             {
                 dlg.Multiselect = false;
-                dlg.Filter = "jpeg files (*.jpg)|*.jpg";
+                dlg.Filter = "(*.JPG,*.PNG,*.JPEG,*.BMP,*.GIF)|*.JPG;*.PNG;*.JPEG;*.BMP;*.GIF|All files(*.*)|*.*";
                 if (dlg.ShowDialog() == DialogResult.OK && !string.IsNullOrEmpty(dlg.FileName))
                 {
                     pathTextBox.Text = dlg.FileName;
