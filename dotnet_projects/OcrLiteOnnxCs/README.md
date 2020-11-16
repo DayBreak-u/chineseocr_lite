@@ -36,3 +36,8 @@ Debug\models
 └── keys.txt
 ```
 9. 运行
+
+##### 其它
+* 修改线程数，必须“重新初始化”才能生效
+* “models”按钮修改模型路径，必须“重新初始化”才能生效
+* 输入参数说明请参考[OcrLiteOnnx项目](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
