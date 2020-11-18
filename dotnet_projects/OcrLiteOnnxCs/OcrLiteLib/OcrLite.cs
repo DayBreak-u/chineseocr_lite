@@ -38,7 +38,9 @@ namespace OcrLiteLib
         public OcrResult Detect(string img, int padding, int imgResize, float boxScoreThresh, float boxThresh, float minArea,
                               float unClipRatio, bool doAngle, bool mostAngle)
         {
-            Mat originSrc = CvInvoke.Imread(img, ImreadModes.Color);
+            Mat brgSrc = CvInvoke.Imread(img, ImreadModes.Color);//default : BGR
+            Mat originSrc = new Mat();
+            CvInvoke.CvtColor(brgSrc, originSrc, ColorConversion.Bgr2Rgb);// convert to RGB
             Rectangle originRect = new Rectangle(padding, padding, originSrc.Cols, originSrc.Rows);
             Mat paddingSrc = OcrUtils.MakePadding(originSrc, padding);
 
@@ -129,7 +131,9 @@ namespace OcrLiteLib
             //Console.WriteLine($"fullDetectTime({fullDetectTime}ms)");
 
             //cropped to original size
-            Mat boxImg = new Mat(textBoxPaddingImg, originRect);
+            Mat rgbBoxImg = new Mat(textBoxPaddingImg, originRect);
+            Mat boxImg = new Mat();
+            CvInvoke.CvtColor(rgbBoxImg, boxImg, ColorConversion.Rgb2Bgr);//convert to BGR for Output Result Img
             //CvInvoke.Imshow("Result", boxImg);
 
             StringBuilder strRes = new StringBuilder();
