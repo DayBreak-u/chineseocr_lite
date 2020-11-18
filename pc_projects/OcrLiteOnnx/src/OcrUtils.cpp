@@ -100,7 +100,7 @@ void drawTextBox(cv::Mat &boxImg, cv::RotatedRect &rect, int thickness) {
 }
 
 void drawTextBox(cv::Mat &boxImg, const std::vector<cv::Point> &box, int thickness) {
-    auto color = cv::Scalar(0, 0, 255);
+    auto color = cv::Scalar(255, 0, 0);// R(255) G(0) B(0)
     cv::line(boxImg, box[0], box[1], color, thickness);
     cv::line(boxImg, box[1], box[2], color, thickness);
     cv::line(boxImg, box[2], box[3], color, thickness);
