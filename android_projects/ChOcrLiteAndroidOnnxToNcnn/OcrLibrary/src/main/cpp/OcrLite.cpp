@@ -219,7 +219,7 @@ TextLine OcrLite::getTextLine(cv::Mat &src) {
     cv::resize(src, srcResize, cv::Size(dstWidth, crnnDstHeight));
 
     ncnn::Mat input = ncnn::Mat::from_pixels(
-            srcResize.data, ncnn::Mat::PIXEL_BGR2GRAY,
+            srcResize.data, ncnn::Mat::PIXEL_BGR2RGB,
             srcResize.cols, srcResize.rows);
 
     input.substract_mean_normalize(meanValsCrnn, normValsCrnn);

@@ -4,10 +4,7 @@
 #include <fstream>
 #include "OcrLite.h"
 #include "OcrUtils.h"
-
-#ifdef _WIN32
-#include <stdarg.h> //windows
-#endif
+#include <stdarg.h> //windows&linux
 
 OcrLite::OcrLite(int numOfThread) {
     numThread = numOfThread;
@@ -183,6 +180,7 @@ void OcrLite::Logger(const char *format, ...) {
     va_end(args);
     if (isOutputConsole) printf("%s", buffer);
     if (isOutputResultTxt) fprintf(resultTxt, "%s", buffer);
+    free(buffer);
 }
 
 std::vector<TextBox>
@@ -382,7 +380,9 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
                           float unClipRatio, bool doAngle, bool mostAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
-    cv::Mat originSrc = cv::imread(imgFile);
+    cv::Mat bgrSrc = cv::imread(imgFile, cv::IMREAD_COLOR);//default : BGR
+    cv::Mat originSrc;
+    cv::cvtColor(bgrSrc, originSrc, cv::COLOR_BGR2RGB);// convert to RGB
     cv::Rect originRect(padding, padding, originSrc.cols, originSrc.rows);
     cv::Mat src = makePadding(originSrc, padding);
 
@@ -398,7 +398,9 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
                           float unClipRatio, bool doAngle, bool mostAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
-    cv::Mat originSrc = cv::imread(imgFile);
+    cv::Mat bgrSrc = cv::imread(imgFile, cv::IMREAD_COLOR);//default : BGR
+    cv::Mat originSrc;
+    cv::cvtColor(bgrSrc, originSrc, cv::COLOR_BGR2RGB);// convert to RGB
     cv::Rect originRect(padding, padding, originSrc.cols, originSrc.rows);
     cv::Mat src = makePadding(originSrc, padding);
 
@@ -599,28 +601,20 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     Logger("FullDetectTime(%fms)\n", fullTime);
 
     //cropped to original size
-    cv::Mat textBoxImg;
+    cv::Mat rgbBoxImg, textBoxImg;
+
     if (originRect.x > 0 && originRect.y > 0) {
-        textBoxPaddingImg(originRect).copyTo(textBoxImg);
+        textBoxPaddingImg(originRect).copyTo(rgbBoxImg);
     } else {
-        textBoxImg = textBoxPaddingImg;
+        rgbBoxImg = textBoxPaddingImg;
     }
+    cv::cvtColor(rgbBoxImg, textBoxImg, cv::COLOR_RGB2BGR);//convert to BGR for Output Result Img
 
     //Save result.jpg
     if (isOutputResultImg) {
         std::string resultImgFile = getResultImgFilePath(path, imgName);
         cv::imwrite(resultImgFile, textBoxImg);
     }
-
-    //Adjust text order
-    /*if (doAngle) {
-        auto angleIndexes = getAngleIndexes(textBlocks);
-        auto mean = getMean(angleIndexes);
-        auto stdev = getStdev(angleIndexes, mean);
-        auto mostAngleIndex = getMostProbabilityAngleIndex(angleIndexes, mean, stdev);
-        printf("mean=%f,stdev=%f,mostAngle=%d\n", mean, stdev, mostAngleIndex);
-        if (mostAngleIndex == 0) reverse(textBlocks.begin(), textBlocks.end());
-    }*/
 
     std::string strRes;
     for (int i = 0; i < textBlocks.size(); ++i) {
