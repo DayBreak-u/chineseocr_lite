@@ -406,5 +406,5 @@ app/build
 OcrLibrary/.cxx
 OcrLibrary/build
 ```
-然后使用命令编译```./gradlew assembleRelease```
+6. 使用命令编译```./gradlew assembleRelease```
 
