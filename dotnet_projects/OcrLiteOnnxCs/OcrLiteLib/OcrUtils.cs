@@ -56,7 +56,7 @@ namespace OcrLiteLib
             {
                 return;
             }
-            var color = new MCvScalar(0, 0, 255);
+            var color = new MCvScalar(255, 0, 0);//R(255) G(0) B(0)
             CvInvoke.Line(boxImg, box[0], box[1], color, thickness);
             CvInvoke.Line(boxImg, box[1], box[2], color, thickness);
             CvInvoke.Line(boxImg, box[2], box[3], color, thickness);
