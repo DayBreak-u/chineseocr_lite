@@ -52,12 +52,9 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_init(JNIEnv *env, jobject thiz, jint n
 
 extern "C" JNIEXPORT void JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_initLogger(JNIEnv *env, jobject thiz, jboolean isConsole,
-                                                     jboolean isPartImg, jboolean isAngleImg, jboolean isDebugImg,
-                                                     jboolean isResultImg) {
+                                                     jboolean isPartImg, jboolean isResultImg) {
     ocrLite->initLogger(isConsole,//isOutputConsole
                         isPartImg,//isOutputPartImg
-                        isAngleImg,//isOutputAngleImg
-                        isDebugImg,//isOutputDebugImg
                         isResultImg);//isOutputResultImg
 }
 
@@ -75,8 +72,8 @@ extern "C" JNIEXPORT jboolean JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_initModels(JNIEnv *env, jobject thiz, jstring path) {
     const char *models = jstringToChar(env, path);
     printf("models dir=%s\n", models);
-    bool ret = ocrLite->initModels(models);
-    return ret;
+    ocrLite->initModels(models);
+    return true;
 }
 
 extern "C" JNIEXPORT jobject JNICALL
