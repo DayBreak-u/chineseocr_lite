@@ -27,8 +27,6 @@ public class Main {
         ocrEngine.initLogger(
                 true,
                 true,
-                true,
-                true,
                 true
         );
         ocrEngine.enableResultText(imagePath);
