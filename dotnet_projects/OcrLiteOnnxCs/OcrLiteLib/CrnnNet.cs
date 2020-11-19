@@ -12,10 +12,10 @@ namespace OcrLiteLib
 {
     class CrnnNet
     {
+        private readonly float[] MeanValues = { 127.5F, 127.5F, 127.5F };
+        private readonly float[] NormValues = { 1.0F / 127.5F, 1.0F / 127.5F, 1.0F / 127.5F };
         private const int crnnDstHeight = 32;
         private const int crnnCols = 5531;
-        private readonly float[] meanValsCrnn = { 127.5F, 127.5F, 127.5F };
-        private readonly float[] normValsCrnn = { 1.0F / 127.5F, 1.0F / 127.5F, 1.0F / 127.5F };
 
         private InferenceSession crnnNet;
         private List<string> keys;
@@ -81,7 +81,7 @@ namespace OcrLiteLib
 
             Mat srcResize = new Mat();
             CvInvoke.Resize(src, srcResize, new Size(dstWidth, crnnDstHeight));
-            Tensor<float> inputTensors = OcrUtils.SubstractMeanNormalize(srcResize, meanValsCrnn, normValsCrnn);
+            Tensor<float> inputTensors = OcrUtils.SubstractMeanNormalize(srcResize, MeanValues, NormValues);
             var inputs = new List<NamedOnnxValue>
             {
                 NamedOnnxValue.CreateFromTensor("input", inputTensors)

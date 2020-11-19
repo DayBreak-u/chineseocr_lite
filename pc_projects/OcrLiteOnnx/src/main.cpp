@@ -56,31 +56,31 @@ int main(int argc, char **argv) {
                 break;
             case 't':
                 numThread = (int) strtol(optarg, NULL, 10);
-                printf("numThread=%d\n", numThread);
+                //printf("numThread=%d\n", numThread);
                 break;
             case 'p':
                 padding = (int) strtol(optarg, NULL, 10);
-                printf("padding=%d\n", padding);
+                //printf("padding=%d\n", padding);
                 break;
             case 's':
                 imgResize = (int) strtol(optarg, NULL, 10);
-                printf("imgResize=%d\n", imgResize);
+                //printf("imgResize=%d\n", imgResize);
                 break;
             case 'b':
                 boxScoreThresh = strtof(optarg, NULL);
-                printf("boxScoreThresh=%f\n", boxScoreThresh);
+                //printf("boxScoreThresh=%f\n", boxScoreThresh);
                 break;
             case 'o':
                 boxThresh = strtof(optarg, NULL);
-                printf("boxThresh=%f\n", boxThresh);
+                //printf("boxThresh=%f\n", boxThresh);
                 break;
             case 'm':
                 minArea = strtof(optarg, NULL);
-                printf("minArea=%f\n", minArea);
+                //printf("minArea=%f\n", minArea);
                 break;
             case 'u':
                 unClipRatio = strtof(optarg, NULL);
-                printf("unClipRatio=%f\n", unClipRatio);
+                //printf("unClipRatio=%f\n", unClipRatio);
                 break;
             case 'a':
                 flagDoAngle = (int) strtol(optarg, NULL, 10);
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
                 } else {
                     doAngle = true;
                 }
-                printf("doAngle=%d\n", doAngle);
+                //printf("doAngle=%d\n", doAngle);
                 break;
             case 'A':
                 flagMostAngle = (int) strtol(optarg, NULL, 10);
@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
                 } else {
                     mostAngle = true;
                 }
-                printf("mostAngle=%d\n", mostAngle);
+                //printf("mostAngle=%d\n", mostAngle);
                 break;
             case 'v':
                 printf("%s\n", VERSION);
@@ -115,14 +115,16 @@ int main(int argc, char **argv) {
     ocrLite.initLogger(
             true,//isOutputConsole
             false,//isOutputPartImg
-            false,//isOutputAngleImg
-            false,//isOutputDebugImg
             true);//isOutputResultImg
 
     ocrLite.enableResultTxt(imgPath.c_str(), imgName.c_str());
+    ocrLite.Logger("=====Input Params=====\n");
+    ocrLite.Logger(
+            "numThread(%d),padding(%d),imgResize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)\n",
+            numThread, padding, imgResize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
 
-    bool ret = ocrLite.initModels(modelsDir.c_str());
-    if (!ret) return -1;
+    ocrLite.initModels(modelsDir.c_str());
+
 
     OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                       padding, imgResize,

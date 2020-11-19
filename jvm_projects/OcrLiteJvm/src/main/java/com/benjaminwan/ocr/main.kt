@@ -24,8 +24,6 @@ fun main(args: Array<String>) {
     ocrEngine.initLogger(
         isConsole = true,//jni启用命令行输出
         isPartImg = true,
-        isAngleImg = true,
-        isDebugImg = true,
         isResultImg = true
     )
     ocrEngine.enableResultText(imagePath)

@@ -12,8 +12,8 @@ namespace OcrLiteLib
 {
     class AngleNet
     {
-        private readonly float[] meanValsCrnn = { 0.485F * 255F, 0.456F * 255F, 0.406F * 255F };
-        private readonly float[] normValsCrnn = { 1.0F / 0.229F / 255.0F, 1.0F / 0.224F / 255.0F, 1.0F / 0.225F / 255.0F };
+        private readonly float[] MeanValues = { 127.5F, 127.5F, 127.5F };
+        private readonly float[] NormValues = { 1.0F / 127.5F, 1.0F / 127.5F, 1.0F / 127.5F };
         private const int angleDstWidth = 192;
         private const int angleDstHeight = 32;
         private const int angleCols = 2;
@@ -98,7 +98,7 @@ namespace OcrLiteLib
         {
             Angle angle = new Angle();
             Mat angleImg = AdjustTargetImg(src, angleDstWidth, angleDstHeight);
-            Tensor<float> inputTensors = OcrUtils.SubstractMeanNormalize(angleImg, meanValsCrnn, normValsCrnn);
+            Tensor<float> inputTensors = OcrUtils.SubstractMeanNormalize(angleImg, MeanValues, NormValues);
             var inputs = new List<NamedOnnxValue>
             {
                 NamedOnnxValue.CreateFromTensor("input", inputTensors)

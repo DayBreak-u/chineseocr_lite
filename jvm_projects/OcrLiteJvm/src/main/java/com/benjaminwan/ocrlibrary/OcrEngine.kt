@@ -29,8 +29,6 @@ class OcrEngine() {
     external fun initLogger(
         isConsole: Boolean,
         isPartImg: Boolean,
-        isAngleImg: Boolean,
-        isDebugImg: Boolean,
         isResultImg: Boolean
     )
 

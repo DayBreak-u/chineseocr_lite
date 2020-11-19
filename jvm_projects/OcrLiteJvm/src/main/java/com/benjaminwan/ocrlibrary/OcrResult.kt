@@ -14,7 +14,6 @@ data class OcrResult(
 
 data class Point(var x: Int, var y: Int)
 
-
 data class TextBlock(
     val boxPoint: ArrayList<Point>, var boxScore: Float,
     val angleIndex: Int, val angleScore: Float, val angleTime: Double,
