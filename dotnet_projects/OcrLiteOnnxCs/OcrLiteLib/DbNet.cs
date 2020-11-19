@@ -14,8 +14,8 @@ namespace OcrLiteLib
 {
     class DbNet
     {
-        private readonly float[] MeanValsDBNet = { 0.485F * 255F, 0.456F * 255F, 0.406F * 255F };
-        private readonly float[] NormValsDBNet = { 1.0F / 0.229F / 255.0F, 1.0F / 0.224F / 255.0F, 1.0F / 0.225F / 255.0F };
+        private readonly float[] MeanValues = { 0.485F * 255F, 0.456F * 255F, 0.406F * 255F };
+        private readonly float[] NormValues = { 1.0F / 0.229F / 255.0F, 1.0F / 0.224F / 255.0F, 1.0F / 0.225F / 255.0F };
 
         private InferenceSession dbNet;
 
@@ -45,7 +45,7 @@ namespace OcrLiteLib
         {
             Mat srcResize = new Mat();
             CvInvoke.Resize(src, srcResize, new Size(scale.DstWidth, scale.DstHeight));
-            Tensor<float> inputTensors = OcrUtils.SubstractMeanNormalize(srcResize, MeanValsDBNet, NormValsDBNet);
+            Tensor<float> inputTensors = OcrUtils.SubstractMeanNormalize(srcResize, MeanValues, NormValues);
             var inputs = new List<NamedOnnxValue>
             {
                 NamedOnnxValue.CreateFromTensor("input0", inputTensors)
