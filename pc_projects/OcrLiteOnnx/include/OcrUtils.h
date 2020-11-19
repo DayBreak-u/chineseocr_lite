@@ -3,56 +3,89 @@
 
 #include <opencv2/core.hpp>
 #include "OcrStruct.h"
+#include "onnx/onnxruntime_cxx_api.h"
+#include <numeric>
+
+using namespace cv;
+using namespace std;
+
+template<typename T, typename... Ts>
+static unique_ptr<T> makeUnique(Ts &&... params) {
+    return unique_ptr<T>(new T(forward<Ts>(params)...));
+}
+
+template<typename T>
+static double getMean(vector<T> &input) {
+    auto sum = accumulate(input.begin(), input.end(), 0.0);
+    return sum / input.size();
+}
+
+template<typename T>
+static double getStdev(vector<T> &input, double mean) {
+    if (input.size() <= 1) return 0;
+    double accum = 0.0;
+    for_each(input.begin(), input.end(), [&](const double d) {
+        accum += (d - mean) * (d - mean);
+    });
+    double stdev = sqrt(accum / (input.size() - 1));
+    return stdev;
+}
 
 double getCurrentTime();
 
-std::wstring strToWstr(std::string str);
+wstring strToWstr(string str);
 
-ScaleParam getScaleParam(cv::Mat &src, const float scale);
+ScaleParam getScaleParam(Mat &src, const float scale);
 
-ScaleParam getScaleParam(cv::Mat &src, const int targetSize);
+ScaleParam getScaleParam(Mat &src, const int targetSize);
 
-cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float scaleHeight);
+RotatedRect getPartRect(vector<Point> &box, float scaleWidth, float scaleHeight);
 
-std::vector<cv::Point2f> getBox(cv::RotatedRect &rect);
+vector<Point2f> getBox(RotatedRect &rect);
 
-int getThickness(cv::Mat &boxImg);
+int getThickness(Mat &boxImg);
 
-void drawTextBox(cv::Mat &boxImg, cv::RotatedRect &rect, int thickness);
+void drawTextBox(Mat &boxImg, RotatedRect &rect, int thickness);
 
-void drawTextBox(cv::Mat &boxImg, const std::vector<cv::Point> &box, int thickness);
+void drawTextBox(Mat &boxImg, const vector<Point> &box, int thickness);
 
-cv::Mat matRotateClockWise180(cv::Mat src);
+void drawTextBoxes(Mat &boxImg, vector<TextBox> &textBoxes, int thickness);
 
-cv::Mat matRotateClockWise90(cv::Mat src);
+Mat matRotateClockWise180(Mat src);
 
-cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box);
+Mat matRotateClockWise90(Mat src);
 
-cv::Mat adjustTargetImg(cv::Mat &src, int dstWidth, int dstHeight);
+Mat GetRotateCropImage(const Mat &src, vector<Point> box);
 
-int getMiniBoxes(std::vector<cv::Point> &inVec,
-                 std::vector<cv::Point> &minBoxVec,
+Mat adjustTargetImg(Mat &src, int dstWidth, int dstHeight);
+
+int getMiniBoxes(vector<Point> &inVec,
+                 vector<Point> &minBoxVec,
                  float &minEdgeSize, float &allEdgeSize
 );
 
-float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box);
+float boxScoreFast(Mat &mapmat, vector<Point> &_box);
 
-void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec, float unClipRatio);
+void unClip(vector<Point> &minBoxVec, float allEdgeSize, vector<Point> &outVec, float unClipRatio);
 
-std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, const float *normVals);
+vector<float> substractMeanNormalize(Mat &src, const float *meanVals, const float *normVals);
 
-std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
+vector<int> getAngleIndexes(vector<Angle> &angles);
 
-int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double stdev);
+vector<const char *> getInputNames(unique_ptr<Ort::Session> &session);
 
-void saveImg(cv::Mat &img, const char *imgPath);
+vector<const char *> getOutputNames(unique_ptr<Ort::Session> &session);
 
-std::string getSrcImgFilePath(const char *path, const char *imgName);
+int getMostProbabilityAngleIndex(vector<int> &input, double mean, double stdev);
 
-std::string getResultTxtFilePath(const char *path, const char *imgName);
+void saveImg(Mat &img, const char *imgPath);
 
-std::string getResultImgFilePath(const char *path, const char *imgName);
+string getSrcImgFilePath(const char *path, const char *imgName);
 
-std::string getDebugImgFilePath(const char *path, const char *imgName, int i, const char *tag);
+string getResultTxtFilePath(const char *path, const char *imgName);
+
+string getResultImgFilePath(const char *path, const char *imgName);
+
+string getDebugImgFilePath(const char *path, const char *imgName, int i, const char *tag);
 
 #endif //__OCR_UTILS_H__

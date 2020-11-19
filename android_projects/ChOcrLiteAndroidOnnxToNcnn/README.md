@@ -22,7 +22,7 @@ dbnet(图像分割)+anglenet(文字方向检测)+crnn(文字识别)
 5. 预编译库版本ncnn-android-lib.zip 20200916 b766c8c
 
 #### 编译说明
-1.  AndroidStudio 4.0.2或以上
+1.  AndroidStudio 4.1或以上
 2.  NDK
 3.  cmake 3.4.1或以上
 4.  下载opencv-3.4.10-android-sdk.zip，[下载地址](https://github.com/opencv/opencv/releases/tag/3.4.11)
