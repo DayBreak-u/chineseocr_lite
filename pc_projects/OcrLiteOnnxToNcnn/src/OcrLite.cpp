@@ -325,14 +325,8 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
         Logger("-----TextBox[%d] score(%f)-----\n", i, textBoxes[i].score);
         double startTextBox = getCurrentTime();
         cv::Mat partImg;
-        cv::RotatedRect partRect = getPartRect(textBoxes[i].box, scaleWidth,
-                                                scaleHeight);
-        Logger("partRect(center.x=%f, center.y=%f, width=%f, height=%f, angle=%f)\n",
-               partRect.center.x, partRect.center.y,
-               partRect.size.width, partRect.size.height,
-               partRect.angle);
 
-        RRLib::getRotRectImg(partRect, src, partImg);
+        RRLib::getRotRectImg(bboxs[i], src, partImg);
 
         //drawTextBox
         drawTextBox(textBoxPaddingImg, partRect, thickness);
