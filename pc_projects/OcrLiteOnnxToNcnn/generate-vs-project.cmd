@@ -58,7 +58,7 @@ popd
 GOTO:EOF
 
 :cmakeParams
-cmake -G "%~1" -A "%~2" -DCMAKE_BUILD_TYPE=Release -DOCR_LITE_OPENMP=ON ..
+cmake -G "%~1" -A "%~2" -DCMAKE_BUILD_TYPE=Release -DOCR_LITE_OPENMP=OFF ..
 GOTO:EOF
 
 @ENDLOCAL

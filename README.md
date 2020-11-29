@@ -13,7 +13,7 @@ cd chineseocr_lite## 进入chineseocr目录
 python backend/main.py 
 ```
 ## 以下为从Python代码翻译为各种语言的Demo，仅供参考:
-* ~~[C++ ncnn Demo停止更新](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnxToNcnn)~~
+* [C++ ncnn Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnxToNcnn)
 * [C++ onnx Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
 * [Android ncnn Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/android_projects)
 * [.Net Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/dotnet_projects)
