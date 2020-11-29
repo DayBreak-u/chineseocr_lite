@@ -68,7 +68,7 @@ OcrLiteOnnx/opencv
 ```
 4.  VS2017/2019安装时，至少选中"使用C++的桌面开发"
 5.  开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
-6.  运行```build-win.cmd```编译为命令行可执行文件
+6.  运行```build.cmd```并输入选项，编译为命令行可执行文件
 7.  编译完成后运行```run-test-win.cmd```进行测试
 8.  如果提示缺少"VCRUNTIME140_1.dll"，下载安装适用于 Visual Studio 2015、2017 和 2019 的 Microsoft Visual C++ 可再发行软件包，
 [下载地址](https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads)
@@ -78,12 +78,12 @@ OcrLiteOnnx/opencv
 * 新建“系统变量”，变量名```CLASSPATH``` ，变量值```.;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar;``
 * 编辑“系统变量”Path，Win7在变量值头部添加```%JAVA_HOME%\bin;``` ，win10直接添加一行```%JAVA_HOME%\bin```
 * 开始菜单打开"x64 Native Tools Command Prompt for VS 2019"或"适用于 VS2017 的 x64 本机工具"，并转到OcrLiteOnnx根目录
-* 运行```build-lib-win.cmd```编译为动态运行库
+* 运行```build.cmd```并输入选项，选择编译为动态运行库
 
 ##### Windows Visual Studio编译说明
-* VS2017/VS2019，cmake，opencv……等安装配置参考上述步骤。
-* 运行generate-vs-project.cmd，生成visual studio项目解决方案。
-* 根据你的编译环境，进入build-vs201n-x86或x64文件夹，打开OcrLiteOnnx.sln。
+* VS2015/VS2017/VS2019，cmake，opencv……等安装配置参考上述步骤。
+* 运行generate-vs-project.cmd，输入数字选择要生成的visual studio项目解决方案版本。
+* 根据你的编译环境，进入build-xxxx-x86或x64文件夹，打开OcrLiteOnnxToNcnn.sln。
 * 在顶部工具栏选择Debug或Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。
 
 ##### Mac编译说明
@@ -96,22 +96,22 @@ brew ln opencv3 --force
 ```
 * 编辑用户目录下的隐藏文件```.zshrc``` ，添加```export OpenCV_DIR="/usr/local/Cellar/opencv@3/3.4.10_4"```
 4.  libomp: ```brew install libomp```
-5.  编译：```./build.sh```
+5.  编译：```./build.sh```并输入选项，编译为命令行可执行文件
 6.  测试：```./run-test.sh```
 7. 编译动态运行库(可选，可用于java调用)
 * 下载jdk-8u221-macosx-x64.dmg，安装。
 * 编辑用户目录下的隐藏文件```.zshrc``` ，添加```export JAVA_HOME=$(/usr/libexec/java_home)```
-* 运行```build-lib.sh```编译为动态运行库
+* 运行```build.sh```并输入选项，编译为动态运行库
 
 ##### Linux编译说明
 1.  Deepin 20 或其它发行版
 2.  安装build-essential:略……
 3.  下载opencv：各发行版不大一样，略……
-4.  编译：```./build.sh```
+4.  编译：```./build.sh```并输入选项，编译为命令行可执行文件
 5.  测试：```./run-test.sh```
 6. 编译动态运行库(可选，可用于java调用)
 * 下载安装jdk，略……
-* 运行```build-lib.sh```编译为动态运行库
+* 运行```build.sh```并输入选项，编译为动态运行库
 
 #### 测试结果说明
 1.  *-part-x.jpg为分割后的图片
@@ -153,6 +153,11 @@ onnxruntime设置线程数分为2个部分:
 10. ```-a或--noAngle```：启用(1)/禁用(0) 文字方向检测，只有图片倒置的情况下(旋转90~270度的图片)，才需要启用文字方向检测。
 11. ```-A或--mostAngle```：启用(1)/禁用(0) 角度投票(整张图片以最大可能文字方向来识别)，当禁用文字方向检测时，此项也不起作用。
 12. ```-?或--help```：打印命令行帮助。
+
+#### 编译参数说明
+build.sh目前有2个编译参数
+1. ```OCR_LITE_OPENMP=ON```：启用(ON)或禁用(OFF) AngleNet和CrnnNet阶段使用OpenMP并行运算。
+2. ```OCR_LITE_LIB=ON```： 启用(ON)或禁用(OFF) 编译为jni lib
 
 #### Windows静态编译opencv3(非必须步骤)
 * 不想自己编译的话，可以从顶部地址下载编译好的库文件。

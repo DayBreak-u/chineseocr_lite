@@ -6,12 +6,12 @@ AngleNet::~AngleNet() {
     session.release();
 }
 
-bool AngleNet::initModel(string &pathStr, Env &env, SessionOptions &sessionOptions) {
+bool AngleNet::initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions) {
 #ifdef _WIN32
-    wstring anglePath = strToWstr(pathStr + "/angle_net.onnx");
-    session = makeUnique<Session>(env, anglePath.c_str(), sessionOptions);
+    std::wstring anglePath = strToWstr(pathStr + "/angle_net.onnx");
+    session = makeUnique<Ort::Session>(env, anglePath.c_str(), sessionOptions);
 #else
-    session = makeUnique<Session>(env, (pathStr + "/angle_net.onnx").c_str(), sessionOptions);
+    session = makeUnique<Ort::Session>(env, (pathStr + "/angle_net.onnx").c_str(), sessionOptions);
 #endif
     inputNames = getInputNames(session);
     outputNames = getOutputNames(session);
@@ -29,23 +29,23 @@ Angle scoreToAngle(const float *srcData, int w) {
             maxValue = srcData[i];
         }
     }
-    return Angle(angleIndex, maxValue);
+    return {angleIndex, maxValue};
 }
 
-Angle AngleNet::getAngle(Mat &src) {
+Angle AngleNet::getAngle(cv::Mat &src) {
 
-    vector<float> inputTensorValues = substractMeanNormalize(src, meanValues, normValues);
+    std::vector<float> inputTensorValues = substractMeanNormalize(src, meanValues, normValues);
 
-    array<int64_t, 4> inputShape{1, src.channels(), src.rows, src.cols};
+    std::array<int64_t, 4> inputShape{1, src.channels(), src.rows, src.cols};
 
-    auto memoryInfo = MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
-    Value inputTensor = Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
+    Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
                                                    inputTensorValues.size(), inputShape.data(),
                                                    inputShape.size());
     assert(inputTensor.IsTensor());
 
-    auto outputTensor = session->Run(RunOptions{nullptr}, inputNames.data(), &inputTensor,
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
                                      inputNames.size(),
                                      outputNames.data(), outputNames.size());
 
@@ -55,42 +55,44 @@ Angle AngleNet::getAngle(Mat &src) {
     size_t rows = count / angleCols;
     float *floatArray = outputTensor.front().GetTensorMutableData<float>();
 
-    Mat score(rows, angleCols, CV_32FC1);
+    cv::Mat score(rows, angleCols, CV_32FC1);
     memcpy(score.data, floatArray, rows * angleCols * sizeof(float));
 
     return scoreToAngle((float *) score.data, angleCols);
 }
 
-vector<Angle> AngleNet::getAngles(vector<Mat> &partImgs, const char *path,
+std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const char *path,
                                   const char *imgName, bool doAngle, bool mostAngle) {
-    vector<Angle> angles;
+    int size = partImgs.size();
+    std::vector<Angle> angles(size);
     if (doAngle) {
-        for (int i = 0; i < partImgs.size(); ++i) {
-            //getAngle
+#ifdef __OPENMP__
+#pragma omp parallel for
+#endif
+        for (int i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();
             auto angleImg = adjustTargetImg(partImgs[i], dstWidth, dstHeight);
             Angle angle = getAngle(angleImg);
             double endAngle = getCurrentTime();
             angle.time = endAngle - startAngle;
 
-            angles.emplace_back(angle);
+            angles[i] = angle;
 
             //OutPut AngleImg
             if (isOutputAngleImg) {
-                string angleImgFile = getDebugImgFilePath(path, imgName, i, "-angle-");
+                std::string angleImgFile = getDebugImgFilePath(path, imgName, i, "-angle-");
                 saveImg(angleImg, angleImgFile.c_str());
             }
         }
     } else {
-        for (int i = 0; i < partImgs.size(); ++i) {
-            Angle angle(-1, 0.f);
-            angles.emplace_back(angle);
+        for (int i = 0; i < size; ++i) {
+            angles.emplace_back(Angle{-1, 0.f});
         }
     }
     //Most Possible AngleIndex
     if (doAngle && mostAngle) {
         auto angleIndexes = getAngleIndexes(angles);
-        double sum = accumulate(angleIndexes.begin(), angleIndexes.end(), 0.0);
+        double sum = std::accumulate(angleIndexes.begin(), angleIndexes.end(), 0.0);
         double halfPercent = angles.size() / 2.0f;
         int mostAngleIndex;
         if (sum < halfPercent) {//all angle set to 0
