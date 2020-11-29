@@ -11,69 +11,43 @@ struct ScaleParam {
     int dstHeight;
     float scaleWidth;
     float scaleHeight;
-
-    ScaleParam(
-            int srcWidth,
-            int srcHeight,
-            int targetWidth,
-            int targetHeight,
-            float scaleWidth,
-            float scaleHeight
-    ) : srcWidth(srcWidth),
-        srcHeight(srcHeight),
-        dstWidth(targetWidth),
-        dstHeight(targetHeight),
-        scaleWidth(scaleWidth),
-        scaleHeight(scaleHeight) {};
 };
 
 struct TextBox {
-    std::vector<cv::Point> box;
+    std::vector<cv::Point> boxPoint;
     float score;
-
-    TextBox(std::vector<cv::Point> box,
-            float score) : box(box), score(score) {};
 };
 
 struct Angle {
     int index;
     float score;
     double time;
-
-    Angle(int index,
-          float score
-    ) : index(index),
-        score(score) {};
 };
 
 struct TextLine {
-    std::string line;
-    std::vector<float> scores;
+    std::string text;
+    std::vector<float> charScores;
     double time;
+};
 
-    TextLine(std::string line,
-             std::vector<float> scores) : line(line), scores(scores) {};
+struct TextBlock {
+    std::vector<cv::Point> boxPoint;
+    float boxScore;
+    int angleIndex;
+    float angleScore;
+    double angleTime;
+    std::string text;
+    std::vector<float> charScores;
+    double crnnTime;
+    double blockTime;
 };
 
 struct OcrResult {
-    std::vector<TextBox> textBoxes;
-    double textBoxesTime;
-    std::vector<Angle> angles;
-    std::vector<TextLine> lines;
-    cv::Mat textBoxImg;
+    double dbNetTime;
+    std::vector<TextBlock> textBlocks;
+    cv::Mat boxImg;
+    double detectTime;
     std::string strRes;
-    double fullTime = 0.f;
-
-    OcrResult(
-            std::vector<TextBox> textBoxes,
-            double textBoxesTime,
-            std::vector<Angle> angles,
-            std::vector<TextLine> lines,
-            cv::Mat textBoxImg,
-            std::string strRes,
-            double fullTime
-    ) : textBoxes(textBoxes), textBoxesTime(textBoxesTime), angles(angles),
-        lines(lines), textBoxImg(textBoxImg), strRes(strRes), fullTime(fullTime) {};
 };
 
 #endif //__OCR_STRUCT_H__
