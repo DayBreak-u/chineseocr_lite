@@ -1,5 +1,6 @@
 #ifndef __JNI__
 
+#include <omp.h>
 #include "version.h"
 #include "OcrLite.h"
 #include "main.h"
@@ -111,6 +112,7 @@ int main(int argc, char **argv) {
         }
     }
 
+    omp_set_num_threads(numThread);
     OcrLite ocrLite(numThread);
     ocrLite.initLogger(
             true,//isOutputConsole
@@ -124,7 +126,6 @@ int main(int argc, char **argv) {
             numThread, padding, imgResize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
 
     ocrLite.initModels(modelsDir.c_str());
-
 
     OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                       padding, imgResize,

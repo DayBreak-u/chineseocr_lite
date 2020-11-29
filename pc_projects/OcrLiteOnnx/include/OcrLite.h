@@ -8,10 +8,6 @@
 #include "AngleNet.h"
 #include "CrnnNet.h"
 
-using namespace cv;
-using namespace std;
-using namespace Ort;
-
 class OcrLite {
 public:
     OcrLite(int numOfThread);
@@ -38,17 +34,17 @@ private:
     bool isOutputResultImg = false;
     FILE *resultTxt;
     int numThread = 0;
-    Env env = Env(ORT_LOGGING_LEVEL_ERROR, "OcrLite");
-    SessionOptions sessionOptions;
-    DbNet dbnet;
+    Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "OcrLite");
+    Ort::SessionOptions sessionOptions;
+    DbNet dbNet;
     AngleNet angleNet;
     CrnnNet crnnNet;
 
-    vector<Mat> getPartImages(Mat &src, vector<TextBox> &textBoxes,
+    std::vector<cv::Mat> getPartImages(cv::Mat &src, std::vector<TextBox> &textBoxes,
                               const char *path, const char *imgName);
 
     OcrResult detect(const char *path, const char *imgName,
-                     Mat &src, Rect &originRect, ScaleParam &scale,
+                     cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                      float boxScoreThresh = 0.6f, float boxThresh = 0.3f, float minArea = 3.f,
                      float unClipRatio = 2.0f, bool doAngle = true, bool mostAngle = true);
 };

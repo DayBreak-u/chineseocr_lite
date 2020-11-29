@@ -7,19 +7,19 @@ CrnnNet::~CrnnNet() {
     session.release();
 }
 
-bool CrnnNet::initModel(string &pathStr, Env &env, SessionOptions &sessionOptions) {
+bool CrnnNet::initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions) {
 #ifdef _WIN32
-    wstring crnnPath = strToWstr(pathStr + "/crnn_lite_lstm.onnx");
-    session = makeUnique<Session>(env, crnnPath.c_str(), sessionOptions);
+    std::wstring crnnPath = strToWstr(pathStr + "/crnn_lite_lstm.onnx");
+    session = makeUnique<Ort::Session>(env, crnnPath.c_str(), sessionOptions);
 #else
-    session = makeUnique<Session>(env, (pathStr + "/crnn_lite_lstm.onnx").c_str(), sessionOptions);
+    session = makeUnique<Ort::Session>(env, (pathStr + "/crnn_lite_lstm.onnx").c_str(), sessionOptions);
 #endif
     inputNames = getInputNames(session);
     outputNames = getOutputNames(session);
 
     //load keys
-    ifstream in((pathStr + "/keys.txt").c_str());
-    string line;
+    std::ifstream in((pathStr + "/keys.txt").c_str());
+    std::string line;
     int keysSize = 0;
     if (in) {
         while (getline(in, line)) {// line中不包括每行的换行符
@@ -28,6 +28,7 @@ bool CrnnNet::initModel(string &pathStr, Env &env, SessionOptions &sessionOption
         keysSize = keys.size();
     } else {
         printf("The keys.txt file was not found\n");
+        return false;
     }
 
     printf("keys size(%d)\n", keysSize);
@@ -37,15 +38,15 @@ bool CrnnNet::initModel(string &pathStr, Env &env, SessionOptions &sessionOption
 }
 
 TextLine CrnnNet::scoreToTextLine(const float *srcData, int h, int w) {
-    string strRes;
+    std::string strRes;
     int lastIndex = 0;
     int keySize = keys.size();
-    vector<float> scores;
+    std::vector<float> scores;
     for (int i = 0; i < h; i++) {
         int maxIndex = 0;
         float maxValue = -1000.f;
         //do softmax
-        vector<float> exps(w);
+        std::vector<float> exps(w);
         for (int j = 0; j < w; j++) {
             float expSingle = exp(srcData[i * w + j]);
             exps.at(j) = expSingle;
@@ -72,29 +73,29 @@ TextLine CrnnNet::scoreToTextLine(const float *srcData, int h, int w) {
         }
         lastIndex = maxIndex;
     }
-    return TextLine(strRes, scores);
+    return {strRes, scores};
 }
 
-TextLine CrnnNet::getTextLine(Mat &src) {
+TextLine CrnnNet::getTextLine(cv::Mat &src) {
     float scale = (float) dstHeight / (float) src.rows;
     int dstWidth = int((float) src.cols * scale);
 
-    Mat srcResize;
-    resize(src, srcResize, Size(dstWidth, dstHeight));
+    cv::Mat srcResize;
+    resize(src, srcResize, cv::Size(dstWidth, dstHeight));
 
-    vector<float> inputTensorValues = substractMeanNormalize(srcResize, meanValues, normValues);
+    std::vector<float> inputTensorValues = substractMeanNormalize(srcResize, meanValues, normValues);
 
-    array<int64_t, 4> inputShape{1, srcResize.channels(), srcResize.rows, srcResize.cols};
+    std::array<int64_t, 4> inputShape{1, srcResize.channels(), srcResize.rows, srcResize.cols};
 
-    auto memoryInfo = MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
 
-    Value inputTensor = Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
+    Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
                                                    inputTensorValues.size(), inputShape.data(),
                                                    inputShape.size());
     assert(inputTensor.IsTensor());
 
-    auto outputTensor = session->Run(RunOptions{nullptr}, inputNames.data(), &inputTensor,
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
                                      inputNames.size(),
                                      outputNames.data(), outputNames.size());
 
@@ -104,18 +105,22 @@ TextLine CrnnNet::getTextLine(Mat &src) {
     size_t rows = count / crnnCols;
     float *floatArray = outputTensor.front().GetTensorMutableData<float>();
 
-    Mat score(rows, crnnCols, CV_32FC1);
+    cv::Mat score(rows, crnnCols, CV_32FC1);
     memcpy(score.data, floatArray, rows * crnnCols * sizeof(float));
 
     return scoreToTextLine((float *) score.data, rows, crnnCols);
 }
 
-vector<TextLine> CrnnNet::getTextLines(vector<Mat> &partImg, const char *path, const char *imgName) {
-    vector<TextLine> textLines;
-    for (int i = 0; i < partImg.size(); ++i) {
+std::vector<TextLine> CrnnNet::getTextLines(std::vector<cv::Mat> &partImg, const char *path, const char *imgName) {
+    int size = partImg.size();
+    std::vector<TextLine> textLines(size);
+#ifdef __OPENMP__
+#pragma omp parallel for
+#endif
+    for (int i = 0; i < size; ++i) {
         //OutPut DebugImg
         if (isOutputDebugImg) {
-            string debugImgFile = getDebugImgFilePath(path, imgName, i, "-debug-");
+            std::string debugImgFile = getDebugImgFilePath(path, imgName, i, "-debug-");
             saveImg(partImg[i], debugImgFile.c_str());
         }
 
@@ -126,16 +131,17 @@ vector<TextLine> CrnnNet::getTextLines(vector<Mat> &partImg, const char *path, c
         textLine.time = endCrnnTime - startCrnnTime;
 
         //Log textLine
-        //Logger("textLine[%d](%s)\n", i, textLine.text.c_str());
-        textLines.emplace_back(textLine);
-        ostringstream txtScores;
+        //Logger("textLine[%d](%s)", i, textLine.text.c_str());
+        textLines[i] = textLine;
+
+        /*std::ostringstream txtScores;
         for (int s = 0; s < textLine.charScores.size(); ++s) {
             if (s == 0) {
                 txtScores << textLine.charScores[s];
             } else {
                 txtScores << " ," << textLine.charScores[s];
             }
-        }
+        }*/
         //Logger("textScores[%d]{%s}\n", i, string(txtScores.str()).c_str());
         //Logger("crnnTime[%d](%fms)\n", i, textLine.time);
     }
