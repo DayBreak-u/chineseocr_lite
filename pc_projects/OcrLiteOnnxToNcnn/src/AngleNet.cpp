@@ -3,20 +3,22 @@
 #include <numeric>
 
 AngleNet::~AngleNet() {
-    session.release();
+    net.clear();
 }
 
-bool AngleNet::initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions) {
-#ifdef _WIN32
-    std::wstring anglePath = strToWstr(pathStr + "/angle_net.onnx");
-    session = makeUnique<Ort::Session>(env, anglePath.c_str(), sessionOptions);
-#else
-    session = makeUnique<Ort::Session>(env, (pathStr + "/angle_net.onnx").c_str(), sessionOptions);
-#endif
-    inputNames = getInputNames(session);
-    outputNames = getOutputNames(session);
+void AngleNet::setNumOfThreads(int numOfThread) {
+    numThread = numOfThread;
+}
 
-    return true;
+bool AngleNet::initModel(std::string &pathStr) {
+    int ret_param = net.load_param((pathStr + "/angle_op.param").c_str());
+    int ret_bin = net.load_model((pathStr + "/angle_op.bin").c_str());
+    if (ret_param != 0 || ret_bin != 0) {
+        printf("AngleNet load param(%d), model(%d)\n", ret_param, ret_bin);
+        return false;
+    } else {
+        return true;
+    }
 }
 
 Angle scoreToAngle(const float *srcData, int w) {
@@ -33,41 +35,25 @@ Angle scoreToAngle(const float *srcData, int w) {
 }
 
 Angle AngleNet::getAngle(cv::Mat &src) {
-
-    std::vector<float> inputTensorValues = substractMeanNormalize(src, meanValues, normValues);
-
-    std::array<int64_t, 4> inputShape{1, src.channels(), src.rows, src.cols};
-
-    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-
-    Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
-                                                   inputTensorValues.size(), inputShape.data(),
-                                                   inputShape.size());
-    assert(inputTensor.IsTensor());
-
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
-                                     inputNames.size(),
-                                     outputNames.data(), outputNames.size());
-
-    assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
-
-    size_t count = outputTensor.front().GetTensorTypeAndShapeInfo().GetElementCount();
-    size_t rows = count / angleCols;
-    float *floatArray = outputTensor.front().GetTensorMutableData<float>();
-
-    cv::Mat score(rows, angleCols, CV_32FC1);
-    memcpy(score.data, floatArray, rows * angleCols * sizeof(float));
-
-    return scoreToAngle((float *) score.data, angleCols);
+    ncnn::Mat input = ncnn::Mat::from_pixels(
+            src.data, ncnn::Mat::PIXEL_RGB,
+            src.cols, src.rows);
+    input.substract_mean_normalize(meanValues, normValues);
+    ncnn::Extractor extractor = net.create_extractor();
+    extractor.set_num_threads(numThread);
+    extractor.input("input", input);
+    ncnn::Mat out;
+    extractor.extract("out", out);
+    return scoreToAngle((float *) out.data, out.w);
 }
 
 std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const char *path,
-                                  const char *imgName, bool doAngle, bool mostAngle) {
+                                       const char *imgName, bool doAngle, bool mostAngle) {
     int size = partImgs.size();
     std::vector<Angle> angles(size);
     if (doAngle) {
 #ifdef __OPENMP__
-#pragma omp parallel for
+#pragma omp parallel for num_threads(numThread)
 #endif
         for (int i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();

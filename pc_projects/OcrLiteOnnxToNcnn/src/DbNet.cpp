@@ -2,19 +2,22 @@
 #include "OcrUtils.h"
 
 DbNet::~DbNet() {
-    session.release();
+    net.clear();
 }
 
-bool DbNet::initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions) {
-#ifdef _WIN32
-    std::wstring dbPath = strToWstr(pathStr + "/dbnet.onnx");
-    session = makeUnique<Ort::Session>(env, dbPath.c_str(), sessionOptions);
-#else
-    session = makeUnique<Ort::Session>(env, (pathStr + "/dbnet.onnx").c_str(), sessionOptions);
-#endif
-    inputNames = getInputNames(session);
-    outputNames = getOutputNames(session);
-    return true;
+void DbNet::setNumOfThreads(int numOfThread) {
+    numThread = numOfThread;
+}
+
+bool DbNet::initModel(std::string &pathStr) {
+    int dbParam = net.load_param((pathStr + "/dbnet_op.param").c_str());
+    int dbModel = net.load_model((pathStr + "/dbnet_op.bin").c_str());
+    if (dbParam != 0 || dbModel != 0) {
+        printf("DBNet load param(%d), model(%d)\n", dbParam, dbModel);
+        return false;
+    } else {
+        return true;
+    }
 }
 
 std::vector<TextBox>
@@ -22,27 +25,19 @@ DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s,
                     float boxScoreThresh, float boxThresh, float minArea, float unClipRatio) {
     cv::Mat srcResize;
     resize(src, srcResize, cv::Size(s.dstWidth, s.dstHeight));
-    std::vector<float> inputTensorValues = substractMeanNormalize(srcResize, meanValues, normValues);
 
-    std::array<int64_t, 4> inputShape{1, srcResize.channels(), srcResize.rows, srcResize.cols};
+    ncnn::Mat input = ncnn::Mat::from_pixels(srcResize.data, ncnn::Mat::PIXEL_RGB,
+                                             srcResize.cols, srcResize.rows);
 
-    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
-
-    Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
-                                                   inputTensorValues.size(), inputShape.data(),
-                                                   inputShape.size());
-    assert(inputTensor.IsTensor());
-
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
-                                     inputNames.size(),
-                                     outputNames.data(), outputNames.size());
-
-    assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
-
-    float *floatArray = outputTensor.front().GetTensorMutableData<float>();
+    input.substract_mean_normalize(meanValues, normValues);
+    ncnn::Extractor extractor = net.create_extractor();
+    extractor.set_num_threads(numThread);
+    extractor.input("input0", input);
+    ncnn::Mat out;
+    extractor.extract("out1", out);
 
     cv::Mat fMapMat(srcResize.rows, srcResize.cols, CV_32FC1);
-    memcpy(fMapMat.data, floatArray, srcResize.rows * srcResize.cols * sizeof(float));
+    memcpy(fMapMat.data, (float *) out.data, srcResize.rows * srcResize.cols * sizeof(float));
 
     std::vector<TextBox> rsBoxes;
     cv::Mat norfMapMat;
