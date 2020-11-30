@@ -5,9 +5,6 @@
 #include "ncnn/net.h"
 #include <opencv/cv.hpp>
 
-using namespace cv;
-using namespace std;
-
 class AngleNet {
 public:
 
@@ -17,7 +14,7 @@ public:
 
     bool initModel(AAssetManager *mgr);
 
-    vector<Angle> getAngles(vector<cv::Mat> &partImgs, bool doAngle, bool mostAngle);
+    std::vector<Angle> getAngles(std::vector<cv::Mat> &partImgs, bool doAngle, bool mostAngle);
 
 private:
     int numThread;

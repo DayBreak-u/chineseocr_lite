@@ -5,9 +5,6 @@
 #include "ncnn/net.h"
 #include <opencv/cv.hpp>
 
-using namespace cv;
-using namespace std;
-
 class CrnnNet {
 public:
     ~CrnnNet();
@@ -16,12 +13,12 @@ public:
 
     bool initModel(AAssetManager *mgr);
 
-    vector<TextLine> getTextLines(vector<Mat> &partImg);
+    std::vector<TextLine> getTextLines(std::vector<cv::Mat> &partImg);
 
 private:
     int numThread;
     ncnn::Net net;
-    vector<string> keys;
+    std::vector<std::string> keys;
 
     const int dstHeight = 32;
     const float meanValues[3] = {127.5, 127.5, 127.5};

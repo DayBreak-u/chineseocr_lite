@@ -16,7 +16,7 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_init(JNIEnv *env, jobject thiz, jobjec
                                                jint numThread) {
 
     ocrLite = new OcrLite(env, assetManager, numThread);
-    ocrLite->initLogger(false);
+    //ocrLite->initLogger(false);
     return JNI_TRUE;
 }
 
@@ -37,9 +37,8 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jobj
                                                  jfloat boxScoreThresh, jfloat boxThresh,
                                                  jfloat minArea, jfloat unClipRatio,
                                                  jboolean doAngle, jboolean mostAngle) {
-    ocrLite->Logger(
-            "padding(%d),reSize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)",
-            padding, reSize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
+    Logger("padding(%d),reSize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)",
+           padding, reSize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
     cv::Mat imgRGBA, imgRGB, imgOut;
     bitmapToMat(env, input, imgRGBA);
     cv::cvtColor(imgRGBA, imgRGB, cv::COLOR_RGBA2RGB);
@@ -50,6 +49,16 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jobj
     OcrResult ocrResult = ocrLite->detect(src, originRect, s,
                                           boxScoreThresh, boxThresh, minArea,
                                           unClipRatio, doAngle, mostAngle);
+
+    /*double startTest = getCurrentTime();
+    int loopCount = 100;
+    for (int i = 0; i < loopCount; ++i) {
+        ocrLite->detect(src, originRect, s,
+                        boxScoreThresh, boxThresh, minArea,
+                        unClipRatio, doAngle, mostAngle);
+    }
+    double endTest = getCurrentTime();
+    LOGI("average time=%f\n", (endTest - startTest) / loopCount);*/
 
     cv::cvtColor(ocrResult.boxImg, imgOut, cv::COLOR_RGB2RGBA);
     matToBitmap(env, imgOut, output);
