@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
+option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
+
 # import ncnn library
 add_library(ncnn STATIC IMPORTED)
 set_target_properties(ncnn PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../staticLibs/${ANDROID_ABI}/libncnn.a)
@@ -31,6 +33,10 @@ file(GLOB OCR_SRC *.cpp)
 set(OCR_COMPILE_CODE ${OCR_SRC})
 
 add_library(OcrLite SHARED ${OCR_COMPILE_CODE})
+
+if (OCR_LITE_OPENMP)
+    target_compile_definitions(OcrLite PRIVATE __OPENMP__)
+endif ()
 
 find_library( # Sets the name of the path variable.
         log-lib
