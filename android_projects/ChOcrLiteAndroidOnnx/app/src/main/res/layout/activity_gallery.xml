@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:max="100"
             android:min="0"
-            android:progress="0" />
+            android:progress="50" />
 
     </LinearLayout>
 
@@ -133,18 +133,18 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/scaleWidthTv"
+            android:id="@+id/unClipRatioTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/box_scale_width" />
+            android:text="@string/box_un_clip_ratio" />
 
         <SeekBar
-            android:id="@+id/scaleWidthSeekBar"
+            android:id="@+id/scaleUnClipRatioSeekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="30"
             android:min="10"
-            android:progress="18" />
+            android:progress="20" />
 
     </LinearLayout>
 
@@ -154,18 +154,31 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/scaleHeightTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/box_scale_height" />
+            android:text="@string/do_angle" />
 
-        <SeekBar
-            android:id="@+id/scaleHeightSeekBar"
-            android:layout_width="match_parent"
+        <Switch
+            android:id="@+id/doAngleSw"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:max="30"
-            android:min="10"
-            android:progress="18" />
+            android:checked="true"
+            android:textOff="Off"
+            android:textOn="On" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="角度投票" />
+
+        <Switch
+            android:id="@+id/mostAngleSw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:textOff="Off"
+            android:textOn="On" />
 
     </LinearLayout>
 

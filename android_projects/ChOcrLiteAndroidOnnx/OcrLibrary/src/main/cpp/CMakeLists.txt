@@ -1,8 +1,16 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-# onnx
-add_library(libonnxruntime SHARED IMPORTED)
-set_target_properties(libonnxruntime PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../sharedLibs/${ANDROID_ABI}/libonnxruntime.so)
+option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
+
+#ONNX
+set(ONNX_DIR "${CMAKE_SOURCE_DIR}/../onnx")
+find_package(ONNX REQUIRED)
+if (ONNX_FOUND)
+    message(STATUS "ONNX_LIBS: ${ONNX_LIBS}")
+    message(STATUS "ONNX_INCLUDE_DIRS: ${ONNX_INCLUDE_DIRS}")
+else ()
+    message(FATAL_ERROR "onnxruntime Not Found!")
+endif (ONNX_FOUND)
 
 ## opencv
 add_library(libopencv_java3 SHARED IMPORTED)
@@ -32,6 +40,10 @@ set(OCR_COMPILE_CODE ${OCR_SRC})
 
 add_library(OcrLite SHARED ${OCR_COMPILE_CODE})
 
+if (OCR_LITE_OPENMP)
+    target_compile_definitions(OcrLite PRIVATE __OPENMP__)
+endif ()
+
 find_library( # Sets the name of the path variable.
         log-lib
         log)
@@ -43,7 +55,7 @@ find_library(
 
 target_link_libraries(
         OcrLite
-        libonnxruntime
+        ${ONNX_LIBS}
         libopencv_java3
         android
         z

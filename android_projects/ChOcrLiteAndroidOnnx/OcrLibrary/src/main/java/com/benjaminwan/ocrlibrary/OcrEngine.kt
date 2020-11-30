@@ -15,25 +15,26 @@ class OcrEngine(context: Context) {
         if (!ret) throw IllegalArgumentException()
     }
 
-    var padding: Int = 0
+    var padding: Int = 50
     var boxScoreThresh: Float = 0.6f
     var boxThresh: Float = 0.3f
     var miniArea: Float = 3f
-    var scaleWidth: Float = 1.8f
-    var scaleHeight: Float = 1.8f
+    var unClipRatio: Float = 2.0f
+    var doAngle: Boolean = true
+    var mostAngle: Boolean = true
 
     fun detect(input: Bitmap, output: Bitmap, reSize: Int) =
         detect(
             input, output, padding, reSize,
             boxScoreThresh, boxThresh, miniArea,
-            scaleWidth, scaleHeight
+            unClipRatio, doAngle, mostAngle
         )
 
     external fun init(assetManager: AssetManager, numThread: Int): Boolean
     external fun detect(
         input: Bitmap, output: Bitmap, padding: Int, reSize: Int,
         boxScoreThresh: Float, boxThresh: Float, miniArea: Float,
-        scaleWidth: Float, scaleHeight: Float
+        unClipRatio: Float, doAngle: Boolean, mostAngle: Boolean
     ): OcrResult
 
 }

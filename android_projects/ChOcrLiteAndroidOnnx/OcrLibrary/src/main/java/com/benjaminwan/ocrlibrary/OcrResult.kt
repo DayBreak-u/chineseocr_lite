@@ -4,6 +4,11 @@ import android.graphics.Bitmap
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
+open class OcrOutput
+
+object OcrStop : OcrOutput()
+object OcrFailed : OcrOutput()
+
 @Parcelize
 data class OcrResult(
     val dbNetTime: Double,
@@ -11,7 +16,7 @@ data class OcrResult(
     var boxImg: Bitmap,
     var detectTime: Double,
     var strRes: String
-) : Parcelable
+) : Parcelable, OcrOutput()
 
 @Parcelize
 data class Point(var x: Int, var y: Int) : Parcelable
