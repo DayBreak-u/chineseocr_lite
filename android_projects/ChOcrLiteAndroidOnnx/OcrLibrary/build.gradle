@@ -35,6 +35,13 @@ android {
             version "3.10.2"
         }
     }
+
+    libraryVariants.all {
+        variant ->
+            variant.outputs.all {
+                outputFileName = "${project.name}-${defaultConfig.versionName}.aar"
+            }
+    }
 }
 
 dependencies {

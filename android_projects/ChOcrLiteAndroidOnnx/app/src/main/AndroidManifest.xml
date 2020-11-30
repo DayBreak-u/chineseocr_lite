@@ -3,8 +3,10 @@
     package="com.benjaminwan.ocr.onnx">
 
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@drawable/ic_ocr"
         android:label="@string/app_name"
@@ -25,6 +27,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".CameraActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ImeiActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PlateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".IdCardFrontActivity"
             android:screenOrientation="portrait" />
     </application>
 

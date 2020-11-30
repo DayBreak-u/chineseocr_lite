@@ -1,10 +1,11 @@
-package com.benjaminwan.ocrlibrary
+package com.benjaminwan.ocr.onnx.models
 
 import android.os.Parcelable
+import com.benjaminwan.ocrlibrary.OcrOutput
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class IdCard(
+data class IdCardFront(
     val name: String,//姓名
     val nation: String,//民族
     val address: String,//地址
@@ -25,4 +26,9 @@ data class IdCard(
             val date = number.substring(12..13)
             return "$year-$month-$date"
         }
+
+    fun isEmpty(): Boolean =
+        name.isEmpty() && nation.isEmpty() && address.isEmpty() && number.isEmpty()
+
+
 }
