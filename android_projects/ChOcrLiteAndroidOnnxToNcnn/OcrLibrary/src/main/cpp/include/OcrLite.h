@@ -8,16 +8,13 @@
 #include "AngleNet.h"
 #include "CrnnNet.h"
 
-using namespace cv;
-using namespace std;
-
 class OcrLite {
 public:
     OcrLite(JNIEnv *jniEnv, jobject assetManager, int numOfThread);
 
-    void initLogger(bool isDebug);
+    //void initLogger(bool isDebug);
 
-    void Logger(const char *format, ...);
+    //void Logger(const char *format, ...);
 
     OcrResult detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
                      float boxScoreThresh, float boxThresh, float minArea,
@@ -28,11 +25,6 @@ private:
     DbNet dbNet;
     AngleNet angleNet;
     CrnnNet crnnNet;
-
-    void drawTextBoxes(cv::Mat &boxImg, std::vector<TextBox> &textBoxes, int thickness);
-
-    std::vector<cv::Mat> getPartImages(cv::Mat &src, std::vector<TextBox> &textBoxes);
-
 
 };
 

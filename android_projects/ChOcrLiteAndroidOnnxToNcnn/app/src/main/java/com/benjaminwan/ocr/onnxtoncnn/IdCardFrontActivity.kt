@@ -17,10 +17,9 @@ import com.afollestad.assent.Permission
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assent.isAllGranted
 import com.afollestad.assent.rationale.createDialogRationale
-import com.benjaminwan.ocr.onnxtoncnn.R
 import com.benjaminwan.ocr.onnxtoncnn.app.App
 import com.benjaminwan.ocr.onnxtoncnn.utils.*
-import com.benjaminwan.ocrlibrary.IdCard
+import com.benjaminwan.ocr.onnxtoncnn.models.IdCardFront
 import com.benjaminwan.ocrlibrary.OcrFailed
 import com.benjaminwan.ocrlibrary.OcrResult
 import com.benjaminwan.ocrlibrary.OcrStop
@@ -122,7 +121,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
         editText.setSelection(content.length)
     }
 
-    private fun showResult(result: IdCard) {
+    private fun showResult(result: IdCardFront) {
         setEdit(nameEdit, result.name)
         setEdit(genderEdit, result.gender)
         setEdit(nationEdit, result.nation)
@@ -201,7 +200,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
     private fun detectLoop() {
         setDetectState(true)
         Observable.fromCallable {
-            var success: IdCard? = null
+            var success: IdCardFront? = null
             var numberStr: String? = null
             var nameStr: String? = null
             var nationStr: String? = null
@@ -274,7 +273,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
 
-                success = IdCard(
+                success = IdCardFront(
                     nameStr,
                     nationStr,
                     addressStr,
@@ -293,7 +292,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
             .autoDisposable(this)
             .subscribe({
                 when (it) {
-                    is IdCard -> {
+                    is IdCardFront -> {
                         setDetectState(false)
                         vibration()
                         showResult(it)

@@ -20,10 +20,10 @@ bool DbNet::initModel(AAssetManager *mgr) {
 }
 
 std::vector<TextBox>
-DbNet::getTextBoxes(Mat &src, ScaleParam &s, float boxScoreThresh,
+DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh,
                     float boxThresh, float minArea, float unClipRatio) {
-    Mat srcResize;
-    resize(src, srcResize, Size(s.dstWidth, s.dstHeight));
+    cv::Mat srcResize;
+    resize(src, srcResize, cv::Size(s.dstWidth, s.dstHeight));
 
     ncnn::Mat input = ncnn::Mat::from_pixels(srcResize.data, ncnn::Mat::PIXEL_RGB,
                                              srcResize.cols, srcResize.rows);
@@ -35,17 +35,17 @@ DbNet::getTextBoxes(Mat &src, ScaleParam &s, float boxScoreThresh,
     ncnn::Mat out;
     extractor.extract("out1", out);
 
-    Mat fMapMat(s.dstHeight, s.dstWidth, CV_32FC1);
-    memcpy(fMapMat.data, (float *) out.data, s.dstWidth * s.dstHeight * sizeof(float));
+    cv::Mat fMapMat(srcResize.rows, srcResize.cols, CV_32FC1);
+    memcpy(fMapMat.data, (float *) out.data, srcResize.rows * srcResize.cols * sizeof(float));
 
-    vector<TextBox> rsBoxes;
-    Mat norfMapMat;
+    std::vector<TextBox> rsBoxes;
+    cv::Mat norfMapMat;
     norfMapMat = fMapMat > boxThresh;
     rsBoxes.clear();
-    vector<vector<Point>> contours;
-    findContours(norfMapMat, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
+    std::vector<std::vector<cv::Point>> contours;
+    findContours(norfMapMat, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
     for (int i = 0; i < contours.size(); ++i) {
-        vector<Point> minBox;
+        std::vector<cv::Point> minBox;
         float minEdgeSize, allEdgeSize;
         getMiniBoxes(contours[i], minBox, minEdgeSize, allEdgeSize);
 
@@ -56,7 +56,7 @@ DbNet::getTextBoxes(Mat &src, ScaleParam &s, float boxScoreThresh,
         if (score < boxScoreThresh)
             continue;
         //---use clipper start---
-        vector<Point> newbox;
+        std::vector<cv::Point> newbox;
         unClip(minBox, allEdgeSize, newbox, unClipRatio);
 
         getMiniBoxes(newbox, minBox, minEdgeSize, allEdgeSize);
@@ -67,13 +67,13 @@ DbNet::getTextBoxes(Mat &src, ScaleParam &s, float boxScoreThresh,
 
         for (int j = 0; j < minBox.size(); ++j) {
             minBox[j].x = (minBox[j].x / s.scaleWidth);
-            minBox[j].x = (min)((max)(minBox[j].x, 0), s.srcWidth);
+            minBox[j].x = (std::min)((std::max)(minBox[j].x, 0), s.srcWidth);
 
             minBox[j].y = (minBox[j].y / s.scaleHeight);
-            minBox[j].y = (min)((max)(minBox[j].y, 0), s.srcHeight);
+            minBox[j].y = (std::min)((std::max)(minBox[j].y, 0), s.srcHeight);
         }
 
-        rsBoxes.emplace_back(TextBox(minBox, score));
+        rsBoxes.emplace_back(TextBox{minBox, score});
     }
     reverse(rsBoxes.begin(), rsBoxes.end());
     return rsBoxes;
