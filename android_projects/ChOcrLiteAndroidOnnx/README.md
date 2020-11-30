@@ -22,7 +22,7 @@ dbnet(图像分割)+anglenet(文字方向检测)+crnn(文字识别)
 5. onnxruntime动态库版本，自己编译的pre 1.7.0版
 
 #### 编译说明
-1.  AndroidStudio 4.0.2或以上
+1.  AndroidStudio 4.1或以上
 2.  NDK
 3.  cmake 3.4.1或以上
 4.  下载opencv-3.4.10-android-sdk.zip，[下载地址](https://github.com/opencv/opencv/releases/tag/3.4.11)
@@ -30,11 +30,11 @@ dbnet(图像分割)+anglenet(文字方向检测)+crnn(文字识别)
 ```
 ChOcrLiteAndroidOnnx/OcrLibrary/src/main/sharedLibs
 ├── arm64-v8a
-│   └── libopencv_java3.so
+│   └── libopencv_java3.so
 ├── armeabi-v7a
-│   └── libopencv_java3.so
+│   └── libopencv_java3.so
 ├── x86
-│   └── libopencv_java3.so
+│   └── libopencv_java3.so
 └── x86_64
     └── libopencv_java3.so
 ```
@@ -48,13 +48,24 @@ ChOcrLiteAndroidOnnx/OcrLibrary/src/main/assets
 ```
 6.  onnxruntime，可以自行同步源码编译，也可以从顶部下载地址找到onnxruntime-android-1.7.0-pre.zip
 ```
-ChOcrLiteAndroidOnnx/OcrLibrary/src/main/sharedLibs
+ChOcrLiteAndroidOnnx/OcrLibrary/src/main/onnx
+├── ONNXConfig.cmake
 ├── arm64-v8a
-│   └── libonnxruntime.so
+│   └── libonnxruntime.so
 ├── armeabi-v7a
-│   └── libonnxruntime.so
+│   └── libonnxruntime.so
+├── include
+│   └── onnx
+│       ├── automl_data_containers.h
+│       ├── environment.h
+│       ├── experimental_onnxruntime_cxx_api.h
+│       ├── experimental_onnxruntime_cxx_inline.h
+│       ├── onnxruntime_c_api.h
+│       ├── onnxruntime_cxx_api.h
+│       ├── onnxruntime_cxx_inline.h
+│       └── onnxruntime_session_options_config_keys.h
 ├── x86
-│   └── libonnxruntime.so
+│   └── libonnxruntime.so
 └── x86_64
     └── libonnxruntime.so
 ```
