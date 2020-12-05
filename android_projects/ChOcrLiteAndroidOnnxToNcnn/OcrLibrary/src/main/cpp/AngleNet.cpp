@@ -66,7 +66,7 @@ AngleNet::getAngles(std::vector<cv::Mat> &partImgs, bool doAngle, bool mostAngle
         }
     } else {
         for (int i = 0; i < size; ++i) {
-            angles.emplace_back(Angle{-1, 0.f});
+            angles[i] = Angle{-1, 0.f};
         }
     }
     //Most Possible AngleIndex
