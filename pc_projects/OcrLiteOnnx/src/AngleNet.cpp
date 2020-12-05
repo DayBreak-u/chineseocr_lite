@@ -41,8 +41,8 @@ Angle AngleNet::getAngle(cv::Mat &src) {
     auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 
     Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
-                                                   inputTensorValues.size(), inputShape.data(),
-                                                   inputShape.size());
+                                                             inputTensorValues.size(), inputShape.data(),
+                                                             inputShape.size());
     assert(inputTensor.IsTensor());
 
     auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
@@ -62,7 +62,7 @@ Angle AngleNet::getAngle(cv::Mat &src) {
 }
 
 std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const char *path,
-                                  const char *imgName, bool doAngle, bool mostAngle) {
+                                       const char *imgName, bool doAngle, bool mostAngle) {
     int size = partImgs.size();
     std::vector<Angle> angles(size);
     if (doAngle) {
@@ -86,7 +86,7 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const cha
         }
     } else {
         for (int i = 0; i < size; ++i) {
-            angles.emplace_back(Angle{-1, 0.f});
+            angles[i] = Angle{-1, 0.f};
         }
     }
     //Most Possible AngleIndex
