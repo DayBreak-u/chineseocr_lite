@@ -8,7 +8,7 @@
 static OcrLite *ocrLite;
 
 #ifdef _WIN32
-const char *jstringToChar(JNIEnv *env, jstring jstr) {
+char *jstringToChar(JNIEnv *env, jstring jstr) {
     char *rtn = NULL;
     jclass clsstring = env->FindClass("java/lang/String");
     jstring strencode = env->NewStringUTF("gbk");
@@ -25,16 +25,24 @@ const char *jstringToChar(JNIEnv *env, jstring jstr) {
     return rtn;
 }
 #else
-const char *jstringToChar(JNIEnv *env, jstring input) {
-    const char *str;
-    jboolean isCopy = false;
-    str = env->GetStringUTFChars(input, &isCopy);
-    if (str == NULL) {
-        return NULL;
+
+char *jstringToChar(JNIEnv *env, jstring input) {
+    char *str = NULL;
+    jclass clsstring = env->FindClass("java/lang/String");
+    jstring strencode = env->NewStringUTF("utf-8");
+    jmethodID mid = env->GetMethodID(clsstring, "getBytes", "(Ljava/lang/String;)[B");
+    jbyteArray barr = (jbyteArray) env->CallObjectMethod(input, mid, strencode);
+    jsize alen = env->GetArrayLength(barr);
+    jbyte *ba = env->GetByteArrayElements(barr, JNI_FALSE);
+    if (alen > 0) {
+        str = (char *) malloc(alen + 1);
+        memcpy(str, ba, alen);
+        str[alen] = 0;
     }
-    env->ReleaseStringUTFChars(input, str);
+    env->ReleaseByteArrayElements(barr, ba, 0);
     return str;
 }
+
 #endif
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -61,11 +69,12 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_initLogger(JNIEnv *env, jobject thiz, 
 extern "C" JNIEXPORT void JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_enableResultText(JNIEnv *env, jobject thiz, jstring input) {
     std::string argImgPath, imgPath, imgName;
-    const char *inputStr = jstringToChar(env, input);
+    char *inputStr = jstringToChar(env, input);
     argImgPath = std::string(inputStr);
     imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
     imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
     ocrLite->enableResultTxt(imgPath.c_str(), imgName.c_str());
+    free(inputStr);
 }
 
 extern "C" JNIEXPORT jboolean JNICALL
