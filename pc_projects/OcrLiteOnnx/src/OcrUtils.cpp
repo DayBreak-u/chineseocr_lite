@@ -340,29 +340,29 @@ std::vector<int> getAngleIndexes(std::vector<Angle> &angles) {
     return angleIndexes;
 }
 
-std::vector<const char *> getInputNames(std::unique_ptr<Ort::Session> &session) {
+std::vector<const char *> getInputNames(Ort::Session *session) {
     Ort::AllocatorWithDefaultOptions allocator;
     size_t numInputNodes = session->GetInputCount();
     std::vector<const char *> inputNodeNames(numInputNodes);
-    std::vector<int64_t> inputNodeDims;
+    //std::vector<int64_t> inputNodeDims;
 
     //printf("Number of inputs = %zu\n", numInputNodes);
 
     for (int i = 0; i < numInputNodes; i++) {
         // print input node names
-        char *inputName = session->GetInputName(i, allocator);
+        const char *inputName = session->GetInputName(i, allocator);
         //printf("Input %d : name=%s\n", i, inputName);
         inputNodeNames[i] = inputName;
 
         // print input node types
-        Ort::TypeInfo typeInfo = session->GetInputTypeInfo(i);
-        auto tensorInfo = typeInfo.GetTensorTypeAndShapeInfo();
+        //Ort::TypeInfo typeInfo = session->GetInputTypeInfo(i);
+        //auto tensorInfo = typeInfo.GetTensorTypeAndShapeInfo();
 
-        ONNXTensorElementDataType type = tensorInfo.GetElementType();
+        //ONNXTensorElementDataType type = tensorInfo.GetElementType();
         //printf("Input %d : type=%d\n", i, type);
 
         // print input shapes/dims
-        inputNodeDims = tensorInfo.GetShape();
+        //inputNodeDims = tensorInfo.GetShape();
         //printf("Input %d : num_dims=%zu\n", i, inputNodeDims.size());
         /*for (int j = 0; j < inputNodeDims.size(); j++)
             printf("Input %d : dim %d=%jd\n", i, j, inputNodeDims[j]);*/
@@ -370,29 +370,29 @@ std::vector<const char *> getInputNames(std::unique_ptr<Ort::Session> &session) 
     return inputNodeNames;
 }
 
-std::vector<const char *> getOutputNames(std::unique_ptr<Ort::Session> &session) {
+std::vector<const char *> getOutputNames(Ort::Session *session) {
     Ort::AllocatorWithDefaultOptions allocator;
     size_t numOutputNodes = session->GetOutputCount();
     std::vector<const char *> outputNodeNames(numOutputNodes);
-    std::vector<int64_t> outputNodeDims;
+    //std::vector<int64_t> outputNodeDims;
 
     //printf("Number of outputs = %zu\n", numOutputNodes);
 
     for (int i = 0; i < numOutputNodes; i++) {
         // print input node names
-        char *outputName = session->GetOutputName(i, allocator);
-        //printf("Input %d : name=%s\n", i, outputName);
+        const char *outputName = session->GetOutputName(i, allocator);
+        //printf("Output %d : name=%s\n", i, outputName);
         outputNodeNames[i] = outputName;
 
         // print input node types
-        Ort::TypeInfo type_info = session->GetOutputTypeInfo(i);
-        auto tensorInfo = type_info.GetTensorTypeAndShapeInfo();
+        //Ort::TypeInfo type_info = session->GetOutputTypeInfo(i);
+        //auto tensorInfo = type_info.GetTensorTypeAndShapeInfo();
 
-        ONNXTensorElementDataType type = tensorInfo.GetElementType();
+        //ONNXTensorElementDataType type = tensorInfo.GetElementType();
         //printf("Output %d : type=%d\n", i, type);
 
         // print input shapes/dims
-        outputNodeDims = tensorInfo.GetShape();
+        //outputNodeDims = tensorInfo.GetShape();
         //printf("Output %d : num_dims=%zu\n", i, outputNodeDims.size());
         /*for (int j = 0; j < outputNodeDims.size(); j++)
             printf("Output %d : dim %d=%jd\n", i, j, outputNodeDims[j]);*/

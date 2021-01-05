@@ -1,11 +1,11 @@
-#ifndef __JNI__
-
 #include <omp.h>
+#include <cstdio>
+#include <string>
+#include "main.h"
 #include "version.h"
 #include "OcrLite.h"
-#include "main.h"
 
-void printHelp(FILE *out, const char *argv0) {
+void printHelp(FILE *out, char *argv0) {
     fprintf(out, " ------- Usage -------\n");
     fprintf(out, "%s %s", argv0, usageMsg);
     fprintf(out, " ------- Required Parameters -------\n");
@@ -24,10 +24,10 @@ int main(int argc, char **argv) {
         printHelp(stderr, argv[0]);
         return -1;
     }
-
-    std::string modelsDir, argImgPath, imgPath, imgName;
-    modelsDir = "../models";
-    argImgPath = "../../test_imgs/1.jpg";
+    std::string modelsDir = "../models";
+    std::string argImgPath = "../../test_imgs/1.jpg";
+    std::string imgPath;
+    std::string imgName;
     int numThread = 4;
     int padding = 50;
     int imgResize = 0;
@@ -50,9 +50,9 @@ int main(int argc, char **argv) {
                 printf("modelsPath=%s\n", modelsDir.c_str());
                 break;
             case 'i':
-                argImgPath = std::string(optarg);
-                imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
-                imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
+                argImgPath.assign(optarg);
+                imgPath.assign(argImgPath.substr(0, argImgPath.find_last_of('/') + 1));
+                imgName.assign(argImgPath.substr(argImgPath.find_last_of('/') + 1));
                 printf("imgPath=%s, imgName=%s\n", imgPath.c_str(), imgName.c_str());
                 break;
             case 't':
@@ -113,7 +113,8 @@ int main(int argc, char **argv) {
     }
 
     omp_set_num_threads(numThread);
-    OcrLite ocrLite(numThread);
+    OcrLite ocrLite;
+    ocrLite.setNumThread(numThread);
     ocrLite.initLogger(
             true,//isOutputConsole
             false,//isOutputPartImg
@@ -132,8 +133,5 @@ int main(int argc, char **argv) {
                                       boxScoreThresh, boxThresh, minArea,
                                       unClipRatio, doAngle, mostAngle);
     ocrLite.Logger("%s\n", result.strRes.c_str());
-
     return 0;
 }
-
-#endif

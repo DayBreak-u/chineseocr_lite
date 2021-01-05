@@ -3,19 +3,43 @@
 #include <fstream>
 #include <numeric>
 
+CrnnNet::CrnnNet() {}
+
 CrnnNet::~CrnnNet() {
-    session.release();
+    delete session;
 }
 
-bool CrnnNet::initModel(std::string &pathStr, Ort::Env &env, Ort::SessionOptions &sessionOptions) {
+void CrnnNet::setNumThread(int numOfThread) {
+    numThread = numOfThread;
+    //===session options===
+    // Sets the number of threads used to parallelize the execution within nodes
+    // A value of 0 means ORT will pick a default
+    //sessionOptions.SetIntraOpNumThreads(numThread);
+    //set OMP_NUM_THREADS=16
+
+    // Sets the number of threads used to parallelize the execution of the graph (across nodes)
+    // If sequential execution is enabled this value is ignored
+    // A value of 0 means ORT will pick a default
+    sessionOptions.SetInterOpNumThreads(numThread);
+
+    // Sets graph optimization level
+    // ORT_DISABLE_ALL -> To disable all optimizations
+    // ORT_ENABLE_BASIC -> To enable basic optimizations (Such as redundant node removals)
+    // ORT_ENABLE_EXTENDED -> To enable extended optimizations (Includes level 1 + more complex optimizations like node fusions)
+    // ORT_ENABLE_ALL -> To Enable All possible opitmizations
+    sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+}
+
+bool CrnnNet::initModel(std::string &pathStr) {
 #ifdef _WIN32
     std::wstring crnnPath = strToWstr(pathStr + "/crnn_lite_lstm.onnx");
-    session = makeUnique<Ort::Session>(env, crnnPath.c_str(), sessionOptions);
+    session = new Ort::Session(env, crnnPath.c_str(), sessionOptions);
 #else
-    session = makeUnique<Ort::Session>(env, (pathStr + "/crnn_lite_lstm.onnx").c_str(), sessionOptions);
+    std::string fullPath = pathStr + "/crnn_lite_lstm.onnx";
+    session = new Ort::Session(env, fullPath.c_str(), sessionOptions);
 #endif
-    inputNames = getInputNames(session);
-    outputNames = getOutputNames(session);
+    //inputNames = getInputNames(session);
+    //outputNames = getOutputNames(session);
 
     //load keys
     std::ifstream in((pathStr + "/keys.txt").c_str());
@@ -87,17 +111,16 @@ TextLine CrnnNet::getTextLine(cv::Mat &src) {
 
     std::array<int64_t, 4> inputShape{1, srcResize.channels(), srcResize.rows, srcResize.cols};
 
-    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
+    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 
 
     Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
-                                                   inputTensorValues.size(), inputShape.data(),
-                                                   inputShape.size());
+                                                             inputTensorValues.size(), inputShape.data(),
+                                                             inputShape.size());
     assert(inputTensor.IsTensor());
 
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
-                                     inputNames.size(),
-                                     outputNames.data(), outputNames.size());
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames, &inputTensor,
+                                     1, outputNames, 1);
 
     assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
 
@@ -115,7 +138,7 @@ std::vector<TextLine> CrnnNet::getTextLines(std::vector<cv::Mat> &partImg, const
     int size = partImg.size();
     std::vector<TextLine> textLines(size);
 #ifdef __OPENMP__
-#pragma omp parallel for
+#pragma omp parallel for num_threads(numThread)
 #endif
     for (int i = 0; i < size; ++i) {
         //OutPut DebugImg
