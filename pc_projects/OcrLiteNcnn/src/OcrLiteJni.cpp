@@ -97,6 +97,11 @@ Java_com_benjaminwan_ocrlibrary_OcrEngine_initModels(JNIEnv *env, jobject thiz, 
     return true;
 }
 
+extern "C" JNIEXPORT void JNICALL
+Java_com_benjaminwan_ocrlibrary_OcrEngine_setGpuIndex(JNIEnv *env, jobject thiz, jint gpuIndex) {
+    ocrLite->setGpuIndex(gpuIndex);
+}
+
 extern "C" JNIEXPORT jobject JNICALL
 Java_com_benjaminwan_ocrlibrary_OcrEngine_detect(JNIEnv *env, jobject thiz, jstring input,
                                                  jint padding, jint reSize,

@@ -3,30 +3,11 @@
 
 #include <opencv2/core.hpp>
 #include "OcrStruct.h"
-#include "onnxruntime_cxx_api.h"
-#include <numeric>
 
-template<typename T, typename... Ts>
-static std::unique_ptr<T> makeUnique(Ts &&... params) {
-    return std::unique_ptr<T>(new T(std::forward<Ts>(params)...));
-}
-
-template<typename T>
-static double getMean(std::vector<T> &input) {
-    auto sum = accumulate(input.begin(), input.end(), 0.0);
-    return sum / input.size();
-}
-
-template<typename T>
-static double getStdev(std::vector<T> &input, double mean) {
-    if (input.size() <= 1) return 0;
-    double accum = 0.0;
-    for_each(input.begin(), input.end(), [&](const double d) {
-        accum += (d - mean) * (d - mean);
-    });
-    double stdev = sqrt(accum / (input.size() - 1));
-    return stdev;
-}
+/*#define __ENABLE_CONSOLE__ true
+#define Logger(format, ...) {\
+  if(__ENABLE_CONSOLE__) printf(format,##__VA_ARGS__); \
+}*/
 
 double getCurrentTime();
 
@@ -65,15 +46,7 @@ float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box);
 
 void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec, float unClipRatio);
 
-std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, const float *normVals);
-
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
-
-std::vector<const char *> getInputNames(Ort::Session *session);
-
-std::vector<const char *> getOutputNames(Ort::Session *session);
-
-int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double stdev);
 
 void saveImg(cv::Mat &img, const char *imgPath);
 
@@ -84,5 +57,7 @@ std::string getResultTxtFilePath(const char *path, const char *imgName);
 std::string getResultImgFilePath(const char *path, const char *imgName);
 
 std::string getDebugImgFilePath(const char *path, const char *imgName, int i, const char *tag);
+
+void printGpuInfo();
 
 #endif //__OCR_UTILS_H__

@@ -3,44 +3,34 @@
 #include <fstream>
 #include <numeric>
 
-CrnnNet::CrnnNet() {}
+void CrnnNet::setGpuIndex(int gpuIndex) {
+#ifdef __VULKAN__
+    if (gpuIndex >= 0) {
+        net.opt.use_vulkan_compute = true;
+        net.set_vulkan_device(gpuIndex);
+        printf("CrnnNet try to use Gpu%d\n", gpuIndex);
+    } else {
+        net.opt.use_vulkan_compute = false;
+        printf("CrnnNet use Cpu\n");
+    }
+#endif
+}
 
 CrnnNet::~CrnnNet() {
-    delete session;
+    net.clear();
 }
 
 void CrnnNet::setNumThread(int numOfThread) {
     numThread = numOfThread;
-    //===session options===
-    // Sets the number of threads used to parallelize the execution within nodes
-    // A value of 0 means ORT will pick a default
-    //sessionOptions.SetIntraOpNumThreads(numThread);
-    //set OMP_NUM_THREADS=16
-
-    // Sets the number of threads used to parallelize the execution of the graph (across nodes)
-    // If sequential execution is enabled this value is ignored
-    // A value of 0 means ORT will pick a default
-    sessionOptions.SetInterOpNumThreads(numThread);
-
-    // Sets graph optimization level
-    // ORT_DISABLE_ALL -> To disable all optimizations
-    // ORT_ENABLE_BASIC -> To enable basic optimizations (Such as redundant node removals)
-    // ORT_ENABLE_EXTENDED -> To enable extended optimizations (Includes level 1 + more complex optimizations like node fusions)
-    // ORT_ENABLE_ALL -> To Enable All possible opitmizations
-    sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 }
 
 bool CrnnNet::initModel(std::string &pathStr) {
-#ifdef _WIN32
-    std::wstring crnnPath = strToWstr(pathStr + "/crnn_lite_lstm.onnx");
-    session = new Ort::Session(env, crnnPath.c_str(), sessionOptions);
-#else
-    std::string fullPath = pathStr + "/crnn_lite_lstm.onnx";
-    session = new Ort::Session(env, fullPath.c_str(), sessionOptions);
-#endif
-    //inputNames = getInputNames(session);
-    //outputNames = getOutputNames(session);
-
+    int ret_param = net.load_param((pathStr + "/crnn_lite_op.param").c_str());
+    int ret_bin = net.load_model((pathStr + "/crnn_lite_op.bin").c_str());
+    if (ret_param != 0 || ret_bin != 0) {
+        printf("CrnnNet load param(%d), model(%d)\n", ret_param, ret_bin);
+        return false;
+    }
     //load keys
     std::ifstream in((pathStr + "/keys.txt").c_str());
     std::string line;
@@ -107,31 +97,35 @@ TextLine CrnnNet::getTextLine(cv::Mat &src) {
     cv::Mat srcResize;
     resize(src, srcResize, cv::Size(dstWidth, dstHeight));
 
-    std::vector<float> inputTensorValues = substractMeanNormalize(srcResize, meanValues, normValues);
+    ncnn::Mat input = ncnn::Mat::from_pixels(
+            srcResize.data, ncnn::Mat::PIXEL_RGB,
+            srcResize.cols, srcResize.rows);
 
-    std::array<int64_t, 4> inputShape{1, srcResize.channels(), srcResize.rows, srcResize.cols};
+    input.substract_mean_normalize(meanValues, normValues);
 
-    auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
+    ncnn::Extractor extractor = net.create_extractor();
+    extractor.set_num_threads(numThread);
+    extractor.input("input", input);
 
+    // lstm
+    ncnn::Mat blob162;
+    extractor.extract("1000", blob162);
 
-    Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
-                                                             inputTensorValues.size(), inputShape.data(),
-                                                             inputShape.size());
-    assert(inputTensor.IsTensor());
+    // batch fc
+    ncnn::Mat blob263(5531, blob162.h);
+    for (int i = 0; i < blob162.h; i++) {
+        ncnn::Extractor extractor2 = net.create_extractor();
+        extractor2.set_num_threads(numThread);
+        ncnn::Mat blob243_i = blob162.row_range(i, 1);
+        extractor2.input("1014", blob243_i);
 
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames, &inputTensor,
-                                     1, outputNames, 1);
+        ncnn::Mat blob263_i;
+        extractor2.extract("1015", blob263_i);
 
-    assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
+        memcpy(blob263.row(i), blob263_i, 5531 * sizeof(float));
+    }
 
-    size_t count = outputTensor.front().GetTensorTypeAndShapeInfo().GetElementCount();
-    size_t rows = count / crnnCols;
-    float *floatArray = outputTensor.front().GetTensorMutableData<float>();
-
-    cv::Mat score(rows, crnnCols, CV_32FC1);
-    memcpy(score.data, floatArray, rows * crnnCols * sizeof(float));
-
-    return scoreToTextLine((float *) score.data, rows, crnnCols);
+    return scoreToTextLine((float *) blob263.data, blob263.h, blob263.w);
 }
 
 std::vector<TextLine> CrnnNet::getTextLines(std::vector<cv::Mat> &partImg, const char *path, const char *imgName) {

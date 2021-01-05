@@ -1,17 +1,36 @@
 #include <omp.h>
 #include <cstdio>
 #include <string>
-#include "main.h"
-#include "version.h"
+#include <OcrUtils.h>
 #include "OcrLite.h"
+#include "getopt.h"
+
+static const struct option long_options[] = {
+        {"models",    required_argument, NULL, 'd'},
+        {"image",     required_argument, NULL, 'i'},
+        {"numThread", required_argument, NULL, 't'},
+        {"loopCount", required_argument, NULL, 'l'},
+        {"help",      no_argument,       NULL, '?'},
+        {NULL,        no_argument,       NULL, 0}
+};
+
+const char *usageMsg = "(-d --models) (-i --image)\n"\
+                       "[-t --numThread] [-l --loopCount]\n\n";
+
+const char *requiredMsg = "-d --models: models directory.\n" \
+                          "-i --image: path of target image.\n" \
+                          "-l --loopCount: loop count of benchmark.\n\n";
+
+const char *otherMsg = "-? --help: print this help\n\n";
+
+const char *example1Msg = "Example1: %s --models models --image 1.jpg --loopCount 10\n";
+const char *example2Msg = "Example2: %s -d models -i 1.jpg -l 10\n";
 
 void printHelp(FILE *out, char *argv0) {
     fprintf(out, " ------- Usage -------\n");
     fprintf(out, "%s %s", argv0, usageMsg);
     fprintf(out, " ------- Required Parameters -------\n");
     fprintf(out, "%s", requiredMsg);
-    fprintf(out, " ------- Optional Parameters -------\n");
-    fprintf(out, "%s", optionalMsg);
     fprintf(out, " ------- Other Parameters -------\n");
     fprintf(out, "%s", otherMsg);
     fprintf(out, " ------- Examples -------\n");
@@ -29,6 +48,7 @@ int main(int argc, char **argv) {
     std::string imgPath;
     std::string imgName;
     int numThread = 4;
+    int loopCount = 1;
     int padding = 50;
     int imgResize = 0;
     float boxScoreThresh = 0.6f;
@@ -42,7 +62,7 @@ int main(int argc, char **argv) {
 
     int opt;
     int optionIndex = 0;
-    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:A:v?", long_options, &optionIndex)) != -1) {
+    while ((opt = getopt_long(argc, argv, "i:d:t:l:?", long_options, &optionIndex)) != -1) {
         //printf("option(-%c)=%s\n", opt, optarg);
         switch (opt) {
             case 'd':
@@ -59,51 +79,10 @@ int main(int argc, char **argv) {
                 numThread = (int) strtol(optarg, NULL, 10);
                 //printf("numThread=%d\n", numThread);
                 break;
-            case 'p':
-                padding = (int) strtol(optarg, NULL, 10);
-                //printf("padding=%d\n", padding);
+            case 'l':
+                loopCount = (int) strtol(optarg, NULL, 10);
+                //printf("loopCount=%d\n", loopCount);
                 break;
-            case 's':
-                imgResize = (int) strtol(optarg, NULL, 10);
-                //printf("imgResize=%d\n", imgResize);
-                break;
-            case 'b':
-                boxScoreThresh = strtof(optarg, NULL);
-                //printf("boxScoreThresh=%f\n", boxScoreThresh);
-                break;
-            case 'o':
-                boxThresh = strtof(optarg, NULL);
-                //printf("boxThresh=%f\n", boxThresh);
-                break;
-            case 'm':
-                minArea = strtof(optarg, NULL);
-                //printf("minArea=%f\n", minArea);
-                break;
-            case 'u':
-                unClipRatio = strtof(optarg, NULL);
-                //printf("unClipRatio=%f\n", unClipRatio);
-                break;
-            case 'a':
-                flagDoAngle = (int) strtol(optarg, NULL, 10);
-                if (flagDoAngle == 0) {
-                    doAngle = false;
-                } else {
-                    doAngle = true;
-                }
-                //printf("doAngle=%d\n", doAngle);
-                break;
-            case 'A':
-                flagMostAngle = (int) strtol(optarg, NULL, 10);
-                if (flagMostAngle == 0) {
-                    mostAngle = false;
-                } else {
-                    mostAngle = true;
-                }
-                //printf("mostAngle=%d\n", mostAngle);
-                break;
-            case 'v':
-                printf("%s\n", VERSION);
-                return 0;
             case '?':
                 printHelp(stdout, argv[0]);
                 return 0;
@@ -116,22 +95,37 @@ int main(int argc, char **argv) {
     OcrLite ocrLite;
     ocrLite.setNumThread(numThread);
     ocrLite.initLogger(
-            true,//isOutputConsole
+            false,//isOutputConsole
             false,//isOutputPartImg
-            true);//isOutputResultImg
+            false);//isOutputResultImg
 
     ocrLite.enableResultTxt(imgPath.c_str(), imgName.c_str());
-    ocrLite.Logger("=====Input Params=====\n");
-    ocrLite.Logger(
+    printf("=====Input Params=====\n");
+    printf(
             "numThread(%d),padding(%d),imgResize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)\n",
             numThread, padding, imgResize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
 
     ocrLite.initModels(modelsDir.c_str());
-
+    printf("=====warmup=====\n");
     OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                       padding, imgResize,
                                       boxScoreThresh, boxThresh, minArea,
                                       unClipRatio, doAngle, mostAngle);
-    ocrLite.Logger("%s\n", result.strRes.c_str());
+    printf("dbNetTime(%f) detectTime(%f)\n", result.dbNetTime, result.detectTime);
+    double dbTime = 0.0f;
+    double detectTime = 0.0f;
+    for (int i = 0; i < loopCount; ++i) {
+        printf("=====loop:%d=====\n", i + 1);
+        OcrResult ocrResult = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
+                                             padding, imgResize,
+                                             boxScoreThresh, boxThresh, minArea,
+                                             unClipRatio, doAngle, mostAngle);
+        printf("dbNetTime(%f) detectTime(%f)\n", ocrResult.dbNetTime, ocrResult.detectTime);
+        dbTime += ocrResult.dbNetTime;
+        detectTime += ocrResult.detectTime;
+    }
+    printf("=====result=====\n");
+    printf("average dbNetTime=%fms, average detectTime=%fms\n", dbTime / loopCount,
+           detectTime / loopCount);
     return 0;
 }

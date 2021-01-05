@@ -1,44 +1,56 @@
-# OcrLiteOnnx
+# OcrLiteNcnn
 
 ### Demo下载(win、mac、linux)
-[Gitee下载](https://gitee.com/benjaminwan/ocr-lite-onnx/releases)
+[Gitee下载](https://gitee.com/benjaminwan/ocr-lite-ncnn/releases)
 
 ### 介绍
-ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理(DBNet+AngleNet+CRNN)
+ChineseOcr Lite Ncnn，超轻量级中文OCR PC Demo，支持ncnn推理(DBNet+AngleNet+CRNN)
 
 **对应chineseocr lite的onnx分支**
 
-这个项目使用onnxruntime框架进行推理
+这个项目使用ncnn框架进行推理，模型是从onnx模型转成了ncnn模型格式。
 
 详情请查看 [https://github.com/ouyanghuiyu/chineseocr_lite](https://github.com/ouyanghuiyu/chineseocr_lite)
 
-采用onnxruntime框架[https://github.com/microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)
+采用ncnn神经网络前向计算框架[https://github.com/Tencent/ncnn](https://github.com/Tencent/ncnn)
 
 ### 模型下载
 下载后，解压放到项目根目录，请勿修改文件夹名和文件名
-[模型下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/models)
+[模型下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/models_ncnn)
 ```
-OcrLiteOnnx/models
-├── angle_net.onnx
-├── crnn_lite_lstm.onnx
-├── dbnet.onnx
+OcrLiteNcnn/models
+├── angle_op.bin
+├── angle_op.param
+├── crnn_lite_op.bin
+├── crnn_lite_op.param
+├── dbnet_op.bin
+├── dbnet_op.param
 └── keys.txt
 ```
 
-### 依赖的第三反库下载
-下载opencv和onnxruntime，[下载地址](https://gitee.com/benjaminwan/ocr-lite-onnx/releases/v1.0)
+### 依赖的第三方库下载
+1. 下载opencv和ncnn，[下载地址](https://gitee.com/benjaminwan/ocr-lite-ncnn/releases/v1.0)
 * OpenCv动态库：opencv-(版本号)-sharedLib.7z
 * OpenCv静态库：opencv-(版本号)-staticLib.7z
-* OnnxRuntime动态库：onnxruntime-(版本号)-sharedLib.7z
-* OnnxRuntime静态库：onnxruntime-(版本号)-staticLib.7z
-* 可以选择只下载两者的动态库或两者的静态库(要么都是静态库要么都是动态库)，或者4种全部下载
+* ncnn静态库含vulkan：ncnn-(版本号)-vulkan-staticLib.7z
+* ncnn静态库：ncnn-(版本号)-staticLib.7z
 * 把压缩包解压到项目根目录，解压后目录结构
 ```
-OcrLiteOnnx
-    ├── onnxruntime-shared
-    ├── onnxruntime-static
+OcrLiteNcnn
+    ├── ncnn-static
+    ├── ncnn-vulkan-static
     ├── opencv-shared
     ├── opencv-static
+```
+2. Vulkan SDK，[下载地址](https://vulkan.lunarg.com/sdk/home)
+* 如果想编译ncnn带vulkan支持的版本，则必须先安装Vulkan SDK。
+* 一般下载最新版即可，当前最新版1.2.162.0
+* Windows：直接双击安装。
+* macOS：加载dmg后，终端执行```./install_vulkan.py```
+* Linux: 解压tar.gz文件后，把scripts文件夹里的install-vulkan-linux.sh复制到解压后的文件夹，并打开终端执行 
+```
+chmod a+x install-vulkan-linux.sh
+./install-vulkan-linux.sh
 ```
 
 ### 编译环境
@@ -64,14 +76,13 @@ OcrLiteOnnx
 #### Windows Visual Studio编译说明
 1. VS2017/VS2019，cmake……等安装配置参考上述步骤。
 2. 运行generate-vs-project.cmd，输入数字选择要生成的visual studio项目解决方案版本。
-3. 根据你的编译环境，进入build-xxxx-x86或x64文件夹，打开OcrLiteOnnx.sln。
-4. 在顶部工具栏选择Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。要选择Debug，则您必须自行编译Debug版的opencv或onnxruntime。
+3. 根据你的编译环境，进入build-xxxx-x86或x64文件夹，打开OcrLiteNcnn.sln。
+4. 在顶部工具栏选择Release，在右边的"解决方案"窗口，右键选中"ALL_BUILD"->生成。要选择Debug，则您必须自行编译Debug版的opencv或ncnn。
 
 #### Windows部署说明
 1. 编译时选择动态库时，部署的时候记得把dll复制到可执行文件目录。
 2. 部署时如果提示缺少"VCRUNTIME140_1.dll"，下载安装适用于 Visual Studio 2015、2017 和 2019 的 Microsoft Visual C++ 可再发行软件包，
    [下载地址](https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads)
-3. onnxruntime只支持windows10，想部署到低版本windows请自行想办法。
 
 ### Mac编译说明
 1. macOS Catalina 10.15.x，安装Xcode 12.1，并安装Xcode Command Line Tools, 终端运行```xcode-select –install```
@@ -98,6 +109,7 @@ opencv或onnxruntime使用动态库时，参考下列方法：
 6. 编译JNI动态运行库(可选，可用于java调用)
 * 下载jdk-8u221并安装配置
 * 运行```build.sh```并按照提示输入选项，最后选择'编译成JNI动态库'
+* **注意：编译JNI时，g++版本要求>=6**
 
 #### Linux部署说明
 opencv或onnxruntime使用动态库时，参考下列方法：
@@ -119,17 +131,38 @@ opencv或onnxruntime使用动态库时，参考下列方法：
 10. ```-a或--noAngle```：启用(1)/禁用(0) 文字方向检测，只有图片倒置的情况下(旋转90~270度的图片)，才需要启用文字方向检测。
 11. ```-A或--mostAngle```：启用(1)/禁用(0) 角度投票(整张图片以最大可能文字方向来识别)，当禁用文字方向检测时，此项也不起作用。
 12. ```-?或--help```：打印命令行帮助。
+13. ```-G或--GPU```：尝试使用gpu进行计算，-1(使用CPU)/0(使用GPU0)/1(使用GPU1)/...，GPU选择失败时，则使用CPU进行计算。
 
-### 编译参数说明
-build.sh编译参数：
-1. ```OCR_LITE_OPENMP=ON```：启用(ON)或禁用(OFF) ON时AngleNet和CrnnNet阶段使用OpenMP并行运算，OFF时单线程运算
-2. ```OCR_LITE_LIB=ON```： 启用(ON)或禁用(OFF) ON时编译为jni lib，OFF时编译为可执行文件
-3. ```OCR_LITE_STATIC=ON```： 启用(ON)或禁用(OFF) ON时选择opencv和onnxruntime的静态库进行编译，OFF时则选择动态库编译
+#### 编译参数说明
+build.sh目前有2个编译参数
+1. ```OCR_LITE_OPENMP=ON```：启用(ON)或禁用(OFF) AngleNet和CrnnNet阶段使用OpenMP并行运算。
+* 测试硬件：NUC8I7HVK冥王峡谷(i7-8809G) 32GRAM 2TSSD
+* 测试条件：不计算模型加载、框架初始化、加载图片的时间，线程数设置为当前CPU逻辑核心数量，跑100次计算平均耗时。
+* 经过测试，dbNet阶段使用OpenMP不能减少耗时
+* 所以此选项仅影响angelNet和crnnNet阶段的代码
+* 因为ncnn的crnn阶段因算子不支持而采用了外循环，所以在外循环使用OpenMP后，效果显著
+* 为了对比测试，选取了一张640x640的普通图片和一张分辨率为810*12119长图进行测试。
+* 第一个表格为普通图的测试结果，第二个图为长图的测试结果
+* 结论：启用OpenMP能快10%~30%(取决于图片文字数量)
+
+| 平台    | 系统版本  | 单线程 | OpenMP | 耗时倍率 |
+| ------- | ------- | ----: | ----: | ----: |
+| macOS   | 10.15.7 | 254ms | 227ms | 1.12 |
+| Windows | 10 x64  | 334ms | 308ms | 1.08 |
+
+| 平台    | 系统版本  | 单线程 | OpenMP | 耗时倍率 |
+| ------- | ------- | ----: | ----: | ----: |
+| macOS   | 10.15.7 | 8427ms | 6055ms | 1.39 |
+| Windows | 10 x64  | 12379ms | 9621ms | 1.28 |
+
+2. ```OCR_LITE_LIB=ON```： 启用(ON)或禁用(OFF) 编译为jni lib
+3. ```OCR_LITE_STATIC=ON```： 启用(ON)或禁用(OFF) ON时选择opencv静态库进行编译，OFF时则选择动态库编译
+4. ```OCR_LITE_VULKAN=ON```： 启用(ON)或禁用(OFF) ON时选择ncnn(带vulkan)静态库进行编译，OFF时则选择不带vulkan的版本编译
 
 ### 编译脚本说明
-* scripts文件夹内有一些脚本，用于自行编译opencv和onnxruntime。
+* scripts文件夹内有一些脚本，用于自行编译ncnn，另有编译opencv的脚本，请到OcrLiteOnnx项目内寻找。
 
 ### 关于内存泄漏与valgrind
 * 项目根目录的valgrind-memcheck.sh用来检查内存泄漏(需要debug编译)。
 * valgrind-memcheck.txt是当前demo在linux平台的检查报告。
-* 报告中"possibly lost"有37个，均发生在第三方库opencv，possibly lost可能不一定是泄露，暂时不管。
+* 报告中"possibly lost"有23个，均发生在第三方库，possibly lost可能不一定是泄露，暂时不管。

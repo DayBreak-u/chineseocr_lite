@@ -2,16 +2,16 @@
 #define __OCR_DBNET_H__
 
 #include "OcrStruct.h"
-#include "onnxruntime_cxx_api.h"
+#include "ncnn/net.h"
 #include <opencv/cv.hpp>
 
 class DbNet {
 public:
-    DbNet();
-
     ~DbNet();
 
     void setNumThread(int numOfThread);
+
+    void setGpuIndex(int gpuIndex);
 
     bool initModel(std::string &pathStr);
 
@@ -19,15 +19,8 @@ public:
                                       float boxThresh, float minArea, float unClipRatio);
 
 private:
-    Ort::Session *session;
-    Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR, "DbNet");
-    Ort::SessionOptions sessionOptions = Ort::SessionOptions();
-    int numThread = 0;
-    //std::vector<const char *> inputNames;
-    //std::vector<const char *> outputNames;
-    const char *inputNames[1] = {"input0"};
-    const char *outputNames[1] = {"out1"};
-
+    int numThread;
+    ncnn::Net net;
     const float meanValues[3] = {0.485 * 255, 0.456 * 255, 0.406 * 255};
     const float normValues[3] = {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0};
 };
