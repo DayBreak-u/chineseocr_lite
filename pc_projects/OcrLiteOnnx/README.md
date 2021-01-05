@@ -25,7 +25,7 @@ OcrLiteOnnx/models
 └── keys.txt
 ```
 
-### 依赖的第三反库下载
+### 依赖的第三方库下载
 下载opencv和onnxruntime，[下载地址](https://gitee.com/benjaminwan/ocr-lite-onnx/releases/v1.0)
 * OpenCv动态库：opencv-(版本号)-sharedLib.7z
 * OpenCv静态库：opencv-(版本号)-staticLib.7z
