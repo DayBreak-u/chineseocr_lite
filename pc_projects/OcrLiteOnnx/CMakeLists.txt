@@ -1,19 +1,24 @@
-﻿cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 project(OcrLiteOnnx)
 
+option(OCR_LITE_STATIC "Use Static Librarys For Build" ON)
 option(OCR_LITE_LIB "OcrLite Jni Support" OFF)
 option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
-
+option(OCR_BENCHMARK "build benchmark" ON)
 #set(OCR_LITE_LIB ON)
-if (APPLE)
-    set(CMAKE_MACOSX_RPATH ON)
+#set(OCR_LITE_OPENMP ON)
+#set(OCR_LITE_STATIC OFF)
+set(OCR_BENCHMARK ON)
+
+set(CMAKE_CXX_STANDARD 11)
+add_definitions(-DUNICODE -D_UNICODE)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_definitions("-Wall -g -O0")
+else ()
+    add_definitions("-Wall")
 endif ()
 
-add_definitions(-std=c++11)
-add_definitions("-Wall")
-add_definitions(-DUNICODE -D_UNICODE)
-
-#OpenMP flags for MACOS
+# OpenMP flags for MACOS
 if (APPLE)
     if (CMAKE_C_COMPILER_ID MATCHES "Clang")
         set(OpenMP_C "${CMAKE_C_COMPILER}")
@@ -30,7 +35,7 @@ if (APPLE)
     link_directories("/usr/local/opt/libomp/lib")
 endif ()
 
-#OpenMP
+# OpenMP
 find_package(OpenMP REQUIRED)
 if (OPENMP_FOUND)
     message("OPENMP FOUND")
@@ -41,20 +46,25 @@ else ()
     message(FATAL_ERROR "OpenMP Not Found!")
 endif ()
 
-#ONNX
-set(ONNX_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnx")
-find_package(ONNX REQUIRED)
-if (ONNX_FOUND)
-    message(STATUS "ONNX_LIBS: ${ONNX_LIBS}")
-    message(STATUS "ONNX_INCLUDE_DIRS: ${ONNX_INCLUDE_DIRS}")
+# OnnxRuntime
+if (OCR_LITE_STATIC)
+    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
+else ()
+    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-shared")
+endif ()
+find_package(OnnxRuntime REQUIRED)
+if (OnnxRuntime_FOUND)
+    message(STATUS "OnnxRuntime_LIBS: ${OnnxRuntime_LIBS}")
+    message(STATUS "OnnxRuntime_INCLUDE_DIRS: ${OnnxRuntime_INCLUDE_DIRS}")
 else ()
     message(FATAL_ERROR "onnxruntime Not Found!")
-endif (ONNX_FOUND)
+endif (OnnxRuntime_FOUND)
 
-#OpenCV
-if (WIN32)
-    message("配置WINDOWS OpenCV 路径，请把opencv库放到${CMAKE_CURRENT_SOURCE_DIR}/opencv")
-    set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/opencv/build")
+# OpenCV
+if (OCR_LITE_STATIC)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-static/OpenCVWrapperConfig.cmake)
+else ()
+    include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-shared/OpenCVWrapperConfig.cmake)
 endif ()
 find_package(OpenCV REQUIRED)
 if (OpenCV_FOUND)
@@ -64,7 +74,7 @@ else ()
     message(FATAL_ERROR "opencv Not Found!")
 endif (OpenCV_FOUND)
 
-#JNI
+# JNI
 if (OCR_LITE_LIB)
     find_package(JNI REQUIRED)
     if (JNI_FOUND)
@@ -77,22 +87,45 @@ if (OCR_LITE_LIB)
     endif ()
 endif ()
 
-#project include
+# project include
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-#source
+# source
 file(GLOB OCR_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 set(OCR_COMPILE_CODE ${OCR_SRC})
+
+# static libgcc libstdc++
+if (APPLE)
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+else ()
+    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+endif ()
 
 if (OCR_LITE_LIB)
     add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteOnnx PRIVATE __JNI__)
-    target_link_libraries(OcrLiteOnnx ${ONNX_LIBS} ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
 else ()
     add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
-    target_link_libraries(OcrLiteOnnx ${ONNX_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
 if (OCR_LITE_OPENMP)
     target_compile_definitions(OcrLiteOnnx PRIVATE __OPENMP__)
+endif ()
+
+# benchmark
+if (OCR_BENCHMARK AND NOT OCR_LITE_LIB)
+    add_executable(benchmark benchmark/benchmark.cpp
+            src/AngleNet.cpp
+            src/clipper.cpp
+            src/CrnnNet.cpp
+            src/DbNet.cpp
+            src/getopt.cpp
+            src/OcrLite.cpp
+            src/OcrUtils.cpp)
+    target_link_libraries(benchmark ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    if (OCR_LITE_OPENMP)
+        target_compile_definitions(benchmark PRIVATE __OPENMP__)
+    endif ()
 endif ()

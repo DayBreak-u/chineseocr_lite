@@ -3,7 +3,7 @@
 
 #include <opencv2/core.hpp>
 #include "OcrStruct.h"
-#include "onnx/onnxruntime_cxx_api.h"
+#include "onnxruntime_cxx_api.h"
 #include <numeric>
 
 template<typename T, typename... Ts>
@@ -69,9 +69,9 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
 
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
 
-std::vector<const char *> getInputNames(std::unique_ptr<Ort::Session> &session);
+std::vector<const char *> getInputNames(Ort::Session *session);
 
-std::vector<const char *> getOutputNames(std::unique_ptr<Ort::Session> &session);
+std::vector<const char *> getOutputNames(Ort::Session *session);
 
 int getMostProbabilityAngleIndex(std::vector<int> &input, double mean, double stdev);
 
