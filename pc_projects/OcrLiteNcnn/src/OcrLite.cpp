@@ -29,20 +29,26 @@ void OcrLite::enableResultTxt(const char *path, const char *imgName) {
     resultTxt = fopen(resultTxtPath.c_str(), "w");
 }
 
-void OcrLite::initModels(const char *path) {
+void OcrLite::setGpuIndex(int gpuIndex) {
+    dbNet.setGpuIndex(gpuIndex);
+    angleNet.setGpuIndex(-1);
+    crnnNet.setGpuIndex(-1);
+}
+
+bool OcrLite::initModels(const char *path) {
     Logger("=====Init Models=====\n");
     std::string pathStr = path;
 
-    Logger("--- Init DbNet ---\n");
-    dbNet.initModel(pathStr);
+    bool retDbNet = dbNet.initModel(pathStr);
 
-    Logger("--- Init AngleNet ---\n");
-    angleNet.initModel(pathStr);
+    bool retAngleNet = angleNet.initModel(pathStr);
 
-    Logger("--- Init CrnnNet ---\n");
-    crnnNet.initModel(pathStr);
+    bool retCrnnNet = crnnNet.initModel(pathStr);
 
-    Logger("Init Models Success!\n");
+    if (!retDbNet || !retAngleNet || !retCrnnNet) {
+        Logger("Init Models Failed! %d  %d  %d\n", retDbNet, retAngleNet, retCrnnNet);
+    }
+    return true;
 }
 
 void OcrLite::Logger(const char *format, ...) {

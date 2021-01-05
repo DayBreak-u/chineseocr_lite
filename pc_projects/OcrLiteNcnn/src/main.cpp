@@ -1,11 +1,11 @@
-#include <omp.h>
-#include <cstdio>
-#include <string>
-#include "main.h"
+#ifndef __JNI__
+
 #include "version.h"
 #include "OcrLite.h"
+#include "main.h"
+#include "OcrUtils.h"
 
-void printHelp(FILE *out, char *argv0) {
+void printHelp(FILE *out, const char *argv0) {
     fprintf(out, " ------- Usage -------\n");
     fprintf(out, "%s %s", argv0, usageMsg);
     fprintf(out, " ------- Required Parameters -------\n");
@@ -24,10 +24,10 @@ int main(int argc, char **argv) {
         printHelp(stderr, argv[0]);
         return -1;
     }
-    std::string modelsDir = "../models";
-    std::string argImgPath = "../../test_imgs/1.jpg";
-    std::string imgPath;
-    std::string imgName;
+
+    std::string modelsDir, argImgPath, imgPath, imgName;
+    modelsDir = "../models";
+    argImgPath = "../../test_imgs/1.jpg";
     int numThread = 4;
     int padding = 50;
     int imgResize = 0;
@@ -39,10 +39,11 @@ int main(int argc, char **argv) {
     int flagDoAngle = 1;
     bool mostAngle = true;
     int flagMostAngle = 1;
+    int flagGpu = -1;
 
     int opt;
     int optionIndex = 0;
-    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:A:v?", long_options, &optionIndex)) != -1) {
+    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:A:G:v?", long_options, &optionIndex)) != -1) {
         //printf("option(-%c)=%s\n", opt, optarg);
         switch (opt) {
             case 'd':
@@ -50,9 +51,9 @@ int main(int argc, char **argv) {
                 printf("modelsPath=%s\n", modelsDir.c_str());
                 break;
             case 'i':
-                argImgPath.assign(optarg);
-                imgPath.assign(argImgPath.substr(0, argImgPath.find_last_of('/') + 1));
-                imgName.assign(argImgPath.substr(argImgPath.find_last_of('/') + 1));
+                argImgPath = std::string(optarg);
+                imgPath = argImgPath.substr(0, argImgPath.find_last_of('/') + 1);
+                imgName = argImgPath.substr(argImgPath.find_last_of('/') + 1);
                 printf("imgPath=%s, imgName=%s\n", imgPath.c_str(), imgName.c_str());
                 break;
             case 't':
@@ -101,8 +102,12 @@ int main(int argc, char **argv) {
                 }
                 //printf("mostAngle=%d\n", mostAngle);
                 break;
+            case 'G':
+                flagGpu = (int) strtol(optarg, NULL, 10);
+                break;
             case 'v':
                 printf("%s\n", VERSION);
+                printGpuInfo();
                 return 0;
             case '?':
                 printHelp(stdout, argv[0]);
@@ -112,7 +117,6 @@ int main(int argc, char **argv) {
         }
     }
 
-    omp_set_num_threads(numThread);
     OcrLite ocrLite;
     ocrLite.setNumThread(numThread);
     ocrLite.initLogger(
@@ -121,12 +125,15 @@ int main(int argc, char **argv) {
             true);//isOutputResultImg
 
     ocrLite.enableResultTxt(imgPath.c_str(), imgName.c_str());
+    ocrLite.setGpuIndex(flagGpu);
     ocrLite.Logger("=====Input Params=====\n");
     ocrLite.Logger(
-            "numThread(%d),padding(%d),imgResize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)\n",
-            numThread, padding, imgResize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
+            "numThread(%d),padding(%d),imgResize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d),GPU(%d)\n",
+            numThread, padding, imgResize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle,
+            flagGpu);
 
-    ocrLite.initModels(modelsDir.c_str());
+    bool ret = ocrLite.initModels(modelsDir.c_str());
+    if (!ret) return -1;
 
     OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
                                       padding, imgResize,
@@ -135,3 +142,5 @@ int main(int argc, char **argv) {
     ocrLite.Logger("%s\n", result.strRes.c_str());
     return 0;
 }
+
+#endif

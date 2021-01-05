@@ -2,11 +2,12 @@
 #define __OCR_LITE_H__
 
 #include "opencv2/core.hpp"
-#include "onnxruntime_cxx_api.h"
+#include "ncnn/net.h"
 #include "OcrStruct.h"
 #include "DbNet.h"
 #include "AngleNet.h"
 #include "CrnnNet.h"
+
 
 class OcrLite {
 public:
@@ -20,7 +21,9 @@ public:
 
     void enableResultTxt(const char *path, const char *imgName);
 
-    void initModels(const char *path);
+    void setGpuIndex(int gpuIndex);
+
+    bool initModels(const char *path);
 
     void Logger(const char *format, ...);
 

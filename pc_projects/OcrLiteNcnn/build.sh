@@ -25,12 +25,22 @@ fi
 
 echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
 echo "使用动态库时，编译出来的可执行文件较小，但Linux部署时要配置LD_LIBRARY_PATH或复制到/usr/lib。"
-echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
+echo "请选择要使用的Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
 read -p "" BUILD_STATIC
 if [ $BUILD_STATIC == 1 ]; then
     BUILD_STATIC=ON
 elif [ $BUILD_STATIC == 2 ]; then
     BUILD_STATIC=OFF
+else
+  echo -e "输入错误！Input Error!"
+fi
+
+echo "请选择要使用的ncnn库选项并回车: 1)ncnn(CPU)，2)ncnn(vulkan)"
+read -p "" BUILD_VULKAN
+if [ $BUILD_VULKAN == 1 ]; then
+    BUILD_VULKAN=OFF
+elif [ $BUILD_VULKAN == 2 ]; then
+    BUILD_VULKAN=ON
 else
   echo -e "输入错误！Input Error!"
 fi
@@ -66,7 +76,7 @@ else
     echo "Other OS: $sysOS"
 fi
 
-echo "cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DOCR_LITE_OPENMP=${OPENMP_TYPE} -DOCR_LITE_LIB=${OUTPUT_LIB} -DOCR_LITE_STATIC=${BUILD_STATIC} .."
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOCR_LITE_OPENMP=$OPENMP_TYPE -DOCR_LITE_LIB=$OUTPUT_LIB -DOCR_LITE_STATIC=$BUILD_STATIC ..
+echo "cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DOCR_LITE_OPENMP=${OPENMP_TYPE} -DOCR_LITE_LIB=${OUTPUT_LIB} -DOCR_LITE_STATIC=${BUILD_STATIC} -DOCR_LITE_VULKAN=${BUILD_VULKAN} .."
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOCR_LITE_OPENMP=$OPENMP_TYPE -DOCR_LITE_LIB=$OUTPUT_LIB -DOCR_LITE_STATIC=$BUILD_STATIC -DOCR_LITE_VULKAN=$BUILD_VULKAN ..
 make -j $NUM_THREADS
 popd

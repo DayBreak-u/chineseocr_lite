@@ -1,13 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
-project(OcrLiteOnnx)
+project(OcrLiteNcnn)
 
 option(OCR_LITE_STATIC "Use Static Librarys For Build" ON)
 option(OCR_LITE_LIB "OcrLite Jni Support" OFF)
 option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
+option(OCR_LITE_VULKAN "OcrLite Enable Vulkan" ON)
 option(OCR_BENCHMARK "build benchmark" ON)
+
 #set(OCR_LITE_LIB ON)
-#set(OCR_LITE_OPENMP ON)
 #set(OCR_LITE_STATIC OFF)
+#set(OCR_LITE_VULKAN ON)
 set(OCR_BENCHMARK ON)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -46,19 +48,18 @@ else ()
     message(FATAL_ERROR "OpenMP Not Found!")
 endif ()
 
-# OnnxRuntime
-if (OCR_LITE_STATIC)
-    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
+# NCNN
+if (OCR_LITE_VULKAN)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/ncnn-vulkan-static/NcnnWrapperConfig.cmake)
 else ()
-    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-shared")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/ncnn-static/NcnnWrapperConfig.cmake)
 endif ()
-find_package(OnnxRuntime REQUIRED)
-if (OnnxRuntime_FOUND)
-    message(STATUS "OnnxRuntime_LIBS: ${OnnxRuntime_LIBS}")
-    message(STATUS "OnnxRuntime_INCLUDE_DIRS: ${OnnxRuntime_INCLUDE_DIRS}")
+find_package(ncnn REQUIRED)
+if (ncnn_FOUND)
+    message(STATUS "ncnn Found!")
 else ()
-    message(FATAL_ERROR "onnxruntime Not Found!")
-endif (OnnxRuntime_FOUND)
+    message(FATAL_ERROR "ncnn Not Found!")
+endif (ncnn_FOUND)
 
 # OpenCV
 if (OCR_LITE_STATIC)
@@ -102,16 +103,20 @@ else ()
 endif ()
 
 if (OCR_LITE_LIB)
-    add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
-    target_compile_definitions(OcrLiteOnnx PRIVATE __JNI__)
-    target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    add_library(OcrLiteNcnn SHARED ${OCR_COMPILE_CODE})
+    target_compile_definitions(OcrLiteNcnn PRIVATE __JNI__)
+    target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
 else ()
-    add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
-    target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    add_executable(OcrLiteNcnn ${OCR_COMPILE_CODE})
+    target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
 if (OCR_LITE_OPENMP)
-    target_compile_definitions(OcrLiteOnnx PRIVATE __OPENMP__)
+    target_compile_definitions(OcrLiteNcnn PRIVATE __OPENMP__)
+endif ()
+
+if (OCR_LITE_VULKAN)
+    target_compile_definitions(OcrLiteNcnn PRIVATE __VULKAN__)
 endif ()
 
 # benchmark
@@ -124,8 +129,12 @@ if (OCR_BENCHMARK AND NOT OCR_LITE_LIB)
             src/getopt.cpp
             src/OcrLite.cpp
             src/OcrUtils.cpp)
-    target_link_libraries(benchmark ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    target_link_libraries(benchmark ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
     if (OCR_LITE_OPENMP)
         target_compile_definitions(benchmark PRIVATE __OPENMP__)
+    endif ()
+
+    if (OCR_LITE_VULKAN)
+        target_compile_definitions(benchmark PRIVATE __VULKAN__)
     endif ()
 endif ()
