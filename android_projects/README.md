@@ -13,7 +13,7 @@
 2. 测试硬件：华为荣耀play1，麒麟970，4*Cortex-A73+4*Cortex-A53，系统版本Android 9
 3. 20210102更新：麒麟970的GPU为Mali-G72@850M，12核
 4. onnxruntime版本为1.6.0，ncnn版本20201218, opencv 3.4.10
-5. 20210102更新：由前次的测试结果可知，线程数为4时，耗时最少，故此次均采用4线程，选取了640x640的普通图片来测试，测试50个循环取平均值
+5. 20210102更新：由前次的测试结果可知，线程数为4时，耗时最少，故此次均采用4线程，选取了640x640的普通图片来测试，测试100个循环取平均值
 6. 20201130更新：除了推理框架使用OpenMP以外，Demo程序的AngleNet和CrnnNet阶段也使用OpenMP来加速计算。实测OpenMP对DbNet阶段没有加速效果，因为DbNet阶段是单任务单线程的。
 7. 20210102更新：ncnn vulkan版，DbNet阶段使用GPU加速，AngleNet和CrnnNet阶段仍然使用CPU+OpenMP多线程计算。
 * DbNet阶段特别适合GPU加速，GPU只有compute queue的概念没有线程，低端的GPU只有1个compute queue。
