@@ -146,4 +146,5 @@ build-win/
 /run-test/*.dll
 /run-test/*.jar
 /run-test/*.dylib
+/run-test/valgrind-memcheck.txt
 /out
