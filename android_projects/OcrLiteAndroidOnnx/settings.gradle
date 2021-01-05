@@ -1,0 +1,3 @@
+rootProject.name = "OcrLiteAndroidOnnx"
+include ':app'
+include ':OcrLibrary'
