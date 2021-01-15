@@ -27,7 +27,7 @@ python backend/main.py
 
 ### 以下范例项目是参考Python代码翻译为各种语言的Demo，仅供参考
 ** 注意：以下各种demo均相互独立，只是同一个程序的不同版本 **
-#### **如果不想自己整合依赖库的话，以下8种demo的完整源码工程项目，请到QQ群共享里自行下载**
+#### **如果不想自己整合依赖库的话，以下demo的完整源码工程项目，请到Q群共享里自行下载**
 #### [C++ Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects)
 * onnxruntime C++ demo，支持Windows、linux、macOS，目前仅支持cpu计算；
 * ncnn C++ demo，支持Windows、linux、macOS，分为cpu版与gpu版，gpu版使用ncnn+vulkan来支持gpu加速；
