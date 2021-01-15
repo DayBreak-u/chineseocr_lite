@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(OcrLiteOnnx)
 
-option(OCR_LITE_STATIC "Use Static Librarys For Build" ON)
-option(OCR_LITE_LIB "OcrLite Jni Support" OFF)
-option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
+option(OCR_LIB "OcrLite Jni Support" OFF)
+option(OCR_STATIC "Use Static Librarys For Build" ON)
+option(OCR_OPENMP "OcrLite Enable OpenMP" ON)
 option(OCR_BENCHMARK "build benchmark" ON)
-#set(OCR_LITE_LIB ON)
-#set(OCR_LITE_OPENMP ON)
-#set(OCR_LITE_STATIC OFF)
+#set(OCR_LIB ON)
+#set(OCR_STATIC OFF)
+#set(OCR_OPENMP OFF)
 set(OCR_BENCHMARK ON)
 
 set(CMAKE_CXX_STANDARD 11)
@@ -47,7 +47,7 @@ else ()
 endif ()
 
 # OnnxRuntime
-if (OCR_LITE_STATIC)
+if (OCR_STATIC)
     set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
 else ()
     set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-shared")
@@ -61,7 +61,7 @@ else ()
 endif (OnnxRuntime_FOUND)
 
 # OpenCV
-if (OCR_LITE_STATIC)
+if (OCR_STATIC)
     include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-static/OpenCVWrapperConfig.cmake)
 else ()
     include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-shared/OpenCVWrapperConfig.cmake)
@@ -75,7 +75,7 @@ else ()
 endif (OpenCV_FOUND)
 
 # JNI
-if (OCR_LITE_LIB)
+if (OCR_LIB)
     find_package(JNI REQUIRED)
     if (JNI_FOUND)
         message("JNI FOUND")
@@ -95,13 +95,15 @@ file(GLOB OCR_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 set(OCR_COMPILE_CODE ${OCR_SRC})
 
 # static libgcc libstdc++
-if (APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
-else ()
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+if (OCR_STATIC)
+    if (APPLE)
+        set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+    else ()
+        set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+    endif ()
 endif ()
 
-if (OCR_LITE_LIB)
+if (OCR_LIB)
     add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteOnnx PRIVATE __JNI__)
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
@@ -110,12 +112,12 @@ else ()
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
-if (OCR_LITE_OPENMP)
+if (OCR_OPENMP)
     target_compile_definitions(OcrLiteOnnx PRIVATE __OPENMP__)
 endif ()
 
 # benchmark
-if (OCR_BENCHMARK AND NOT OCR_LITE_LIB)
+if (OCR_BENCHMARK AND NOT OCR_LIB)
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp
@@ -125,7 +127,7 @@ if (OCR_BENCHMARK AND NOT OCR_LITE_LIB)
             src/OcrLite.cpp
             src/OcrUtils.cpp)
     target_link_libraries(benchmark ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
-    if (OCR_LITE_OPENMP)
+    if (OCR_OPENMP)
         target_compile_definitions(benchmark PRIVATE __OPENMP__)
     endif ()
 endif ()

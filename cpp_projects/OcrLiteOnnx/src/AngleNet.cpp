@@ -6,6 +6,12 @@ AngleNet::AngleNet() {}
 
 AngleNet::~AngleNet() {
     delete session;
+    for (auto name : inputNames) {
+        free(name);
+    }
+    for (auto name : outputNames) {
+        free(name);
+    }
 }
 
 void AngleNet::setNumThread(int numOfThread) {
@@ -29,31 +35,28 @@ void AngleNet::setNumThread(int numOfThread) {
     sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 }
 
-bool AngleNet::initModel(std::string &pathStr) {
+void AngleNet::initModel(const std::string &pathStr) {
 #ifdef _WIN32
-    std::wstring anglePath = strToWstr(pathStr + "/angle_net.onnx");
+    std::wstring anglePath = strToWstr(pathStr);
     session = new Ort::Session(env, anglePath.c_str(), sessionOptions);
 #else
-    std::string fullPath = pathStr + "/angle_net.onnx";
-    session = new Ort::Session(env, fullPath.c_str(), sessionOptions);
+    session = new Ort::Session(env, pathStr.c_str(), sessionOptions);
 #endif
-    //inputNames = getInputNames(session);
-    //outputNames = getOutputNames(session);
-
-    return true;
+    inputNames = getInputNames(session);
+    outputNames = getOutputNames(session);
 }
 
-Angle scoreToAngle(const float *srcData, int w) {
-    int angleIndex = 0;
-    float maxValue = -1000.0f;
-    for (int i = 0; i < w; i++) {
-        if (i == 0)maxValue = srcData[i];
-        else if (srcData[i] > maxValue) {
-            angleIndex = i;
-            maxValue = srcData[i];
+Angle scoreToAngle(const std::vector<float> &outputData) {
+    int maxIndex = 0;
+    float maxScore = -1000.0f;
+    for (int i = 0; i < outputData.size(); i++) {
+        if (i == 0)maxScore = outputData[i];
+        else if (outputData[i] > maxScore) {
+            maxScore = outputData[i];
+            maxIndex = i;
         }
     }
-    return {angleIndex, maxValue};
+    return {maxIndex, maxScore};
 }
 
 Angle AngleNet::getAngle(cv::Mat &src) {
@@ -69,19 +72,19 @@ Angle AngleNet::getAngle(cv::Mat &src) {
                                                              inputShape.size());
     assert(inputTensor.IsTensor());
 
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames, &inputTensor,
-                                     1, outputNames, 1);
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
+                                     inputNames.size(), outputNames.data(), outputNames.size());
 
     assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
 
-    size_t count = outputTensor.front().GetTensorTypeAndShapeInfo().GetElementCount();
-    size_t rows = count / angleCols;
+    std::vector<int64_t> outputShape = outputTensor[0].GetTensorTypeAndShapeInfo().GetShape();
+
+    int64_t outputCount = std::accumulate(outputShape.begin(), outputShape.end(), 1,
+                                          std::multiplies<int64_t>());
+
     float *floatArray = outputTensor.front().GetTensorMutableData<float>();
-
-    cv::Mat score(rows, angleCols, CV_32FC1);
-    memcpy(score.data, floatArray, rows * angleCols * sizeof(float));
-
-    return scoreToAngle((float *) score.data, angleCols);
+    std::vector<float> outputData(floatArray, floatArray + outputCount);
+    return scoreToAngle(outputData);
 }
 
 std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const char *path,

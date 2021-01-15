@@ -1,9 +1,10 @@
+#ifndef __JNI__
 #include <omp.h>
 #include <cstdio>
-#include <string>
 #include "main.h"
 #include "version.h"
 #include "OcrLite.h"
+#include "OcrUtils.h"
 
 void printHelp(FILE *out, char *argv0) {
     fprintf(out, " ------- Usage -------\n");
@@ -24,16 +25,13 @@ int main(int argc, char **argv) {
         printHelp(stderr, argv[0]);
         return -1;
     }
-    std::string modelsDir = "../models";
-    std::string argImgPath = "../../test_imgs/1.jpg";
-    std::string imgPath;
-    std::string imgName;
+    std::string modelsDir, modelDetPath, modelClsPath, modelRecPath, keysPath;
+    std::string imgPath, imgDir, imgName;
     int numThread = 4;
     int padding = 50;
-    int imgResize = 0;
+    int maxSideLen = 1024;
     float boxScoreThresh = 0.6f;
     float boxThresh = 0.3f;
-    float minArea = 3.f;
     float unClipRatio = 2.0f;
     bool doAngle = true;
     int flagDoAngle = 1;
@@ -42,18 +40,34 @@ int main(int argc, char **argv) {
 
     int opt;
     int optionIndex = 0;
-    while ((opt = getopt_long(argc, argv, "i:d:t:p:s:b:o:m:u:a:A:v?", long_options, &optionIndex)) != -1) {
+    while ((opt = getopt_long(argc, argv, "d:1:2:3:4:i:t:p:s:b:o:u:a:A:v:h", long_options, &optionIndex)) != -1) {
         //printf("option(-%c)=%s\n", opt, optarg);
         switch (opt) {
             case 'd':
                 modelsDir = optarg;
                 printf("modelsPath=%s\n", modelsDir.c_str());
                 break;
+            case '1':
+                modelDetPath = modelsDir + "/" + optarg;
+                printf("model dbnet path=%s\n", modelDetPath.c_str());
+                break;
+            case '2':
+                modelClsPath = modelsDir + "/" + optarg;
+                printf("model angle path=%s\n", modelClsPath.c_str());
+                break;
+            case '3':
+                modelRecPath = modelsDir + "/" + optarg;
+                printf("model crnn path=%s\n", modelRecPath.c_str());
+                break;
+            case '4':
+                keysPath = modelsDir + "/" + optarg;
+                printf("keys path=%s\n", keysPath.c_str());
+                break;
             case 'i':
-                argImgPath.assign(optarg);
-                imgPath.assign(argImgPath.substr(0, argImgPath.find_last_of('/') + 1));
-                imgName.assign(argImgPath.substr(argImgPath.find_last_of('/') + 1));
-                printf("imgPath=%s, imgName=%s\n", imgPath.c_str(), imgName.c_str());
+                imgPath.assign(optarg);
+                imgDir.assign(imgPath.substr(0, imgPath.find_last_of('/') + 1));
+                imgName.assign(imgPath.substr(imgPath.find_last_of('/') + 1));
+                printf("imgDir=%s, imgName=%s\n", imgDir.c_str(), imgName.c_str());
                 break;
             case 't':
                 numThread = (int) strtol(optarg, NULL, 10);
@@ -64,8 +78,8 @@ int main(int argc, char **argv) {
                 //printf("padding=%d\n", padding);
                 break;
             case 's':
-                imgResize = (int) strtol(optarg, NULL, 10);
-                //printf("imgResize=%d\n", imgResize);
+                maxSideLen = (int) strtol(optarg, NULL, 10);
+                //printf("maxSideLen=%d\n", maxSideLen);
                 break;
             case 'b':
                 boxScoreThresh = strtof(optarg, NULL);
@@ -74,10 +88,6 @@ int main(int argc, char **argv) {
             case 'o':
                 boxThresh = strtof(optarg, NULL);
                 //printf("boxThresh=%f\n", boxThresh);
-                break;
-            case 'm':
-                minArea = strtof(optarg, NULL);
-                //printf("minArea=%f\n", minArea);
                 break;
             case 'u':
                 unClipRatio = strtof(optarg, NULL);
@@ -104,14 +114,50 @@ int main(int argc, char **argv) {
             case 'v':
                 printf("%s\n", VERSION);
                 return 0;
-            case '?':
+            case 'h':
                 printHelp(stdout, argv[0]);
                 return 0;
             default:
                 printf("other option %c :%s\n", opt, optarg);
         }
     }
-
+    if (modelDetPath.empty()) {
+        modelDetPath = modelsDir + "/" + "dbnet.onnx";
+    }
+    if (modelClsPath.empty()) {
+        modelClsPath = modelsDir + "/" + "angle_net.onnx";
+    }
+    if (modelRecPath.empty()) {
+        modelRecPath = modelsDir + "/" + "crnn_lite_lstm.onnx";
+    }
+    if (keysPath.empty()) {
+        keysPath = modelsDir + "/" + "keys.txt";
+    }
+    bool hasTargetImgFile = isFileExists(imgPath);
+    if (!hasTargetImgFile) {
+        fprintf(stderr, "Target image not found: %s\n", imgPath.c_str());
+        return -1;
+    }
+    bool hasModelDetFile = isFileExists(modelDetPath);
+    if (!hasModelDetFile) {
+        fprintf(stderr, "Model dbnet file not found: %s\n", modelDetPath.c_str());
+        return -1;
+    }
+    bool hasModelClsFile = isFileExists(modelClsPath);
+    if (!hasModelClsFile) {
+        fprintf(stderr, "Model angle file not found: %s\n", modelClsPath.c_str());
+        return -1;
+    }
+    bool hasModelRecFile = isFileExists(modelRecPath);
+    if (!hasModelRecFile) {
+        fprintf(stderr, "Model crnn file not found: %s\n", modelRecPath.c_str());
+        return -1;
+    }
+    bool hasKeysFile = isFileExists(keysPath);
+    if (!hasKeysFile) {
+        fprintf(stderr, "keys file not found: %s\n", keysPath.c_str());
+        return -1;
+    }
     omp_set_num_threads(numThread);
     OcrLite ocrLite;
     ocrLite.setNumThread(numThread);
@@ -120,18 +166,18 @@ int main(int argc, char **argv) {
             false,//isOutputPartImg
             true);//isOutputResultImg
 
-    ocrLite.enableResultTxt(imgPath.c_str(), imgName.c_str());
+    ocrLite.enableResultTxt(imgDir.c_str(), imgName.c_str());
     ocrLite.Logger("=====Input Params=====\n");
     ocrLite.Logger(
-            "numThread(%d),padding(%d),imgResize(%d),boxScoreThresh(%f),boxThresh(%f),minArea(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)\n",
-            numThread, padding, imgResize, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
+            "numThread(%d),padding(%d),maxSideLen(%d),boxScoreThresh(%f),boxThresh(%f),unClipRatio(%f),doAngle(%d),mostAngle(%d)\n",
+            numThread, padding, maxSideLen, boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
 
-    ocrLite.initModels(modelsDir.c_str());
+    ocrLite.initModels(modelDetPath, modelClsPath, modelRecPath, keysPath);
 
-    OcrResult result = ocrLite.detect(imgPath.c_str(), imgName.c_str(),
-                                      padding, imgResize,
-                                      boxScoreThresh, boxThresh, minArea,
-                                      unClipRatio, doAngle, mostAngle);
+    OcrResult result = ocrLite.detect(imgDir.c_str(), imgName.c_str(), padding, maxSideLen,
+                                      boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
     ocrLite.Logger("%s\n", result.strRes.c_str());
     return 0;
 }
+
+#endif

@@ -7,7 +7,7 @@ echo.
 
 echo "========编译选项========"
 echo "请注意：项目默认使用Release库，除非您自行编译Debug版的Onnxruntime和Opencv，否则请不要选择Debug编译"
-echo "请输入编译选项并回车: 1)Release, 2)Debug:""
+echo "请输入编译选项并回车: 1)Release, 2)Debug"
 set BUILD_TYPE=Release
 set /p flag=
 if %flag% == 1 (set BUILD_TYPE=Release)^
@@ -43,7 +43,8 @@ else (echo 输入错误！Input Error!)
 echo.
 if %BUILD_LIB% == OFF (call :makeExe)^
 else (call :makeLib)
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_LITE_OPENMP=%BUILD_OPENMP% -DOCR_LITE_LIB=%BUILD_LIB% -DOCR_LITE_STATIC=%BUILD_STATIC% ..
+echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% ..
 nmake
 popd
 GOTO:EOF
