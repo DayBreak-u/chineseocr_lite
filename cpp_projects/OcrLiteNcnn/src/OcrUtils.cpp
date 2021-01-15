@@ -40,43 +40,28 @@ ScaleParam getScaleParam(cv::Mat &src, const int targetSize) {
     srcWidth = dstWidth = src.cols;
     srcHeight = dstHeight = src.rows;
 
-    float scale = 1.f;
-    if (dstWidth > dstHeight) {
-        scale = (float) targetSize / (float) dstWidth;
-        dstWidth = targetSize;
-        dstHeight = int((float) dstHeight * scale);
+    float ratio = 1.f;
+    if (srcWidth > srcHeight) {
+        ratio = float(targetSize) / float(srcWidth);
     } else {
-        scale = (float) targetSize / (float) dstHeight;
-        dstHeight = targetSize;
-        dstWidth = int((float) dstWidth * scale);
+        ratio = float(targetSize) / float(srcHeight);
     }
+    dstWidth = int(float(srcWidth) * ratio);
+    dstHeight = int(float(srcHeight) * ratio);
     if (dstWidth % 32 != 0) {
-        dstWidth = (dstWidth / 32 - 1) * 32;
+        dstWidth = (dstWidth / 32) * 32;
         dstWidth = (std::max)(dstWidth, 32);
     }
     if (dstHeight % 32 != 0) {
-        dstHeight = (dstHeight / 32 - 1) * 32;
+        dstHeight = (dstHeight / 32) * 32;
         dstHeight = (std::max)(dstHeight, 32);
     }
-    float scaleWidth = (float) dstWidth / (float) srcWidth;
-    float scaleHeight = (float) dstHeight / (float) srcHeight;
-    return {srcWidth, srcHeight, dstWidth, dstHeight, scaleWidth, scaleHeight};
+    float ratioWidth = (float) dstWidth / (float) srcWidth;
+    float ratioHeight = (float) dstHeight / (float) srcHeight;
+    return {srcWidth, srcHeight, dstWidth, dstHeight, ratioWidth, ratioHeight};
 }
 
-cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float scaleHeight) {
-    cv::RotatedRect rect = cv::minAreaRect(box);
-    int minSize = rect.size.width > rect.size.height ? rect.size.height : rect.size.width;
-    if (rect.size.width > rect.size.height) {
-        rect.size.width = rect.size.width + (float) minSize * scaleWidth;
-        rect.size.height = rect.size.height + (float) minSize * scaleHeight;
-    } else {
-        rect.size.width = rect.size.width + (float) minSize * scaleHeight;
-        rect.size.height = rect.size.height + (float) minSize * scaleWidth;
-    }
-    return rect;
-}
-
-std::vector<cv::Point2f> getBox(cv::RotatedRect &rect) {
+std::vector<cv::Point2f> getBox(const cv::RotatedRect &rect) {
     cv::Point2f vertices[4];
     rect.points(vertices);
     //std::vector<cv::Point2f> ret(4);
@@ -125,7 +110,7 @@ cv::Mat matRotateClockWise90(cv::Mat src) {
     return src;
 }
 
-cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
+cv::Mat getRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
     cv::Mat image;
     src.copyTo(image);
     std::vector<cv::Point> points = box;
@@ -166,8 +151,8 @@ cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
 
     cv::Mat partImg;
     cv::warpPerspective(imgCrop, partImg, M,
-                    cv::Size(imgCropWidth, imgCropHeight),
-                    cv::BORDER_REPLICATE);
+                        cv::Size(imgCropWidth, imgCropHeight),
+                        cv::BORDER_REPLICATE);
 
     if (float(partImg.rows) >= float(partImg.cols) * 1.5) {
         cv::Mat srcCopy = cv::Mat(partImg.rows, partImg.cols, partImg.depth());
@@ -195,13 +180,12 @@ cv::Mat adjustTargetImg(cv::Mat &src, int dstWidth, int dstHeight) {
     return srcFit;
 }
 
-bool cvPointCompare(cv::Point a, cv::Point b) {
+bool cvPointCompare(const cv::Point &a, const cv::Point &b) {
     return a.x < b.x;
 }
 
-int
-getMiniBoxes(std::vector<cv::Point> &inVec, std::vector<cv::Point> &minBoxVec, float &minEdgeSize,
-             float &allEdgeSize) {
+std::vector<cv::Point> getMinBoxes(const std::vector<cv::Point> &inVec, float &minSideLen, float &allEdgeSize) {
+    std::vector<cv::Point> minBoxVec;
     cv::RotatedRect textRect = cv::minAreaRect(inVec);
     cv::Mat boxPoints2f;
     cv::boxPoints(textRect, boxPoints2f);
@@ -209,14 +193,14 @@ getMiniBoxes(std::vector<cv::Point> &inVec, std::vector<cv::Point> &minBoxVec, f
     float *p1 = (float *) boxPoints2f.data;
     std::vector<cv::Point> tmpVec;
     for (int i = 0; i < 4; ++i, p1 += 2) {
-        tmpVec.emplace_back((int) (p1[0]), (int) (p1[1]));
+        tmpVec.emplace_back(int(p1[0]), int(p1[1]));
     }
 
     std::sort(tmpVec.begin(), tmpVec.end(), cvPointCompare);
 
     minBoxVec.clear();
 
-    int index1 = 0, index2 = 0, index3 = 0, index4 = 0;
+    int index1, index2, index3, index4;
     if (tmpVec[1].y > tmpVec[0].y) {
         index1 = 0;
         index4 = 1;
@@ -240,65 +224,65 @@ getMiniBoxes(std::vector<cv::Point> &inVec, std::vector<cv::Point> &minBoxVec, f
     minBoxVec.push_back(tmpVec[index3]);
     minBoxVec.push_back(tmpVec[index4]);
 
-    minEdgeSize = (std::min)(textRect.size.width, textRect.size.height);
+    minSideLen = (std::min)(textRect.size.width, textRect.size.height);
     allEdgeSize = 2.f * (textRect.size.width + textRect.size.height);
 
-    return 1;
+    return minBoxVec;
 }
 
-float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box) {
-    std::vector<cv::Point> box = _box;
-    int wid = mapmat.cols;
-    int hi = mapmat.rows;
-    int xmax = -1, xmin = 1000000, ymax = -1, ymin = 1000000;
+float boxScoreFast(const cv::Mat &inMat, const std::vector<cv::Point> &inBox) {
+    std::vector<cv::Point> box = inBox;
+    int width = inMat.cols;
+    int height = inMat.rows;
+    int maxX = -1, minX = 1000000, maxY = -1, minY = 1000000;
     for (int i = 0; i < box.size(); ++i) {
-        if (xmax < box[i].x)
-            xmax = box[i].x;
-        if (xmin > box[i].x)
-            xmin = box[i].x;
-        if (ymax < box[i].y)
-            ymax = box[i].y;
-        if (ymin > box[i].y)
-            ymin = box[i].y;
+        if (maxX < box[i].x)
+            maxX = box[i].x;
+        if (minX > box[i].x)
+            minX = box[i].x;
+        if (maxY < box[i].y)
+            maxY = box[i].y;
+        if (minY > box[i].y)
+            minY = box[i].y;
     }
-    xmax = (std::min)((std::max)(xmax, 0), wid - 1);
-    xmin = (std::max)((std::min)(xmin, wid - 1), 0);
-    ymax = (std::min)((std::max)(ymax, 0), hi - 1);
-    ymin = (std::max)((std::min)(ymin, hi - 1), 0);
+    maxX = (std::min)((std::max)(maxX, 0), width - 1);
+    minX = (std::max)((std::min)(minX, width - 1), 0);
+    maxY = (std::min)((std::max)(maxY, 0), height - 1);
+    minY = (std::max)((std::min)(minY, height - 1), 0);
 
     for (int i = 0; i < box.size(); ++i) {
-        box[i].x = box[i].x - xmin;
-        box[i].y = box[i].y - ymin;
+        box[i].x = box[i].x - minX;
+        box[i].y = box[i].y - minY;
     }
 
-    std::vector<std::vector<cv::Point>> tmpbox;
-    tmpbox.push_back(box);
-    cv::Mat maskmat(ymax - ymin + 1, xmax - xmin + 1, CV_8UC1, cv::Scalar(0, 0, 0));
-    cv::fillPoly(maskmat, tmpbox, cv::Scalar(1, 1, 1), 1);
+    std::vector<std::vector<cv::Point>> maskBox;
+    maskBox.push_back(box);
+    cv::Mat maskMat(maxY - minY + 1, maxX - minX + 1, CV_8UC1, cv::Scalar(0, 0, 0));
+    cv::fillPoly(maskMat, maskBox, cv::Scalar(1, 1, 1), 1);
 
     // 	cv::Mat normat;
-    // 	cv::normalize(maskmat, normat, 255, 0, cv::NORM_MINMAX);
+    // 	cv::normalize(maskMat, normat, 255, 0, cv::NORM_MINMAX);
     //
     // 	cv::Mat maskbinmat;
     // 	normat.convertTo(maskbinmat, CV_8UC1, 1);
     // 	imwrite("subbin.jpg", maskbinmat);
 
-    //std::cout << mapmat << std::endl;
+    //std::cout << inMat << std::endl;
 
-    return cv::mean(mapmat(cv::Rect(cv::Point(xmin, ymin), cv::Point(xmax + 1, ymax + 1))).clone(),
-                    maskmat).val[0];
-
+    return cv::mean(inMat(cv::Rect(cv::Point(minX, minY), cv::Point(maxX + 1, maxY + 1))).clone(),
+                    maskMat).val[0];
 }
 
 // use clipper
-void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec, float unClipRatio) {
+std::vector<cv::Point> unClip(const std::vector<cv::Point> &inBox, float perimeter, float unClipRatio) {
+    std::vector<cv::Point> outBox;
     ClipperLib::Path poly;
 
-    for (int i = 0; i < minBoxVec.size(); ++i) {
-        poly.push_back(ClipperLib::IntPoint(minBoxVec[i].x, minBoxVec[i].y));
+    for (int i = 0; i < inBox.size(); ++i) {
+        poly.push_back(ClipperLib::IntPoint(inBox[i].x, inBox[i].y));
     }
 
-    double distance = unClipRatio * ClipperLib::Area(poly) / (double) allEdgeSize;
+    double distance = unClipRatio * ClipperLib::Area(poly) / (double) perimeter;
 
     ClipperLib::ClipperOffset clipperOffset;
     clipperOffset.AddPath(poly, ClipperLib::JoinType::jtRound, ClipperLib::EndType::etClosedPolygon);
@@ -306,14 +290,15 @@ void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv
     polys.push_back(poly);
     clipperOffset.Execute(polys, distance);
 
-    outVec.clear();
+    outBox.clear();
     std::vector<cv::Point> rsVec;
     for (int i = 0; i < polys.size(); ++i) {
         ClipperLib::Path tmpPoly = polys[i];
         for (int j = 0; j < tmpPoly.size(); ++j) {
-            outVec.emplace_back(tmpPoly[j].X, tmpPoly[j].Y);
+            outBox.emplace_back(tmpPoly[j].X, tmpPoly[j].Y);
         }
     }
+    return outBox;
 }
 
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles) {

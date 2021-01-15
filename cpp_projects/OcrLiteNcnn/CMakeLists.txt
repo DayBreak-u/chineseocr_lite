@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.1)
 project(OcrLiteNcnn)
 
-option(OCR_LITE_STATIC "Use Static Librarys For Build" ON)
-option(OCR_LITE_LIB "OcrLite Jni Support" OFF)
-option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
-option(OCR_LITE_VULKAN "OcrLite Enable Vulkan" ON)
+option(OCR_LIB "OcrLite Jni Support" OFF)
+option(OCR_STATIC "Use Static Librarys For Build" ON)
+option(OCR_OPENMP "OcrLite Enable OpenMP" ON)
 option(OCR_BENCHMARK "build benchmark" ON)
-
-#set(OCR_LITE_LIB ON)
-#set(OCR_LITE_STATIC OFF)
-#set(OCR_LITE_VULKAN ON)
+option(OCR_VULKAN "OcrLite Enable Vulkan" ON)
+#set(OCR_LIB ON)
+#set(OCR_STATIC OFF)
+#set(OCR_OPENMP OFF)
 set(OCR_BENCHMARK ON)
+#set(OCR_VULKAN ON)
 
 set(CMAKE_CXX_STANDARD 11)
 add_definitions(-DUNICODE -D_UNICODE)
@@ -49,7 +49,7 @@ else ()
 endif ()
 
 # NCNN
-if (OCR_LITE_VULKAN)
+if (OCR_VULKAN)
     include(${CMAKE_CURRENT_SOURCE_DIR}/ncnn-vulkan-static/NcnnWrapperConfig.cmake)
 else ()
     include(${CMAKE_CURRENT_SOURCE_DIR}/ncnn-static/NcnnWrapperConfig.cmake)
@@ -62,7 +62,7 @@ else ()
 endif (ncnn_FOUND)
 
 # OpenCV
-if (OCR_LITE_STATIC)
+if (OCR_STATIC)
     include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-static/OpenCVWrapperConfig.cmake)
 else ()
     include(${CMAKE_CURRENT_SOURCE_DIR}/opencv-shared/OpenCVWrapperConfig.cmake)
@@ -76,7 +76,7 @@ else ()
 endif (OpenCV_FOUND)
 
 # JNI
-if (OCR_LITE_LIB)
+if (OCR_LIB)
     find_package(JNI REQUIRED)
     if (JNI_FOUND)
         message("JNI FOUND")
@@ -96,13 +96,15 @@ file(GLOB OCR_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 set(OCR_COMPILE_CODE ${OCR_SRC})
 
 # static libgcc libstdc++
-if (APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
-else ()
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+if (OCR_STATIC)
+    if (APPLE)
+        set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+    else ()
+        set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
+    endif ()
 endif ()
 
-if (OCR_LITE_LIB)
+if (OCR_LIB)
     add_library(OcrLiteNcnn SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteNcnn PRIVATE __JNI__)
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
@@ -111,16 +113,16 @@ else ()
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
-if (OCR_LITE_OPENMP)
+if (OCR_OPENMP)
     target_compile_definitions(OcrLiteNcnn PRIVATE __OPENMP__)
 endif ()
 
-if (OCR_LITE_VULKAN)
+if (OCR_VULKAN)
     target_compile_definitions(OcrLiteNcnn PRIVATE __VULKAN__)
 endif ()
 
 # benchmark
-if (OCR_BENCHMARK AND NOT OCR_LITE_LIB)
+if (OCR_BENCHMARK AND NOT OCR_LIB)
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp
@@ -130,11 +132,11 @@ if (OCR_BENCHMARK AND NOT OCR_LITE_LIB)
             src/OcrLite.cpp
             src/OcrUtils.cpp)
     target_link_libraries(benchmark ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
-    if (OCR_LITE_OPENMP)
+    if (OCR_OPENMP)
         target_compile_definitions(benchmark PRIVATE __OPENMP__)
     endif ()
 
-    if (OCR_LITE_VULKAN)
+    if (OCR_VULKAN)
         target_compile_definitions(benchmark PRIVATE __VULKAN__)
     endif ()
 endif ()
