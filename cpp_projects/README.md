@@ -6,7 +6,7 @@
 3. 使用chineseocr-lite的onnx分支的模型，ncnn框架使用专用的模型格式，由同一个模型从onnx格式转为ncnn专用格式。
 4. 20210102更新：除了对比CPU计算的结果，因ncnn支持vulkan跨平台GPU加速，故加入ncnn GPU加速测试结果。
 5. 对比测试的项目：推理速度
-6. 对比用的demo下载(v1.4.0)：[onnx版](https://gitee.com/benjaminwan/ocr-lite-onnx/releases)，[ncnn版](https://gitee.com/benjaminwan/ocr-lite-ncnn/releases)
+6. 对比用的demo下载：[onnx版](https://gitee.com/benjaminwan/ocr-lite-onnx/releases)，[ncnn版](https://gitee.com/benjaminwan/ocr-lite-ncnn/releases)
 
 #### 推理速度对比
 1. 在同一台真机上的mac和win双系统中分别测试。
@@ -48,5 +48,5 @@
 对于老平台的支持问题(主要指windows平台)：
 * opencv通过自行编译，最老可以支持xp。
 * ncnn(cpu)通过自行编译，最老也能支持xp。
-* onnxruntime只能支持windows10。
+* onnxruntime只能支持windows7~10。
 * 所以想上老windows平台，则只能选择ncnn版。
