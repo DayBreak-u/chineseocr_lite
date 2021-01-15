@@ -24,63 +24,57 @@ void CrnnNet::setNumThread(int numOfThread) {
     numThread = numOfThread;
 }
 
-bool CrnnNet::initModel(std::string &pathStr) {
-    int ret_param = net.load_param((pathStr + "/crnn_lite_op.param").c_str());
-    int ret_bin = net.load_model((pathStr + "/crnn_lite_op.bin").c_str());
+bool CrnnNet::initModel(const std::string &pathStr, const std::string &keysPath) {
+    int ret_param = net.load_param((pathStr + ".param").c_str());
+    int ret_bin = net.load_model((pathStr + ".bin").c_str());
     if (ret_param != 0 || ret_bin != 0) {
         printf("CrnnNet load param(%d), model(%d)\n", ret_param, ret_bin);
         return false;
     }
     //load keys
-    std::ifstream in((pathStr + "/keys.txt").c_str());
+    std::ifstream in(keysPath.c_str());
     std::string line;
-    int keysSize = 0;
     if (in) {
         while (getline(in, line)) {// line中不包括每行的换行符
             keys.push_back(line);
         }
-        keysSize = keys.size();
     } else {
         printf("The keys.txt file was not found\n");
         return false;
     }
-
-    printf("keys size(%d)\n", keysSize);
-    if (keysSize != 5531) return false;
-
+    if (keys.size() != 5531) {
+        fprintf(stderr, "missing keys\n");
+		return false;
+    }
+    printf("total keys size(%lu)\n", keys.size());
     return true;
 }
 
-TextLine CrnnNet::scoreToTextLine(const float *srcData, int h, int w) {
-    std::string strRes;
-    int lastIndex = 0;
+template<class ForwardIterator>
+inline static size_t argmax(ForwardIterator first, ForwardIterator last) {
+    return std::distance(first, std::max_element(first, last));
+}
+
+TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, int h, int w) {
     int keySize = keys.size();
+    std::string strRes;
     std::vector<float> scores;
+    int lastIndex = 0;
+    int maxIndex;
+    float maxValue;
+
     for (int i = 0; i < h; i++) {
-        int maxIndex = 0;
-        float maxValue = -1000.f;
+        maxIndex = 0;
+        maxValue = -1000.f;
         //do softmax
         std::vector<float> exps(w);
         for (int j = 0; j < w; j++) {
-            float expSingle = exp(srcData[i * w + j]);
+            float expSingle = exp(outputData[i * w + j]);
             exps.at(j) = expSingle;
         }
         float partition = accumulate(exps.begin(), exps.end(), 0.0);//row sum
-        for (int j = 0; j < w; j++) {
-            float softmax = exps[j] / partition;
-            if (softmax > maxValue) {
-                maxValue = softmax;
-                maxIndex = j;
-            }
-        }
-
-        //no softmax
-        /*for (int j = 0; j < w; j++) {
-            if (srcData[i * w + j] > maxValue) {
-                maxValue = srcData[i * w + j];
-                maxIndex = j;
-            }
-        }*/
+        maxIndex = int(argmax(&exps[0], &exps[w]));
+        maxValue = float(*std::max_element(&exps[0], &exps[w])) / partition;
         if (maxIndex > 0 && maxIndex < keySize && (!(i > 0 && maxIndex == lastIndex))) {
             scores.emplace_back(maxValue);
             strRes.append(keys[maxIndex - 1]);
@@ -90,7 +84,7 @@ TextLine CrnnNet::scoreToTextLine(const float *srcData, int h, int w) {
     return {strRes, scores};
 }
 
-TextLine CrnnNet::getTextLine(cv::Mat &src) {
+TextLine CrnnNet::getTextLine(const cv::Mat &src) {
     float scale = (float) dstHeight / (float) src.rows;
     int dstWidth = int((float) src.cols * scale);
 
@@ -124,8 +118,9 @@ TextLine CrnnNet::getTextLine(cv::Mat &src) {
 
         memcpy(blob263.row(i), blob263_i, 5531 * sizeof(float));
     }
-
-    return scoreToTextLine((float *) blob263.data, blob263.h, blob263.w);
+	float *floatArray = (float *) blob263.data;
+	std::vector<float> outputData(floatArray, floatArray + blob263.h * blob263.w);
+    return scoreToTextLine(outputData, blob263.h, blob263.w);
 }
 
 std::vector<TextLine> CrnnNet::getTextLines(std::vector<cv::Mat> &partImg, const char *path, const char *imgName) {
@@ -146,21 +141,7 @@ std::vector<TextLine> CrnnNet::getTextLines(std::vector<cv::Mat> &partImg, const
         TextLine textLine = getTextLine(partImg[i]);
         double endCrnnTime = getCurrentTime();
         textLine.time = endCrnnTime - startCrnnTime;
-
-        //Log textLine
-        //Logger("textLine[%d](%s)", i, textLine.text.c_str());
         textLines[i] = textLine;
-
-        /*std::ostringstream txtScores;
-        for (int s = 0; s < textLine.charScores.size(); ++s) {
-            if (s == 0) {
-                txtScores << textLine.charScores[s];
-            } else {
-                txtScores << " ," << textLine.charScores[s];
-            }
-        }*/
-        //Logger("textScores[%d]{%s}\n", i, string(txtScores.str()).c_str());
-        //Logger("crnnTime[%d](%fms)\n", i, textLine.time);
     }
     return textLines;
 }

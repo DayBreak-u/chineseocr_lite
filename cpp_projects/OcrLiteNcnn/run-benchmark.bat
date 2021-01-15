@@ -8,10 +8,29 @@ set OMP_NUM_THREADS=%NUMBER_OF_PROCESSORS%
 echo "请输入循环次数:"
 set /p LOOP_COUNT=
 
-:: run Win
-pushd build
-benchmark.exe --models ../models --image ../../test_imgs/1.jpg ^
-                --numThread %NUMBER_OF_PROCESSORS% --loopCount %LOOP_COUNT% -G 0
-popd
+SET TARGET_IMG=../../images/1.jpg
+if not exist %TARGET_IMG% (
+echo "找不到待识别的目标图片：%TARGET_IMG%，请打开本文件并编辑TARGET_IMG"
+PAUSE
+exit
+)
+
+:: run Windows
+build\benchmark.exe --version
+build\benchmark.exe --models models ^
+--det dbnet_op ^
+--cls angle_op ^
+--rec crnn_lite_op ^
+--keys keys.txt ^
+--image %TARGET_IMG% ^
+--numThread %NUMBER_OF_PROCESSORS% ^
+--padding 50 ^
+--maxSideLen 1024 ^
+--boxScoreThresh 0.6 ^
+--boxThresh 0.3 ^
+--unClipRatio 2.0 ^
+--doAngle 1 ^
+--mostAngle 1 ^
+--loopCount %LOOP_COUNT% -G 0
 PAUSE
 @ENDLOCAL

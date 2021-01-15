@@ -18,8 +18,26 @@ set OMP_NUM_THREADS=$NUM_THREADS
 echo "请输入循环次数:"
 read -p "" LOOP_COUNT
 
+TARGET_IMG=../images/1.jpg
+if [ ! -f "$TARGET_IMG" ]; then
+echo "找不到待识别的目标图片：${TARGET_IMG}，请打开本文件并编辑TARGET_IMG"
+exit
+fi
+
 ##### run test on MacOS or Linux
-pushd build
-./benchmark --models ../models --image ../../test_imgs/1.jpg \
---numThread $NUM_THREADS --loopCount $LOOP_COUNT -G 0
-popd
+./build/benchmark --version
+./build/benchmark --models models \
+--det dbnet_op \
+--cls angle_op \
+--rec crnn_lite_op \
+--keys keys.txt \
+--image $TARGET_IMG \
+--numThread $NUM_THREADS \
+--padding 50 \
+--maxSideLen 1024 \
+--boxScoreThresh 0.6 \
+--boxThresh 0.3 \
+--unClipRatio 2.0 \
+--doAngle 1 \
+--mostAngle 1 \
+--loopCount $LOOP_COUNT -G 0

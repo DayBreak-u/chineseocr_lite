@@ -23,9 +23,9 @@ void AngleNet::setNumThread(int numOfThread) {
     numThread = numOfThread;
 }
 
-bool AngleNet::initModel(std::string &pathStr) {
-    int ret_param = net.load_param((pathStr + "/angle_op.param").c_str());
-    int ret_bin = net.load_model((pathStr + "/angle_op.bin").c_str());
+bool AngleNet::initModel(const std::string &pathStr) {
+    int ret_param = net.load_param((pathStr + ".param").c_str());
+    int ret_bin = net.load_model((pathStr + ".bin").c_str());
     if (ret_param != 0 || ret_bin != 0) {
         printf("AngleNet load param(%d), model(%d)\n", ret_param, ret_bin);
         return false;
@@ -34,17 +34,17 @@ bool AngleNet::initModel(std::string &pathStr) {
     }
 }
 
-Angle scoreToAngle(const float *srcData, int w) {
-    int angleIndex = 0;
-    float maxValue = -1000.0f;
-    for (int i = 0; i < w; i++) {
-        if (i == 0)maxValue = srcData[i];
-        else if (srcData[i] > maxValue) {
-            angleIndex = i;
-            maxValue = srcData[i];
+Angle scoreToAngle(const std::vector<float> &outputData) {
+    int maxIndex = 0;
+    float maxScore = -1000.0f;
+    for (int i = 0; i < outputData.size(); i++) {
+        if (i == 0)maxScore = outputData[i];
+        else if (outputData[i] > maxScore) {
+            maxScore = outputData[i];
+            maxIndex = i;
         }
     }
-    return {angleIndex, maxValue};
+    return {maxIndex, maxScore};
 }
 
 Angle AngleNet::getAngle(cv::Mat &src) {
@@ -57,7 +57,9 @@ Angle AngleNet::getAngle(cv::Mat &src) {
     extractor.input("input", input);
     ncnn::Mat out;
     extractor.extract("out", out);
-    return scoreToAngle((float *) out.data, out.w);
+    float *floatArray = (float *) out.data;
+    std::vector<float> outputData(floatArray, floatArray + out.w);
+    return scoreToAngle(outputData);
 }
 
 std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs, const char *path,

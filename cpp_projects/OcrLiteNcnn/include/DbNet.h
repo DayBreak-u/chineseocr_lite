@@ -13,10 +13,10 @@ public:
 
     void setGpuIndex(int gpuIndex);
 
-    bool initModel(std::string &pathStr);
+    bool initModel(const std::string &pathStr);
 
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh,
-                                      float boxThresh, float minArea, float unClipRatio);
+                                      float boxThresh, float unClipRatio);
 
 private:
     int numThread;

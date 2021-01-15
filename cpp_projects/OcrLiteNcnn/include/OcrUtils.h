@@ -4,6 +4,7 @@
 #include <opencv2/core.hpp>
 #include "OcrStruct.h"
 
+#include <sys/stat.h>
 /*#define __ENABLE_CONSOLE__ true
 #define Logger(format, ...) {\
   if(__ENABLE_CONSOLE__) printf(format,##__VA_ARGS__); \
@@ -11,15 +12,18 @@
 
 double getCurrentTime();
 
+inline bool isFileExists(const std::string &name) {
+    struct stat buffer;
+    return (stat(name.c_str(), &buffer) == 0);
+}
+
 std::wstring strToWstr(std::string str);
 
 ScaleParam getScaleParam(cv::Mat &src, const float scale);
 
 ScaleParam getScaleParam(cv::Mat &src, const int targetSize);
 
-cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float scaleHeight);
-
-std::vector<cv::Point2f> getBox(cv::RotatedRect &rect);
+std::vector<cv::Point2f> getBox(const cv::RotatedRect &rect);
 
 int getThickness(cv::Mat &boxImg);
 
@@ -33,18 +37,15 @@ cv::Mat matRotateClockWise180(cv::Mat src);
 
 cv::Mat matRotateClockWise90(cv::Mat src);
 
-cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box);
+cv::Mat getRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box);
 
 cv::Mat adjustTargetImg(cv::Mat &src, int dstWidth, int dstHeight);
 
-int getMiniBoxes(std::vector<cv::Point> &inVec,
-                 std::vector<cv::Point> &minBoxVec,
-                 float &minEdgeSize, float &allEdgeSize
-);
+std::vector<cv::Point> getMinBoxes(const std::vector<cv::Point> &inVec, float &minSideLen, float &allEdgeSize);
 
-float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box);
+float boxScoreFast(const cv::Mat &inMat, const std::vector<cv::Point> &inBox);
 
-void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec, float unClipRatio);
+std::vector<cv::Point> unClip(const std::vector<cv::Point> &inBox, float perimeter, float unClipRatio);
 
 std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
 

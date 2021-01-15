@@ -14,7 +14,7 @@ public:
 
     void setGpuIndex(int gpuIndex);
 
-    bool initModel(std::string &pathStr);
+    bool initModel(const std::string &pathStr);
 
     std::vector<Angle> getAngles(std::vector<cv::Mat> &partImgs, const char *path,
                                  const char *imgName, bool doAngle, bool mostAngle);
