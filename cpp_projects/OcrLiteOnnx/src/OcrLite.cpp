@@ -29,18 +29,17 @@ void OcrLite::enableResultTxt(const char *path, const char *imgName) {
     resultTxt = fopen(resultTxtPath.c_str(), "w");
 }
 
-void OcrLite::initModels(const char *path) {
+void OcrLite::initModels(const std::string &detPath, const std::string &clsPath,
+                         const std::string &recPath, const std::string &keysPath) {
     Logger("=====Init Models=====\n");
-    std::string pathStr = path;
-
     Logger("--- Init DbNet ---\n");
-    dbNet.initModel(pathStr);
+    dbNet.initModel(detPath);
 
     Logger("--- Init AngleNet ---\n");
-    angleNet.initModel(pathStr);
+    angleNet.initModel(clsPath);
 
     Logger("--- Init CrnnNet ---\n");
-    crnnNet.initModel(pathStr);
+    crnnNet.initModel(recPath, keysPath);
 
     Logger("Init Models Success!\n");
 }
@@ -66,28 +65,27 @@ cv::Mat makePadding(cv::Mat &src, const int padding) {
 }
 
 OcrResult OcrLite::detect(const char *path, const char *imgName,
-                          const int padding, const int imgResize,
-                          float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool doAngle, bool mostAngle) {
+                          const int padding, const int maxSideLen,
+                          float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle) {
     std::string imgFile = getSrcImgFilePath(path, imgName);
 
     cv::Mat bgrSrc = imread(imgFile, cv::IMREAD_COLOR);//default : BGR
     cv::Mat originSrc;
     cvtColor(bgrSrc, originSrc, cv::COLOR_BGR2RGB);// convert to RGB
-    cv::Rect originRect(padding, padding, originSrc.cols, originSrc.rows);
-    cv::Mat src = makePadding(originSrc, padding);
-
+    int originMaxSide = (std::max)(originSrc.cols, originSrc.rows);
     int resize;
-    if (imgResize <= 0) {
-        resize = (std::max)(src.cols, src.rows);
+    if (maxSideLen <= 0 || maxSideLen > originMaxSide) {
+        resize = originMaxSide;
     } else {
-        resize = imgResize;
+        resize = maxSideLen;
     }
-
-    ScaleParam scale = getScaleParam(src, resize);
+    resize += 2*padding;
+    cv::Rect paddingRect(padding, padding, originSrc.cols, originSrc.rows);
+    cv::Mat paddingSrc = makePadding(originSrc, padding);
+    ScaleParam scale = getScaleParam(paddingSrc, resize);
     OcrResult result;
-    result = detect(path, imgName, src, originRect, scale,
-                    boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
+    result = detect(path, imgName, paddingSrc, paddingRect, scale,
+                    boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
     return result;
 }
 
@@ -95,7 +93,7 @@ std::vector<cv::Mat> OcrLite::getPartImages(cv::Mat &src, std::vector<TextBox> &
                                             const char *path, const char *imgName) {
     std::vector<cv::Mat> partImages;
     for (int i = 0; i < textBoxes.size(); ++i) {
-        cv::Mat partImg = GetRotateCropImage(src, textBoxes[i].boxPoint);
+        cv::Mat partImg = getRotateCropImage(src, textBoxes[i].boxPoint);
         partImages.emplace_back(partImg);
         //OutPut DebugImg
         if (isOutputPartImg) {
@@ -108,8 +106,7 @@ std::vector<cv::Mat> OcrLite::getPartImages(cv::Mat &src, std::vector<TextBox> &
 
 OcrResult OcrLite::detect(const char *path, const char *imgName,
                           cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
-                          float boxScoreThresh, float boxThresh, float minArea,
-                          float unClipRatio, bool doAngle, bool mostAngle) {
+                          float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle) {
 
     cv::Mat textBoxPaddingImg = src.clone();
     int thickness = getThickness(src);
@@ -117,12 +114,11 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
     Logger("=====Start detect=====\n");
     Logger("ScaleParam(sw:%d,sh:%d,dw:%d,dh:%d,%f,%f)\n", scale.srcWidth, scale.srcHeight,
            scale.dstWidth, scale.dstHeight,
-           scale.scaleWidth, scale.scaleHeight);
+           scale.ratioWidth, scale.ratioHeight);
 
     Logger("---------- step: dbNet getTextBoxes ----------\n");
     double startTime = getCurrentTime();
-    std::vector<TextBox> textBoxes = dbNet.getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea, unClipRatio);
-    Logger("TextBoxesSize(%ld)\n", textBoxes.size());
+    std::vector<TextBox> textBoxes = dbNet.getTextBoxes(src, scale, boxScoreThresh, boxThresh, unClipRatio);
     double endDbNetTime = getCurrentTime();
     double dbNetTime = endDbNetTime - startTime;
     Logger("dbNetTime(%fms)\n", dbNetTime);
