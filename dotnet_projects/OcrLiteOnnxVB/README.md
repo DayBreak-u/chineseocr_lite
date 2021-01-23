@@ -27,7 +27,7 @@
 7. 生成解决方案
 8. 把models文件夹复制到```\OcrLiteOnnxVB\OcrLiteOnnxForm\bin\Debug(或Release)```
 * [模型下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/models)
-* [keys.txt下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx/models)
+* [keys.txt下载地址](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/cpp_projects/OcrLiteOnnx/models)
 ```
 Debug\models
 ├── angle_net.onnx
@@ -40,4 +40,4 @@ Debug\models
 ##### 其它
 * 修改线程数，必须“重新初始化”才能生效
 * “models”按钮修改模型路径，必须“重新初始化”才能生效
-* 输入参数说明请参考[OcrLiteOnnx项目](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects/OcrLiteOnnx)
+* 输入参数说明请参考[OcrLiteOnnx项目](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/cpp_projects/OcrLiteOnnx)

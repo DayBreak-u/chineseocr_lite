@@ -181,7 +181,7 @@
                     android:textSize="18sp" />
 
                 <ImageButton
-                    android:id="@+id/cleaNationBtn"
+                    android:id="@+id/clearNationBtn"
                     android:layout_width="38dp"
                     android:layout_height="38dp"
                     android:layout_marginEnd="2dp"

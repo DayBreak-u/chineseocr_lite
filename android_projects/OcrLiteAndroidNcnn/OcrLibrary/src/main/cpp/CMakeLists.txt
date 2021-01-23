@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.4.1)
 option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
 option(OCR_LITE_VULKAN "OcrLite Enable Vulkan" ON)
 set(OCR_LITE_OPENMP ON)
-set(OCR_LITE_VULKAN ON)
+set(OCR_LITE_VULKAN OFF)
 set(ncnn_DIR "${CMAKE_SOURCE_DIR}/../ncnn-static/${ANDROID_ABI}/lib/cmake/ncnn")
 find_package(ncnn REQUIRED)
 

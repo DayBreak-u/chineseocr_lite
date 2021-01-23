@@ -13,5 +13,5 @@
 * 带vulkan支持的ncnn版本，需要先安装Vulkan SDK，Windows和LInux还需要安装显卡驱动，且显卡驱动要有vulkan支持。
 * Intel核芯显卡，AMD显卡，NVIDIA显卡大部分都支持Vulkan。
 * 关于GPU加速，Intel核芯显卡和AMD低端显卡都能获得非常不错的加速效果，Intel核芯显卡dbNet提速约一倍以上，AMD低端显卡(RX560D￥2xx)dbNet提速5~10倍左右，因测试设备的限制，没有条件测试NVIDIA显卡。
-* 详细的测试结果：https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/pc_projects
+* [详细的测试结果](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/cpp_projects)
 

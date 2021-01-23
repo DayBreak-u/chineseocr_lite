@@ -19,7 +19,14 @@ namespace OcrLiteLib
         private const int angleCols = 2;
         private InferenceSession angleNet;
 
-        public AngleNet(string path, int numThread)
+        public AngleNet() { }
+
+        ~AngleNet()
+        {
+            angleNet.Dispose();
+        }
+
+        public void InitModel(string path, int numThread)
         {
             try
             {
@@ -34,11 +41,6 @@ namespace OcrLiteLib
                 Console.WriteLine(ex.Message + ex.StackTrace);
                 throw ex;
             }
-        }
-
-        ~AngleNet()
-        {
-            angleNet.Dispose();
         }
 
         public List<Angle> GetAngles(List<Mat> partImgs, bool doAngle, bool mostAngle)
