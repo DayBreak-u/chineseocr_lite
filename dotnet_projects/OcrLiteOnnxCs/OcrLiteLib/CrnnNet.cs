@@ -20,7 +20,14 @@ namespace OcrLiteLib
         private InferenceSession crnnNet;
         private List<string> keys;
 
-        public CrnnNet(string path, string keysPath, int numThread)
+        public CrnnNet() { }
+
+        ~CrnnNet()
+        {
+            crnnNet.Dispose();
+        }
+
+        public void InitModel(string path, string keysPath, int numThread)
         {
             try
             {
@@ -37,12 +44,6 @@ namespace OcrLiteLib
                 throw ex;
             }
         }
-
-        ~CrnnNet()
-        {
-            crnnNet.Dispose();
-        }
-
         private List<string> InitKeys(string path)
         {
             StreamReader sr = new StreamReader(path, Encoding.UTF8);
