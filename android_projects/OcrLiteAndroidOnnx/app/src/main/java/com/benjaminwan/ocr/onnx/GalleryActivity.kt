@@ -43,13 +43,11 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
         updatePadding(App.ocrEngine.padding)
         updateBoxScoreThresh((App.ocrEngine.boxScoreThresh * 100).toInt())
         updateBoxThresh((App.ocrEngine.boxThresh * 100).toInt())
-        updateMinArea(App.ocrEngine.miniArea.toInt())
         updateUnClipRatio((App.ocrEngine.unClipRatio * 10).toInt())
         paddingSeekBar.setOnSeekBarChangeListener(this)
         boxScoreThreshSeekBar.setOnSeekBarChangeListener(this)
         boxThreshSeekBar.setOnSeekBarChangeListener(this)
-        minAreaSeekBar.setOnSeekBarChangeListener(this)
-        scaleSeekBar.setOnSeekBarChangeListener(this)
+        maxSideLenSeekBar.setOnSeekBarChangeListener(this)
         scaleUnClipRatioSeekBar.setOnSeekBarChangeListener(this)
         doAngleSw.setOnCheckedChangeListener { _, isChecked ->
             App.ocrEngine.doAngle = isChecked
@@ -73,10 +71,10 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
             }
             R.id.detectBtn -> {
                 val img = selectedImg ?: return
-                val scale = scaleSeekBar.progress.toFloat() / 100.toFloat()
+                val ratio = maxSideLenSeekBar.progress.toFloat() / 100.toFloat()
                 val maxSize = max(img.width, img.height)
-                val reSize = (scale * maxSize).toInt()
-                detect(img, reSize)
+                val maxSideLen = (ratio * maxSize).toInt()
+                detect(img, maxSideLen)
             }
             R.id.resultBtn -> {
                 val result = ocrResult ?: return
@@ -110,8 +108,8 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         seekBar ?: return
         when (seekBar.id) {
-            R.id.scaleSeekBar -> {
-                updateScale(progress)
+            R.id.maxSideLenSeekBar -> {
+                updateMaxSideLen(progress)
             }
             R.id.paddingSeekBar -> {
                 updatePadding(progress)
@@ -121,9 +119,6 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
             }
             R.id.boxThreshSeekBar -> {
                 updateBoxThresh(progress)
-            }
-            R.id.minAreaSeekBar -> {
-                updateMinArea(progress)
             }
             R.id.scaleUnClipRatioSeekBar -> {
                 updateUnClipRatio(progress)
@@ -139,15 +134,15 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
     }
 
-    private fun updateScale(progress: Int) {
-        val scale = progress.toFloat() / 100.toFloat()
+    private fun updateMaxSideLen(progress: Int) {
+        val ratio = progress.toFloat() / 100.toFloat()
         if (selectedImg != null) {
             val img = selectedImg ?: return
             val maxSize = max(img.width, img.height)
-            val reSize = (scale * maxSize).toInt()
-            scaleTv.text = "Size:$reSize(${scale * 100}%)"
+            val maxSizeLen = (ratio * maxSize).toInt()
+            maxSideLenTv.text = "MaxSideLen:$maxSizeLen(${ratio * 100}%)"
         } else {
-            scaleTv.text = "Size:0(${scale * 100}%)"
+            maxSideLenTv.text = "MaxSideLen:0(${ratio * 100}%)"
         }
     }
 
@@ -168,11 +163,6 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
         App.ocrEngine.boxThresh = thresh
     }
 
-    private fun updateMinArea(progress: Int) {
-        minAreaTv.text = "${getString(R.string.min_area)}:$progress"
-        App.ocrEngine.miniArea = progress.toFloat()
-    }
-
     private fun updateUnClipRatio(progress: Int) {
         val scale = progress.toFloat() / 10.toFloat()
         unClipRatioTv.text = "${getString(R.string.box_un_clip_ratio)}:$scale"
@@ -188,7 +178,7 @@ class GalleryActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSee
                 RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
             Glide.with(this).load(imgUri).apply(options).into(imageView)
             selectedImg = decodeUri(imgUri)
-            updateScale(scaleSeekBar.progress)
+            updateMaxSideLen(maxSideLenSeekBar.progress)
             clearLastResult()
         }
     }

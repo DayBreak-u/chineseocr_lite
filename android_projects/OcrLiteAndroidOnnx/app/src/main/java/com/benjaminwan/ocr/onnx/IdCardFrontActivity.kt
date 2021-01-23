@@ -137,7 +137,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
         stopBtn.setOnClickListener(this)
         clearNameBtn.setOnClickListener(this)
         clearGenderBtn.setOnClickListener(this)
-        clearNameBtn.setOnClickListener(this)
+        clearNationBtn.setOnClickListener(this)
         clearBirthBtn.setOnClickListener(this)
         clearAddressBtn.setOnClickListener(this)
         clearNumberBtn.setOnClickListener(this)
@@ -158,7 +158,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
             R.id.clearGenderBtn -> {
                 genderEdit.setText("")
             }
-            R.id.clearNameBtn -> {
+            R.id.clearNationBtn -> {
                 nationEdit.setText("")
             }
             R.id.clearBirthBtn -> {
@@ -192,7 +192,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
         numberEdit.isEnabled = !isStart
         clearNameBtn.isEnabled = !isStart
         clearGenderBtn.isEnabled = !isStart
-        clearNameBtn.isEnabled = !isStart
+        clearNationBtn.isEnabled = !isStart
         clearBirthBtn.isEnabled = !isStart
         clearAddressBtn.isEnabled = !isStart
         clearNumberBtn.isEnabled = !isStart
