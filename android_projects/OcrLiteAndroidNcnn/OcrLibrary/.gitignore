@@ -1,6 +1,7 @@
 /build
 /.cxx
 /src/main/ncnn-static
+/src/main/ncnn-static-gpu
 /src/main/assets/*.bin
 /src/main/assets/*.param
 /src/sdk

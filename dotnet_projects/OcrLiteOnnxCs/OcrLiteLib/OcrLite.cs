@@ -16,17 +16,20 @@ namespace OcrLiteLib
         private AngleNet angleNet;
         private CrnnNet crnnNet;
 
-        public OcrLite(string models, int numThread)
+        public OcrLite()
         {
-            dbNetPath = models + "\\dbnet.onnx";
-            angleNetPath = models + "\\angle_net.onnx";
-            crnnNetPath = models + "\\crnn_lite_lstm.onnx";
-            keysPath = models + "\\keys.txt";
+            dbNet = new DbNet();
+            angleNet = new AngleNet();
+            crnnNet = new CrnnNet();
+        }
+
+        public void InitModels(string detPath,string clsPath,string recPath,string keysPath,int numThread)
+        {
             try
             {
-                dbNet = new DbNet(dbNetPath, numThread);
-                angleNet = new AngleNet(angleNetPath, numThread);
-                crnnNet = new CrnnNet(crnnNetPath, keysPath, numThread);
+                dbNet.InitModel(detPath,numThread);
+                angleNet.InitModel(clsPath, numThread);
+                crnnNet.InitModel(recPath, keysPath, numThread);
             }
             catch (Exception ex)
             {
@@ -35,7 +38,7 @@ namespace OcrLiteLib
             }
         }
 
-        public OcrResult Detect(string img, int padding, int imgResize, float boxScoreThresh, float boxThresh, float minArea,
+        public OcrResult Detect(string img, int padding, int imgResize, float boxScoreThresh, float boxThresh, 
                               float unClipRatio, bool doAngle, bool mostAngle)
         {
             Mat brgSrc = CvInvoke.Imread(img, ImreadModes.Color);//default : BGR
@@ -55,10 +58,10 @@ namespace OcrLiteLib
             }
             ScaleParam scale = ScaleParam.GetScaleParam(paddingSrc, resize);
 
-            return DetectOnce(paddingSrc, originRect, scale, boxScoreThresh, boxThresh, minArea, unClipRatio, doAngle, mostAngle);
+            return DetectOnce(paddingSrc, originRect, scale, boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
         }
 
-        private OcrResult DetectOnce(Mat src, Rectangle originRect, ScaleParam scale, float boxScoreThresh, float boxThresh, float minArea,
+        private OcrResult DetectOnce(Mat src, Rectangle originRect, ScaleParam scale, float boxScoreThresh, float boxThresh,
                               float unClipRatio, bool doAngle, bool mostAngle)
         {
             Mat textBoxPaddingImg = src.Clone();
@@ -67,7 +70,7 @@ namespace OcrLiteLib
             var startTicks = DateTime.Now.Ticks;
 
             Console.WriteLine("---------- step: dbNet getTextBoxes ----------");
-            var textBoxes = dbNet.GetTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea, unClipRatio);
+            var textBoxes = dbNet.GetTextBoxes(src, scale, boxScoreThresh, boxThresh, unClipRatio);
             var dbNetTime = (DateTime.Now.Ticks - startTicks) / 10000F;
 
             Console.WriteLine($"TextBoxesSize({textBoxes.Count})");

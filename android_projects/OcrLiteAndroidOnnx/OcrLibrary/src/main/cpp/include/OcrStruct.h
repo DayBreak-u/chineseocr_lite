@@ -9,8 +9,8 @@ struct ScaleParam {
     int srcHeight;
     int dstWidth;
     int dstHeight;
-    float scaleWidth;
-    float scaleHeight;
+    float ratioWidth;
+    float ratioHeight;
 };
 
 struct TextBox {
