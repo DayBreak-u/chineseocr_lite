@@ -21,7 +21,7 @@ public:
     //void Logger(const char *format, ...);
 
     OcrResult detect(cv::Mat &src, cv::Rect &originRect, ScaleParam &scale,
-                     float boxScoreThresh, float boxThresh, float minArea,
+                     float boxScoreThresh, float boxThresh,
                      float unClipRatio, bool doAngle, bool mostAngle);
 
 private:

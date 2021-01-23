@@ -18,7 +18,7 @@ public:
     bool initModel(AAssetManager *mgr);
 
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh,
-                                      float boxThresh, float minArea, float unClipRatio);
+                                      float boxThresh, float unClipRatio);
 
 private:
     Ort::Session *session;
