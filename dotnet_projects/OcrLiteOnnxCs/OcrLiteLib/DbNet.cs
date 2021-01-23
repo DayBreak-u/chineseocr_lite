@@ -19,7 +19,14 @@ namespace OcrLiteLib
 
         private InferenceSession dbNet;
 
-        public DbNet(string path, int numThread)
+        public DbNet() { }
+
+        ~DbNet()
+        {
+            dbNet.Dispose();
+        }
+
+        public void InitModel(string path, int numThread)
         {
             try
             {
@@ -36,12 +43,7 @@ namespace OcrLiteLib
             }
         }
 
-        ~DbNet()
-        {
-            dbNet.Dispose();
-        }
-
-        public List<TextBox> GetTextBoxes(Mat src, ScaleParam scale, float boxScoreThresh, float boxThresh, float minArea, float unClipRatio)
+        public List<TextBox> GetTextBoxes(Mat src, ScaleParam scale, float boxScoreThresh, float boxThresh, float unClipRatio)
         {
             Mat srcResize = new Mat();
             CvInvoke.Resize(src, srcResize, new Size(scale.DstWidth, scale.DstHeight));
@@ -56,7 +58,7 @@ namespace OcrLiteLib
                 {
                     var resultsArray = results.ToArray();
                     Console.WriteLine(resultsArray);
-                    var textBoxes = GetTextBoxes(resultsArray, srcResize.Rows, srcResize.Cols, scale, boxScoreThresh, boxThresh, minArea, unClipRatio);
+                    var textBoxes = GetTextBoxes(resultsArray, srcResize.Rows, srcResize.Cols, scale, boxScoreThresh, boxThresh, unClipRatio);
                     return textBoxes;
                 }
             }
@@ -67,8 +69,9 @@ namespace OcrLiteLib
             return null;
         }
 
-        private static List<TextBox> GetTextBoxes(DisposableNamedOnnxValue[] outputTensor, int rows, int cols, ScaleParam s, float boxScoreThresh, float boxThresh, float minArea, float unClipRatio)
+        private static List<TextBox> GetTextBoxes(DisposableNamedOnnxValue[] outputTensor, int rows, int cols, ScaleParam s, float boxScoreThresh, float boxThresh, float unClipRatio)
         {
+            float minArea = 3.0f;
             List<TextBox> rsBoxes = new List<TextBox>();
 
             float[] outputData = outputTensor[0].AsEnumerable<float>().ToArray();
