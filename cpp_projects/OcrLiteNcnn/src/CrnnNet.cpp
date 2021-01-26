@@ -101,7 +101,6 @@ TextLine CrnnNet::getTextLine(const cv::Mat &src) {
     extractor.set_num_threads(numThread);
     extractor.input("input", input);
 
-    // lstm
     ncnn::Mat out;
     extractor.extract("out", out);
 
