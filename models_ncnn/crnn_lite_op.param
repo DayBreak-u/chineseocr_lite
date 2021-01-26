@@ -1,5 +1,5 @@
 7767517
-206 249
+205 248
 Input                    input                    0 1 input
 Convolution              423                      1 1 input 425 0=8 1=3 3=2 4=1 5=1 6=216 9=1
 Split                    splitncnn_0              1 2 425 425_splitncnn_0 425_splitncnn_1
@@ -203,6 +203,5 @@ Reshape          948                      1 1 943 948 0=96 1=-1
 LSTM             994                      1 1 948 994 0=48 1=36864 2=2
 Reshape          999                      1 1 994 999 0=96 1=-1
 Concat           1000                     2 1 886 999 1000 0=1
-Reshape          1014                     1 1 1000 1014 0=144
-InnerProduct     1015                     1 1 1014 1015 0=5531 1=1 2=796464
-Reshape          out                      1 1 1015 out 0=-1 1=1
+Reshape          1014                     1 1 1000 1014 0=144 1=-1
+InnerProduct     out                      1 1 1014 out 0=5531 1=1 2=796464
