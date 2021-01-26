@@ -102,25 +102,12 @@ TextLine CrnnNet::getTextLine(const cv::Mat &src) {
     extractor.input("input", input);
 
     // lstm
-    ncnn::Mat blob162;
-    extractor.extract("1000", blob162);
+    ncnn::Mat out;
+    extractor.extract("out", out);
 
-    // batch fc
-    ncnn::Mat blob263(5531, blob162.h);
-    for (int i = 0; i < blob162.h; i++) {
-        ncnn::Extractor extractor2 = net.create_extractor();
-        extractor2.set_num_threads(numThread);
-        ncnn::Mat blob243_i = blob162.row_range(i, 1);
-        extractor2.input("1014", blob243_i);
-
-        ncnn::Mat blob263_i;
-        extractor2.extract("1015", blob263_i);
-
-        memcpy(blob263.row(i), blob263_i, 5531 * sizeof(float));
-    }
-	float *floatArray = (float *) blob263.data;
-	std::vector<float> outputData(floatArray, floatArray + blob263.h * blob263.w);
-    return scoreToTextLine(outputData, blob263.h, blob263.w);
+	float *floatArray = (float *) out.data;
+	std::vector<float> outputData(floatArray, floatArray + out.h * out.w);
+    return scoreToTextLine(outputData, out.h, out.w);
 }
 
 std::vector<TextLine> CrnnNet::getTextLines(std::vector<cv::Mat> &partImg, const char *path, const char *imgName) {
