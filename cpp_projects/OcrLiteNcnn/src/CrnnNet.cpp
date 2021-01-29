@@ -44,7 +44,7 @@ bool CrnnNet::initModel(const std::string &pathStr, const std::string &keysPath)
     }
     if (keys.size() != 5531) {
         fprintf(stderr, "missing keys\n");
-		return false;
+        return false;
     }
     printf("total keys size(%lu)\n", keys.size());
     return true;
@@ -104,8 +104,8 @@ TextLine CrnnNet::getTextLine(const cv::Mat &src) {
     ncnn::Mat out;
     extractor.extract("out", out);
 
-	float *floatArray = (float *) out.data;
-	std::vector<float> outputData(floatArray, floatArray + out.h * out.w);
+    float *floatArray = (float *) out.data;
+    std::vector<float> outputData(floatArray, floatArray + out.h * out.w);
     return scoreToTextLine(outputData, out.h, out.w);
 }
 

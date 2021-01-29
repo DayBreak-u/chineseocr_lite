@@ -7,11 +7,12 @@ echo.
 
 echo "========编译选项========"
 echo "请注意：项目默认使用Release库，除非您自行编译Debug版的ncnn和Opencv，否则请不要选择Debug编译"
-echo "请输入编译选项并回车: 1)Release, 2)Debug"
+echo "请输入编译选项并回车: 1)Release, 2)Debug, 3)预设"
 set BUILD_TYPE=Release
 set /p flag=
 if %flag% == 1 (set BUILD_TYPE=Release)^
 else if %flag% == 2 (set BUILD_TYPE=Debug)^
+else if %flag% == 3 (goto :makeAllExe)^
 else (echo 输入错误！Input Error!)
 echo.
 
@@ -49,6 +50,7 @@ if %flag% == 1 (set BUILD_LIB=OFF)^
 else if %flag% == 2 (set BUILD_LIB=ON)^
 else (echo 输入错误！Input Error!)
 echo.
+
 if %BUILD_LIB% == OFF (call :makeExe)^
 else (call :makeLib)
 echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
@@ -66,5 +68,30 @@ GOTO:EOF
 mkdir build-lib
 pushd build-lib
 GOTO:EOF
+
+:makeAllExe
+mkdir win-cpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-cpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+nmake
+popd
+
+mkdir win-gpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-gpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+nmake
+popd
+
+mkdir win-lib-cpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-lib-cpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+nmake
+popd
+
+mkdir win-lib-gpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-lib-gpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+nmake
+popd
 
 @ENDLOCAL
