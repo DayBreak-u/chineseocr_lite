@@ -1,5 +1,5 @@
 7767517
-205 248
+201 244
 Input                    input                    0 1 input
 Convolution              423                      1 1 input 425 0=8 1=3 3=2 4=1 5=1 6=216 9=1
 Split                    splitncnn_0              1 2 425 425_splitncnn_0 425_splitncnn_1
@@ -194,14 +194,10 @@ Pooling                  821                      1 1 820 821 1=2 11=1 2=2 12=1 
 Reshape          822                      1 1 821 822 0=-1 1=288 2=-233
 Permute          823                      1 1 822 823 0=1
 Split            splitncnn_42             1 2 823 823_splitncnn_0 823_splitncnn_1
-LSTM             857                      1 1 823_splitncnn_1 857 0=48 1=55296 2=0
-Squeeze          860                      1 1 857 860 -23303=1,1
-LSTM             883                      1 1 860 883 0=48 1=9216 2=0
-Squeeze          886                      1 1 883 886 -23303=1,1
-LSTM             943                      1 1 823_splitncnn_0 943 0=48 1=110592 2=2
-Reshape          948                      1 1 943 948 0=96 1=-1
-LSTM             994                      1 1 948 994 0=48 1=36864 2=2
-Reshape          999                      1 1 994 999 0=96 1=-1
+LSTM             857                      1 1 823_splitncnn_1 860 0=48 1=55296 2=0
+LSTM             883                      1 1 860 886 0=48 1=9216 2=0
+LSTM             943                      1 1 823_splitncnn_0 948 0=48 1=110592 2=2
+LSTM             994                      1 1 948 999 0=48 1=36864 2=2
 Concat           1000                     2 1 886 999 1000 0=1
 Reshape          1014                     1 1 1000 1014 0=144 1=-1
 InnerProduct     out                      1 1 1014 out 0=5531 1=1 2=796464
