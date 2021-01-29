@@ -6,12 +6,8 @@ AngleNet::AngleNet() {}
 
 AngleNet::~AngleNet() {
     delete session;
-    for (auto name : inputNames) {
-        free(name);
-    }
-    for (auto name : outputNames) {
-        free(name);
-    }
+    free(inputName);
+    free(outputName);
 }
 
 void AngleNet::setNumThread(int numOfThread) {
@@ -42,8 +38,8 @@ void AngleNet::initModel(const std::string &pathStr) {
 #else
     session = new Ort::Session(env, pathStr.c_str(), sessionOptions);
 #endif
-    inputNames = getInputNames(session);
-    outputNames = getOutputNames(session);
+    getInputName(session,inputName);
+    getOutputName(session,outputName);
 }
 
 Angle scoreToAngle(const std::vector<float> &outputData) {
@@ -72,8 +68,7 @@ Angle AngleNet::getAngle(cv::Mat &src) {
                                                              inputShape.size());
     assert(inputTensor.IsTensor());
 
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
-                                     inputNames.size(), outputNames.data(), outputNames.size());
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, &inputName, &inputTensor, 1, &outputName, 1);
 
     assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
 
