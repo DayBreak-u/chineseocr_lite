@@ -5,12 +5,8 @@ DbNet::DbNet() {}
 
 DbNet::~DbNet() {
     delete session;
-    for (auto name : inputNames) {
-        free(name);
-    }
-    for (auto name : outputNames) {
-        free(name);
-    }
+    free(inputName);
+    free(outputName);
 }
 
 void DbNet::setNumThread(int numOfThread) {
@@ -41,8 +37,8 @@ void DbNet::initModel(const std::string &pathStr) {
 #else
     session = new Ort::Session(env, pathStr.c_str(), sessionOptions);
 #endif
-    inputNames = getInputNames(session);
-    outputNames = getOutputNames(session);
+    getInputName(session, inputName);
+    getOutputName(session, outputName);
 }
 
 std::vector<TextBox> findRsBoxes(const cv::Mat &fMapMat, const cv::Mat &norfMapMat, ScaleParam &s,
@@ -93,8 +89,7 @@ DbNet::getTextBoxes(cv::Mat &src, ScaleParam &s, float boxScoreThresh, float box
                                                              inputTensorValues.size(), inputShape.data(),
                                                              inputShape.size());
     assert(inputTensor.IsTensor());
-    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
-                                     inputNames.size(), outputNames.data(), outputNames.size());
+    auto outputTensor = session->Run(Ort::RunOptions{nullptr}, &inputName, &inputTensor, 1, &outputName, 1);
     assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
     std::vector<int64_t> outputShape = outputTensor[0].GetTensorTypeAndShapeInfo().GetShape();
     int64_t outputCount = std::accumulate(outputShape.begin(), outputShape.end(), 1,

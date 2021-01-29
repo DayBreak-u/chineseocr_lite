@@ -1,301 +1,301 @@
-==10966== Memcheck, a memory error detector
-==10966== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==10966== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
-==10966== Command: ./OcrLiteOnnx --models ../models --image ../../test_imgs/1.jpg --numThread 1 --padding 50 --imgResize 0 --boxScoreThresh 0.6 --boxThresh 0.3 --minArea 3 --unClipRatio 2.0 --doAngle 1 --mostAngle 1
-==10966== Parent PID: 10965
-==10966== 
-==10966== 
-==10966== HEAP SUMMARY:
-==10966==     in use at exit: 89,868 bytes in 130 blocks
-==10966==   total heap usage: 1,855,940 allocs, 1,855,810 frees, 225,393,411 bytes allocated
-==10966== 
-==10966== 80 bytes in 1 blocks are possibly lost in loss record 57 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4FA5F: cv::BmpDecoder::BmpDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4405A: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 80 bytes in 1 blocks are possibly lost in loss record 58 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C54230: cv::JpegDecoder::JpegDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44301: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 84 bytes in 1 blocks are possibly lost in loss record 59 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C52ECB: cv::HdrDecoder::HdrDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C441AF: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 84 bytes in 1 blocks are possibly lost in loss record 60 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C60769: cv::SunRasterDecoder::SunRasterDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C445A5: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 84 bytes in 1 blocks are possibly lost in loss record 61 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C501E5: cv::ExrDecoder::ExrDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4507E: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 88 bytes in 1 blocks are possibly lost in loss record 62 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C52EEF: cv::HdrDecoder::HdrDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C441AF: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 88 bytes in 1 blocks are possibly lost in loss record 63 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5BC30: cv::PngDecoder::PngDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44D9E: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 92 bytes in 1 blocks are possibly lost in loss record 64 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5533A: cv::Jpeg2KDecoder::Jpeg2KDecoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44F0E: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 96 bytes in 1 blocks are possibly lost in loss record 65 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C70FB0: cv::WebPEncoder::WebPEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C444FC: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 100 bytes in 1 blocks are possibly lost in loss record 66 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C56DE0: cv::Jpeg2KEncoder::Jpeg2KEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44FC6: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 104 bytes in 1 blocks are possibly lost in loss record 67 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C53000: cv::HdrEncoder::HdrEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44258: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 104 bytes in 1 blocks are possibly lost in loss record 68 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C61110: cv::TiffEncoder::TiffEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44CE6: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 104 bytes in 1 blocks are possibly lost in loss record 69 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C50930: cv::ExrEncoder::ExrEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C45136: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 108 bytes in 1 blocks are possibly lost in loss record 70 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4FAF0: cv::BmpEncoder::BmpEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44102: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 108 bytes in 1 blocks are possibly lost in loss record 71 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C542B0: cv::JpegEncoder::JpegEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C443AA: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 108 bytes in 1 blocks are possibly lost in loss record 72 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C607F0: cv::SunRasterEncoder::SunRasterEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4465D: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 112 bytes in 1 blocks are possibly lost in loss record 73 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5A640: cv::PAMEncoder::PAMEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44B76: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 116 bytes in 1 blocks are possibly lost in loss record 74 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5EB98: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C447CF: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 116 bytes in 1 blocks are possibly lost in loss record 75 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5EB08: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44949: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 116 bytes in 1 blocks are possibly lost in loss record 76 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5EA88: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44A06: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 116 bytes in 1 blocks are possibly lost in loss record 77 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5BCE0: cv::PngEncoder::PngEncoder() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C44E56: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 120 bytes in 1 blocks are possibly lost in loss record 78 of 105
-==10966==    at 0x483577F: malloc (vg_replace_malloc.c:299)
-==10966==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C5EBF8: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4488C: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x4A9F1A: OcrLite::detect(char const*, char const*, int, int, float, float, float, float, bool, bool) (OcrLite.cpp:74)
-==10966==    by 0x4D8C41: main (main.cpp:134)
-==10966== 
-==10966== 1,680 bytes in 5 blocks are possibly lost in loss record 104 of 105
-==10966==    at 0x4837B65: calloc (vg_replace_malloc.c:752)
-==10966==    by 0x40116E1: allocate_dtv (dl-tls.c:286)
-==10966==    by 0x401204D: _dl_allocate_tls (dl-tls.c:532)
-==10966==    by 0x85E5B95: allocate_stack (allocatestack.c:621)
-==10966==    by 0x85E5B95: pthread_create@@GLIBC_2.2.5 (pthread_create.c:669)
-==10966==    by 0x574B2D4: cv::WorkerThread::WorkerThread(cv::ThreadPool&, unsigned int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x574CF57: cv::ThreadPool::reconfigure_(unsigned int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x574D6CA: cv::ThreadPool::run(cv::Range const&, cv::ParallelLoopBody const&, double) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x57463CD: cv::parallel_for_(cv::Range const&, cv::ParallelLoopBody const&, double) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5882B79: bool cv::CvtColorIPPLoopCopy<cv::IPPReorderFunctor>(unsigned char const*, unsigned long, int, unsigned char*, unsigned long, int, int, cv::IPPReorderFunctor const&) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x58830BE: cv::hal::cvtBGRtoBGR(unsigned char const*, unsigned long, unsigned char*, unsigned long, int, int, int, int, int, bool) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x5883541: cv::cvtColorBGR2BGR(cv::_InputArray const&, cv::_OutputArray const&, int, bool) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966==    by 0x584E017: cv::cvtColor(cv::_InputArray const&, cv::_OutputArray const&, int, int) (in /media/psf/Home/ChOcrLitProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
-==10966== 
-==10966== LEAK SUMMARY:
-==10966==    definitely lost: 0 bytes in 0 blocks
-==10966==    indirectly lost: 0 bytes in 0 blocks
-==10966==      possibly lost: 3,888 bytes in 27 blocks
-==10966==    still reachable: 85,980 bytes in 103 blocks
-==10966==         suppressed: 0 bytes in 0 blocks
-==10966== Reachable blocks (those to which a pointer was found) are not shown.
-==10966== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==10966== 
-==10966== For counts of detected and suppressed errors, rerun with: -v
-==10966== ERROR SUMMARY: 23 errors from 23 contexts (suppressed: 0 from 0)
+==4812== Memcheck, a memory error detector
+==4812== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==4812== Using Valgrind-3.14.0 and LibVEX; rerun with -h for copyright info
+==4812== Command: ./build/OcrLiteOnnx --models models --det dbnet.onnx --cls angle_net.onnx --rec crnn_lite_lstm.onnx --keys keys.txt --image ../images/1.jpg --numThread 1 --padding 50 --maxSideLen 1024 --boxScoreThresh 0.6 --boxThresh 0.3 --unClipRatio 2.0 --doAngle 1 --mostAngle 1
+==4812== Parent PID: 4811
+==4812== 
+==4812== 
+==4812== HEAP SUMMARY:
+==4812==     in use at exit: 17,164 bytes in 131 blocks
+==4812==   total heap usage: 1,856,469 allocs, 1,856,338 frees, 295,468,558 bytes allocated
+==4812== 
+==4812== 80 bytes in 1 blocks are possibly lost in loss record 57 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4FA5F: cv::BmpDecoder::BmpDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4405A: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 80 bytes in 1 blocks are possibly lost in loss record 58 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C54230: cv::JpegDecoder::JpegDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44301: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 84 bytes in 1 blocks are possibly lost in loss record 59 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C52ECB: cv::HdrDecoder::HdrDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C441AF: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 84 bytes in 1 blocks are possibly lost in loss record 60 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C60769: cv::SunRasterDecoder::SunRasterDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C445A5: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 84 bytes in 1 blocks are possibly lost in loss record 61 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C501E5: cv::ExrDecoder::ExrDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4507E: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 88 bytes in 1 blocks are possibly lost in loss record 62 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C52EEF: cv::HdrDecoder::HdrDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C441AF: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 88 bytes in 1 blocks are possibly lost in loss record 63 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5BC30: cv::PngDecoder::PngDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44D9E: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 92 bytes in 1 blocks are possibly lost in loss record 64 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5533A: cv::Jpeg2KDecoder::Jpeg2KDecoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44F0E: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 96 bytes in 1 blocks are possibly lost in loss record 65 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C70FB0: cv::WebPEncoder::WebPEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C444FC: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 100 bytes in 1 blocks are possibly lost in loss record 66 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C56DE0: cv::Jpeg2KEncoder::Jpeg2KEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44FC6: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 104 bytes in 1 blocks are possibly lost in loss record 67 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C53000: cv::HdrEncoder::HdrEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44258: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 104 bytes in 1 blocks are possibly lost in loss record 68 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C61110: cv::TiffEncoder::TiffEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44CE6: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 104 bytes in 1 blocks are possibly lost in loss record 69 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C50930: cv::ExrEncoder::ExrEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C45136: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 108 bytes in 1 blocks are possibly lost in loss record 70 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4FAF0: cv::BmpEncoder::BmpEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44102: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 108 bytes in 1 blocks are possibly lost in loss record 71 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C542B0: cv::JpegEncoder::JpegEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C443AA: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 108 bytes in 1 blocks are possibly lost in loss record 72 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C607F0: cv::SunRasterEncoder::SunRasterEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4465D: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 112 bytes in 1 blocks are possibly lost in loss record 73 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5A640: cv::PAMEncoder::PAMEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44B76: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 116 bytes in 1 blocks are possibly lost in loss record 74 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5EB98: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C447CF: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 116 bytes in 1 blocks are possibly lost in loss record 75 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5EB08: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44949: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 116 bytes in 1 blocks are possibly lost in loss record 76 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5EA88: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44A06: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 116 bytes in 1 blocks are possibly lost in loss record 77 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5BCE0: cv::PngEncoder::PngEncoder() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C44E56: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 120 bytes in 1 blocks are possibly lost in loss record 79 of 105
+==4812==    at 0x483577F: malloc (vg_replace_malloc.c:299)
+==4812==    by 0x5570880: cv::fastMalloc(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x578640C: cv::String::allocate(unsigned long) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C5EBF8: cv::PxMEncoder::PxMEncoder(cv::PxMMode) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4488C: cv::ImageCodecInitializer::ImageCodecInitializer() (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47218: cv::findDecoder(cv::String const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C4736B: cv::imread_(cv::String const&, int, int, cv::Mat*) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5C47A4D: cv::imread(cv::String const&, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x4519AC: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (OcrLite.cpp:72)
+==4812==    by 0x4808F4: main (main.cpp:178)
+==4812== 
+==4812== 1,600 bytes in 5 blocks are possibly lost in loss record 105 of 105
+==4812==    at 0x4837B65: calloc (vg_replace_malloc.c:752)
+==4812==    by 0x40116E1: allocate_dtv (dl-tls.c:286)
+==4812==    by 0x401204D: _dl_allocate_tls (dl-tls.c:532)
+==4812==    by 0x85E5B95: allocate_stack (allocatestack.c:621)
+==4812==    by 0x85E5B95: pthread_create@@GLIBC_2.2.5 (pthread_create.c:669)
+==4812==    by 0x574B2D4: cv::WorkerThread::WorkerThread(cv::ThreadPool&, unsigned int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x574CF57: cv::ThreadPool::reconfigure_(unsigned int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x574D6CA: cv::ThreadPool::run(cv::Range const&, cv::ParallelLoopBody const&, double) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x57463CD: cv::parallel_for_(cv::Range const&, cv::ParallelLoopBody const&, double) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5882B79: bool cv::CvtColorIPPLoopCopy<cv::IPPReorderFunctor>(unsigned char const*, unsigned long, int, unsigned char*, unsigned long, int, int, cv::IPPReorderFunctor const&) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x58830BE: cv::hal::cvtBGRtoBGR(unsigned char const*, unsigned long, unsigned char*, unsigned long, int, int, int, int, int, bool) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x5883541: cv::cvtColorBGR2BGR(cv::_InputArray const&, cv::_OutputArray const&, int, bool) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812==    by 0x584E017: cv::cvtColor(cv::_InputArray const&, cv::_OutputArray const&, int, int) (in /media/psf/Home/OCRProjects/OcrLiteOnnx/opencv-shared/linux/lib/libopencv_world.so.3.4.13)
+==4812== 
+==4812== LEAK SUMMARY:
+==4812==    definitely lost: 0 bytes in 0 blocks
+==4812==    indirectly lost: 0 bytes in 0 blocks
+==4812==      possibly lost: 3,808 bytes in 27 blocks
+==4812==    still reachable: 13,356 bytes in 104 blocks
+==4812==         suppressed: 0 bytes in 0 blocks
+==4812== Reachable blocks (those to which a pointer was found) are not shown.
+==4812== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==4812== 
+==4812== For counts of detected and suppressed errors, rerun with: -v
+==4812== ERROR SUMMARY: 23 errors from 23 contexts (suppressed: 0 from 0)

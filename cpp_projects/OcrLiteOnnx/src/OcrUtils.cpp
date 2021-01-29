@@ -385,6 +385,30 @@ std::vector<char *> getOutputNames(Ort::Session *session) {
     return outputNodeNames;
 }
 
+void getInputName(Ort::Session *session, char *&inputName) {
+    size_t numInputNodes = session->GetInputCount();
+    if (numInputNodes > 0) {
+        Ort::AllocatorWithDefaultOptions allocator;
+        {
+            char *t = session->GetInputName(0, allocator);
+            inputName = my_strdup(t);
+            allocator.Free(t);
+        }
+    }
+}
+
+void getOutputName(Ort::Session *session, char *&outputName) {
+    size_t numOutputNodes = session->GetInputCount();
+    if (numOutputNodes > 0) {
+        Ort::AllocatorWithDefaultOptions allocator;
+        {
+            char *t = session->GetOutputName(0, allocator);
+            outputName = my_strdup(t);
+            allocator.Free(t);
+        }
+    }
+}
+
 void saveImg(cv::Mat &img, const char *imgPath) {
     cv::imwrite(imgPath, img);
 }

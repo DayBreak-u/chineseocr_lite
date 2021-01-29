@@ -36,6 +36,18 @@ inline bool isFileExists(const std::string &name) {
     return (stat(name.c_str(), &buffer) == 0);
 }
 
+#ifdef _WIN32
+#define my_strtol wcstol
+#define my_strrchr wcsrchr
+#define my_strcasecmp _wcsicmp
+#define my_strdup _strdup
+#else
+#define my_strtol strtol
+#define my_strrchr strrchr
+#define my_strcasecmp strcasecmp
+#define my_strdup strdup
+#endif
+
 std::wstring strToWstr(std::string str);
 
 ScaleParam getScaleParam(cv::Mat &src, const float scale);
@@ -73,6 +85,10 @@ std::vector<int> getAngleIndexes(std::vector<Angle> &angles);
 std::vector<char *> getInputNames(Ort::Session *session);
 
 std::vector<char *> getOutputNames(Ort::Session *session);
+
+void getInputName(Ort::Session *session, char *&inputName);
+
+void getOutputName(Ort::Session *session, char *&outputName);
 
 void saveImg(cv::Mat &img, const char *imgPath);
 
