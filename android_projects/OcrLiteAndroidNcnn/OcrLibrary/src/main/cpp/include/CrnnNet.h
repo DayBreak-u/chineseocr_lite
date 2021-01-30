@@ -19,16 +19,16 @@ public:
 private:
     int numThread;
     ncnn::Net net;
-    std::vector<std::string> keys;
 
-    const int dstHeight = 32;
     const float meanValues[3] = {127.5, 127.5, 127.5};
     const float normValues[3] = {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5};
+    const int dstHeight = 32;
 
-    TextLine scoreToTextLine(const float *srcData, int h, int w);
+    std::vector<std::string> keys;
 
-    TextLine getTextLine(cv::Mat &src);
+    TextLine scoreToTextLine(const float *outputData, int h, int w);
 
+    TextLine getTextLine(const cv::Mat &src);
 };
 
 

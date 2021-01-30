@@ -20,17 +20,17 @@ bool AngleNet::initModel(AAssetManager *mgr) {
     return true;
 }
 
-Angle scoreToAngle(const float *srcData, int w) {
-    int angleIndex = 0;
-    float maxValue = -1000.0f;
+Angle scoreToAngle(const float *outputData, int w) {
+    int maxIndex = 0;
+    float maxScore = -1000.0f;
     for (int i = 0; i < w; i++) {
-        if (i == 0)maxValue = srcData[i];
-        else if (srcData[i] > maxValue) {
-            angleIndex = i;
-            maxValue = srcData[i];
+        if (i == 0)maxScore = outputData[i];
+        else if (outputData[i] > maxScore) {
+            maxScore = outputData[i];
+            maxIndex = i;
         }
     }
-    return {angleIndex, maxValue};
+    return {maxIndex, maxScore};
 }
 
 Angle AngleNet::getAngle(cv::Mat &src) {
@@ -52,7 +52,7 @@ AngleNet::getAngles(std::vector<cv::Mat> &partImgs, bool doAngle, bool mostAngle
     std::vector<Angle> angles(size);
     if (doAngle) {
 #ifdef __OPENMP__
-#pragma omp parallel for num_threads(numThread)
+#pragma omp parallel for num_threads(4)
 #endif
         for (int i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();
@@ -60,9 +60,7 @@ AngleNet::getAngles(std::vector<cv::Mat> &partImgs, bool doAngle, bool mostAngle
             Angle angle = getAngle(angleImg);
             double endAngle = getCurrentTime();
             angle.time = endAngle - startAngle;
-
             angles[i] = angle;
-
         }
     } else {
         for (int i = 0; i < size; ++i) {

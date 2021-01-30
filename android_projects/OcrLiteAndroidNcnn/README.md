@@ -1,7 +1,12 @@
-# ChOcrLiteAndroidOnnxToNcnn
+# OcrLiteAndroidNcnn
+
+### Project下载
+* 有整合好源码和依赖库的完整工程项目，文件比较大，可到Q群共享内下载，找以Project开头的压缩包文件
+* 如果想自己折腾，则请继续阅读本说明
 
 ### Demo APK下载
-[Gitee下载](https://gitee.com/benjaminwan/ocr-lite-android-ncnn/releases)
+编译好的demo文件可以到Q群共享内下载
+或者[Gitee下载](https://gitee.com/benjaminwan/ocr-lite-android-ncnn/releases)
 
 ### 介绍
 Chineseocr Lite Android Ncnn Demo，超轻量级中文OCR Android Demo，支持ncnn推理 (DBNet+AngleNet+CRNN)
@@ -25,7 +30,7 @@ Chineseocr Lite Android Ncnn Demo，超轻量级中文OCR Android Demo，支持n
 2. NDK
 3. cmake 3.4.1或以上
 4. [模型下载](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/models_ncnn)
-解压后目录结构为
+目录结构为
 ```
   OcrLiteAndroidNcnn/OcrLibrary/src/main/assets
   ├── angle_op.bin
@@ -46,10 +51,19 @@ OcrLiteAndroidNcnn/OcrLibrary/src/sdk
         └── staticlibs
 ```
 
-6. ncnn预编译库版本为 20201218 5650b77，[下载地址](https://github.com/Tencent/ncnn/releases/tag/20201218)
-可以选择ncnn-android.zip或者ncnn-android-vulkan.zip，解压后目录结构为
+6. ncnn预编译库版本为 20210124 5e4ea0b，[下载地址](https://github.com/Tencent/ncnn/releases/tag/20210124)
+* 目标是编译cpu版和gpu版，所以需要下载 "不带vulkan的"和"带vulkan的"两种库。
+* 但是每种库又分为静态库和动态库，所以一共就有四种库。
+* 下载ncnn-20210124-android.zip或ncnn-20210124-android-shared.zip，解压到OcrLiteAndroidNcnn/OcrLibrary/src/main/ncnn
+* 下载ncnn-20210124-android-vulkan.zip或ncnn-20210124-android-vulkan-shared.zip，解压到OcrLiteAndroidNcnn/OcrLibrary/src/main/ncnn-vulkan
+* 解压后目录结构为
 ```
-OcrLiteAndroidNcnn/OcrLibrary/src/main/ncnn-static
+OcrLiteAndroidNcnn/OcrLibrary/src/main/ncnn
+    ├── arm64-v8a
+    ├── armeabi-v7a
+    ├── x86
+    └── x86_64
+OcrLiteAndroidNcnn/OcrLibrary/src/main/ncnn-vulkan
     ├── arm64-v8a
     ├── armeabi-v7a
     ├── x86
@@ -58,14 +72,22 @@ OcrLiteAndroidNcnn/OcrLibrary/src/main/ncnn-static
 * **注意：解压后还必须修改每个abi目录下的lib/cmake/ncnn/ncnn.cmake，注释掉此行```#  INTERFACE_COMPILE_OPTIONS "-fno-rtti;-fno-exceptions"```
 一共有4个文件需要修改，否则会造成编译错误。**
 
-7. 当选择ncnn不带vulkan支持的版本时
-* app/build.gradle和OcrLibrary/build.gradle里的minSdkVersion可以改为21，编译出来的apk体积小10MB
+7. cpu版:即ncnn不带vulkan支持的版本
+* app/build.gradle和OcrLibrary/build.gradle里的minSdkVersion通过productFlavors设置为21
 * minSdkVersion=21时，最终编译出来的apk大约21MB
 
-8. 当选择ncnn带vulkan支持的版本时
-* app/build.gradle和OcrLibrary/build.gradle里的minSdkVersion必须>=24
+8. gpu版:即ncnn带vulkan支持的版本
+* app/build.gradle和OcrLibrary/build.gradle里的minSdkVersion通过productFlavors设置为24
 * 因为sdk24(Android N/7.0)启用了新的打包和签名方式，再加上vulkan支持增加了不少体积，最终apk大约58MB
-* 可以通过修改OcrLibrary/src/main/cpp/CMakeLists.txt的```set(OCR_LITE_VULKAN OFF)```来关闭gpu计算
+
+### 编译Release包
+* 使用命令编译```./gradlew assembleRelease```
+* 输出文件在app/build/outputs/apk
+
+### Android Studio 调试启动
+* 先在左侧边栏中找到"Build Variants"选项卡
+* 在选项卡里，有app和OcrLibrary两项，且"Active Build Variant"可以选择CpuDebug/CpuRelease/GpuDebug/GpuRelease
+* 选中需要的"Active Build Variant"，注意app和OcrLibrary必须选择相同选项，等待刷新，然后直接用工具栏的运行或调试按钮启动。
 
 ### 输入参数说明
 请参考[OcrLiteOnnx项目](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/cpp_projects/OcrLiteOnnx)
@@ -79,6 +101,4 @@ app/build
 OcrLibrary/.cxx
 OcrLibrary/build
 ```
-### 编译Release包
-使用命令编译```./gradlew assembleRelease```
 
