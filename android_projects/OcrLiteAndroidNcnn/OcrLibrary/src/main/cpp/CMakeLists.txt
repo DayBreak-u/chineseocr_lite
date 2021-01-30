@@ -2,11 +2,15 @@ project(OcrLite)
 
 cmake_minimum_required(VERSION 3.4.1)
 
-option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" ON)
+option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" OFF)
 option(OCR_LITE_VULKAN "OcrLite Enable Vulkan" ON)
-set(OCR_LITE_OPENMP ON)
-set(OCR_LITE_VULKAN OFF)
-set(ncnn_DIR "${CMAKE_SOURCE_DIR}/../ncnn-static/${ANDROID_ABI}/lib/cmake/ncnn")
+set(OCR_LITE_OPENMP OFF)
+#set(OCR_LITE_VULKAN ON)
+if (OCR_LITE_VULKAN)
+    set(ncnn_DIR "${CMAKE_SOURCE_DIR}/../ncnn-vulkan/${ANDROID_ABI}/lib/cmake/ncnn")
+else ()
+    set(ncnn_DIR "${CMAKE_SOURCE_DIR}/../ncnn/${ANDROID_ABI}/lib/cmake/ncnn")
+endif ()
 find_package(ncnn REQUIRED)
 
 ## opencv 库
