@@ -22,13 +22,6 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
@@ -36,10 +29,37 @@ android {
         }
     }
 
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions 'ocr_library_types'
+    productFlavors {
+        cpu {
+            minSdkVersion 21
+            externalNativeBuild {
+                cmake {
+                    arguments "-DOCR_LITE_VULKAN=OFF"
+                }
+            }
+        }
+        gpu {
+            minSdkVersion 24
+            externalNativeBuild {
+                cmake {
+                    arguments "-DOCR_LITE_VULKAN=ON"
+                }
+            }
+        }
+    }
+
     libraryVariants.all {
         variant ->
             variant.outputs.all {
-                outputFileName = "${project.name}-${defaultConfig.versionName}.aar"
+                outputFileName = "${project.name}-${variant.flavorName}-${defaultConfig.versionName}.aar"
             }
     }
 }
