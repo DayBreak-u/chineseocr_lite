@@ -20,8 +20,8 @@ android {
         applicationId "com.benjaminwan.ocr.ncnn"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 18
-        versionName "1.5.3.20210123"
+        versionCode 19
+        versionName "1.5.4.20210130"
         signingConfig signingConfigs.ocr
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,6 +30,16 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions 'ocr_library_types'
+    productFlavors {
+        cpu {
+            minSdkVersion 21
+        }
+        gpu {
+            minSdkVersion 24
         }
     }
 
@@ -49,7 +59,7 @@ android {
     applicationVariants.all {
         variant ->
             variant.outputs.all {
-                outputFileName = "${rootProject.name}-${defaultConfig.versionName}-${variant.buildType.name}.apk"
+                outputFileName = "${rootProject.name}-${defaultConfig.versionName}-${variant.flavorName}-${variant.buildType.name}.apk"
             }
     }
 }
