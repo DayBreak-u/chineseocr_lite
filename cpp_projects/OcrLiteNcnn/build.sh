@@ -3,25 +3,25 @@
 function buildAll() {
   mkdir -p ${sysOS}-CPU
   pushd ${sysOS}-CPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
   make -j $NUM_THREADS
   popd
 
   mkdir -p ${sysOS}-GPU
   pushd ${sysOS}-GPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
   make -j $NUM_THREADS
   popd
 
   mkdir -p ${sysOS}-Lib-CPU
   pushd ${sysOS}-Lib-CPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
   make -j $NUM_THREADS
   popd
 
   mkdir -p ${sysOS}-Lib-GPU
   pushd ${sysOS}-Lib-GPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
   make -j $NUM_THREADS
   popd
 }

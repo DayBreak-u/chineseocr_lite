@@ -13,6 +13,7 @@ function cmakeParamsMac(){
       -DNCNN_BUILD_BENCHMARK=OFF \
       -DNCNN_BUILD_EXAMPLES=OFF \
       -DNCNN_BUILD_TOOLS=OFF \
+      -DNCNN_PYTHON=OFF \
       -DNCNN_VULKAN=OFF \
   ..
   make -j $NUM_THREADS
@@ -23,11 +24,12 @@ function cmakeParamsMac(){
 function cmakeParamsLinux(){
   mkdir -p "build-linux-$1"
   pushd "build-linux-$1"
-  cmake -DCMAKE_BUILD_TYPE=$1 -DCMAKE_CONFIGURATION_TYPES=$1 \
+  cmake -DCMAKE_BUILD_TYPE=$1 \
       -DNCNN_OPENMP=ON \
       -DNCNN_BUILD_BENCHMARK=OFF \
       -DNCNN_BUILD_EXAMPLES=OFF \
       -DNCNN_BUILD_TOOLS=OFF \
+      -DNCNN_PYTHON=OFF \
       -DNCNN_VULKAN=OFF \
   ..
   make -j $NUM_THREADS
