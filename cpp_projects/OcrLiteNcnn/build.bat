@@ -72,25 +72,25 @@ GOTO:EOF
 :makeAllExe
 mkdir win-cpu-%VSCMD_ARG_TGT_ARCH%
 pushd win-cpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
 nmake
 popd
 
 mkdir win-gpu-%VSCMD_ARG_TGT_ARCH%
 pushd win-gpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
 nmake
 popd
 
 mkdir win-lib-cpu-%VSCMD_ARG_TGT_ARCH%
 pushd win-lib-cpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
 nmake
 popd
 
 mkdir win-lib-gpu-%VSCMD_ARG_TGT_ARCH%
 pushd win-lib-gpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
 nmake
 popd
 
