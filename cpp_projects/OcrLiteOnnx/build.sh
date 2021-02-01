@@ -3,13 +3,13 @@
 function buildAll() {
   mkdir -p ${sysOS}
   pushd ${sysOS}
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=OFF -DOCR_STATIC=ON ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON ..
   make -j $NUM_THREADS
   popd
 
   mkdir -p ${sysOS}-Lib
   pushd ${sysOS}-Lib
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=ON -DOCR_LIB=ON -DOCR_STATIC=ON ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON ..
   make -j $NUM_THREADS
   popd
 }
