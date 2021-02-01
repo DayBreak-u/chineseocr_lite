@@ -73,8 +73,8 @@ TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, int h, i
             exps.at(j) = expSingle;
         }
         float partition = accumulate(exps.begin(), exps.end(), 0.0);//row sum
-        maxIndex = int(argmax(&exps[0], &exps[w]));
-        maxValue = float(*std::max_element(&exps[0], &exps[w])) / partition;
+        maxIndex = int(argmax(exps.begin(), exps.end()));
+        maxValue = float(*std::max_element(exps.begin(), exps.end())) / partition;
         if (maxIndex > 0 && maxIndex < keySize && (!(i > 0 && maxIndex == lastIndex))) {
             scores.emplace_back(maxValue);
             strRes.append(keys[maxIndex - 1]);
