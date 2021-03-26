@@ -1,0 +1,196 @@
+==13885== Memcheck, a memory error detector
+==13885== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==13885== Using Valgrind-3.17.0.GIT-lbmacos and LibVEX; rerun with -h for copyright info
+==13885== Command: ./build/OcrLiteMnn --models models --det dbnet.mnn --cls angle_net.mnn --rec crnn_lite_lstm.mnn --keys keys.txt --image images/1.jpg --numThread 1 --padding 50 --maxSideLen 1024 --boxScoreThresh 0.6 --boxThresh 0.3 --unClipRatio 2.0 --doAngle 1 --mostAngle 1
+==13885== Parent PID: 13884
+==13885== 
+--13885-- run: /usr/bin/dsymutil "./build/OcrLiteMnn"
+==13885== Conditional jump or move depends on uninitialised value(s)
+==13885==    at 0x10028D8F3: _platform_memcmp (in /usr/local/Cellar/valgrind/HEAD-adaae87/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==13885==    by 0x1002FC6AD: MNN::GeometryComputer::Context::getCachedTensor(MNN::Tensor*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBEDE: MNN::GeometryComputer::Context::getRasterCacheCreate(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100300380: MNN::GeometryComputerUtils::makeRaster(MNN::CommandBuffer const&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FF378: MNN::GeometryComputerUtils::shapeComputeAndGeometryTransform(std::__1::vector<MNN::Schedule::PipelineInfo, std::__1::allocator<MNN::Schedule::PipelineInfo> >&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&, std::__1::shared_ptr<MNN::Backend>, bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002B88BA: MNN::Pipeline::encode(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002E0B8A: MNN::Session::resize(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3826: MNN::Interpreter::createMultiPathSession(std::__1::vector<MNN::ScheduleConfig, std::__1::allocator<MNN::ScheduleConfig> > const&, std::__1::pair<std::__1::map<MNNForwardType, std::__1::shared_ptr<MNN::Runtime>, std::__1::less<MNNForwardType>, std::__1::allocator<std::__1::pair<MNNForwardType const, std::__1::shared_ptr<MNN::Runtime> > > >, std::__1::shared_ptr<MNN::Runtime> > const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3ED1: MNN::Interpreter::createSession(MNN::ScheduleConfig const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100018782: DbNet::initModel(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/DbNet.cpp:21)
+==13885==    by 0x1000201DC: OcrLite::initModels(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/OcrLite.cpp:36)
+==13885==    by 0x100063ED9: main (src/main.cpp:175)
+==13885==  Uninitialised value was created by a stack allocation
+==13885==    at 0x1002F5FFD: MNN::ConvertUtils::compute(MNN::Tensor*, MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885== 
+==13885== Conditional jump or move depends on uninitialised value(s)
+==13885==    at 0x10028D924: _platform_memcmp (in /usr/local/Cellar/valgrind/HEAD-adaae87/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==13885==    by 0x1002FC6AD: MNN::GeometryComputer::Context::getCachedTensor(MNN::Tensor*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBEDE: MNN::GeometryComputer::Context::getRasterCacheCreate(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100300380: MNN::GeometryComputerUtils::makeRaster(MNN::CommandBuffer const&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FF378: MNN::GeometryComputerUtils::shapeComputeAndGeometryTransform(std::__1::vector<MNN::Schedule::PipelineInfo, std::__1::allocator<MNN::Schedule::PipelineInfo> >&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&, std::__1::shared_ptr<MNN::Backend>, bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002B88BA: MNN::Pipeline::encode(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002E0B8A: MNN::Session::resize(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3826: MNN::Interpreter::createMultiPathSession(std::__1::vector<MNN::ScheduleConfig, std::__1::allocator<MNN::ScheduleConfig> > const&, std::__1::pair<std::__1::map<MNNForwardType, std::__1::shared_ptr<MNN::Runtime>, std::__1::less<MNNForwardType>, std::__1::allocator<std::__1::pair<MNNForwardType const, std::__1::shared_ptr<MNN::Runtime> > > >, std::__1::shared_ptr<MNN::Runtime> > const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3ED1: MNN::Interpreter::createSession(MNN::ScheduleConfig const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100018782: DbNet::initModel(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/DbNet.cpp:21)
+==13885==    by 0x1000201DC: OcrLite::initModels(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/OcrLite.cpp:36)
+==13885==    by 0x100063ED9: main (src/main.cpp:175)
+==13885==  Uninitialised value was created by a stack allocation
+==13885==    at 0x10032CA10: MNN::GeometryReshape::onCompute(MNN::Op const*, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, MNN::GeometryComputer::Context&, MNN::CommandBuffer&) const (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885== 
+==13885== Conditional jump or move depends on uninitialised value(s)
+==13885==    at 0x1002FC6D2: MNN::GeometryComputer::Context::getCachedTensor(MNN::Tensor*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBEDE: MNN::GeometryComputer::Context::getRasterCacheCreate(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100300380: MNN::GeometryComputerUtils::makeRaster(MNN::CommandBuffer const&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FF378: MNN::GeometryComputerUtils::shapeComputeAndGeometryTransform(std::__1::vector<MNN::Schedule::PipelineInfo, std::__1::allocator<MNN::Schedule::PipelineInfo> >&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&, std::__1::shared_ptr<MNN::Backend>, bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002B88BA: MNN::Pipeline::encode(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002E0B8A: MNN::Session::resize(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3826: MNN::Interpreter::createMultiPathSession(std::__1::vector<MNN::ScheduleConfig, std::__1::allocator<MNN::ScheduleConfig> > const&, std::__1::pair<std::__1::map<MNNForwardType, std::__1::shared_ptr<MNN::Runtime>, std::__1::less<MNNForwardType>, std::__1::allocator<std::__1::pair<MNNForwardType const, std::__1::shared_ptr<MNN::Runtime> > > >, std::__1::shared_ptr<MNN::Runtime> > const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3ED1: MNN::Interpreter::createSession(MNN::ScheduleConfig const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100018782: DbNet::initModel(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/DbNet.cpp:21)
+==13885==    by 0x1000201DC: OcrLite::initModels(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/OcrLite.cpp:36)
+==13885==    by 0x100063ED9: main (src/main.cpp:175)
+==13885==  Uninitialised value was created by a stack allocation
+==13885==    at 0x10032CA10: MNN::GeometryReshape::onCompute(MNN::Op const*, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, MNN::GeometryComputer::Context&, MNN::CommandBuffer&) const (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885== 
+==13885== Conditional jump or move depends on uninitialised value(s)
+==13885==    at 0x10028D8F3: _platform_memcmp (in /usr/local/Cellar/valgrind/HEAD-adaae87/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==13885==    by 0x1002FC6AD: MNN::GeometryComputer::Context::getCachedTensor(MNN::Tensor*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBEDE: MNN::GeometryComputer::Context::getRasterCacheCreate(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBE3E: MNN::GeometryComputer::Context::getRasterCacheCreateRecurrse(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100300380: MNN::GeometryComputerUtils::makeRaster(MNN::CommandBuffer const&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FF378: MNN::GeometryComputerUtils::shapeComputeAndGeometryTransform(std::__1::vector<MNN::Schedule::PipelineInfo, std::__1::allocator<MNN::Schedule::PipelineInfo> >&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&, std::__1::shared_ptr<MNN::Backend>, bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002B88BA: MNN::Pipeline::encode(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002E0B8A: MNN::Session::resize(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3826: MNN::Interpreter::createMultiPathSession(std::__1::vector<MNN::ScheduleConfig, std::__1::allocator<MNN::ScheduleConfig> > const&, std::__1::pair<std::__1::map<MNNForwardType, std::__1::shared_ptr<MNN::Runtime>, std::__1::less<MNNForwardType>, std::__1::allocator<std::__1::pair<MNNForwardType const, std::__1::shared_ptr<MNN::Runtime> > > >, std::__1::shared_ptr<MNN::Runtime> > const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3ED1: MNN::Interpreter::createSession(MNN::ScheduleConfig const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100018782: DbNet::initModel(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/DbNet.cpp:21)
+==13885==    by 0x1000201DC: OcrLite::initModels(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/OcrLite.cpp:36)
+==13885==  Uninitialised value was created by a stack allocation
+==13885==    at 0x1002F5FFD: MNN::ConvertUtils::compute(MNN::Tensor*, MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885== 
+==13885== Conditional jump or move depends on uninitialised value(s)
+==13885==    at 0x10028D924: _platform_memcmp (in /usr/local/Cellar/valgrind/HEAD-adaae87/lib/valgrind/vgpreload_memcheck-amd64-darwin.so)
+==13885==    by 0x1002FC6AD: MNN::GeometryComputer::Context::getCachedTensor(MNN::Tensor*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBEDE: MNN::GeometryComputer::Context::getRasterCacheCreate(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBE3E: MNN::GeometryComputer::Context::getRasterCacheCreateRecurrse(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100300380: MNN::GeometryComputerUtils::makeRaster(MNN::CommandBuffer const&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FF378: MNN::GeometryComputerUtils::shapeComputeAndGeometryTransform(std::__1::vector<MNN::Schedule::PipelineInfo, std::__1::allocator<MNN::Schedule::PipelineInfo> >&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&, std::__1::shared_ptr<MNN::Backend>, bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002B88BA: MNN::Pipeline::encode(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002E0B8A: MNN::Session::resize(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3826: MNN::Interpreter::createMultiPathSession(std::__1::vector<MNN::ScheduleConfig, std::__1::allocator<MNN::ScheduleConfig> > const&, std::__1::pair<std::__1::map<MNNForwardType, std::__1::shared_ptr<MNN::Runtime>, std::__1::less<MNNForwardType>, std::__1::allocator<std::__1::pair<MNNForwardType const, std::__1::shared_ptr<MNN::Runtime> > > >, std::__1::shared_ptr<MNN::Runtime> > const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3ED1: MNN::Interpreter::createSession(MNN::ScheduleConfig const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100018782: DbNet::initModel(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/DbNet.cpp:21)
+==13885==    by 0x1000201DC: OcrLite::initModels(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/OcrLite.cpp:36)
+==13885==  Uninitialised value was created by a stack allocation
+==13885==    at 0x1002F5FFD: MNN::ConvertUtils::compute(MNN::Tensor*, MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885== 
+==13885== Conditional jump or move depends on uninitialised value(s)
+==13885==    at 0x1002FC6D2: MNN::GeometryComputer::Context::getCachedTensor(MNN::Tensor*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBEDE: MNN::GeometryComputer::Context::getRasterCacheCreate(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FBE3E: MNN::GeometryComputer::Context::getRasterCacheCreateRecurrse(MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100300380: MNN::GeometryComputerUtils::makeRaster(MNN::CommandBuffer const&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002FF378: MNN::GeometryComputerUtils::shapeComputeAndGeometryTransform(std::__1::vector<MNN::Schedule::PipelineInfo, std::__1::allocator<MNN::Schedule::PipelineInfo> >&, MNN::CommandBuffer&, MNN::GeometryComputer::Context&, std::__1::shared_ptr<MNN::Backend>, bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002B88BA: MNN::Pipeline::encode(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002E0B8A: MNN::Session::resize(bool) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3826: MNN::Interpreter::createMultiPathSession(std::__1::vector<MNN::ScheduleConfig, std::__1::allocator<MNN::ScheduleConfig> > const&, std::__1::pair<std::__1::map<MNNForwardType, std::__1::shared_ptr<MNN::Runtime>, std::__1::less<MNNForwardType>, std::__1::allocator<std::__1::pair<MNNForwardType const, std::__1::shared_ptr<MNN::Runtime> > > >, std::__1::shared_ptr<MNN::Runtime> > const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002A3ED1: MNN::Interpreter::createSession(MNN::ScheduleConfig const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100018782: DbNet::initModel(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/DbNet.cpp:21)
+==13885==    by 0x1000201DC: OcrLite::initModels(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&, std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const&) (src/OcrLite.cpp:36)
+==13885==    by 0x100063ED9: main (src/main.cpp:175)
+==13885==  Uninitialised value was created by a stack allocation
+==13885==    at 0x1002F5FFD: MNN::ConvertUtils::compute(MNN::Tensor*, MNN::Tensor*, MNN::CommandBuffer&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885== 
+UNKNOWN workq_ops option 1024
+==13885== Thread 5:
+==13885== Invalid read of size 4
+==13885==    at 0x103856C10: _pthread_wqthread_setup (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103856942: _pthread_wqthread (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103855B76: start_wqthread (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==  Address 0x18 is not stack'd, malloc'd or (recently) free'd
+==13885== 
+==13885== 
+==13885== Process terminating with default action of signal 11 (SIGSEGV)
+==13885==  Access not within mapped region at address 0x18
+==13885==    at 0x103856C10: _pthread_wqthread_setup (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103856942: _pthread_wqthread (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103855B76: start_wqthread (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==  If you believe this happened as a result of a stack
+==13885==  overflow in your program's main thread (unlikely but
+==13885==  possible), you can try to increase the size of the
+==13885==  main thread stack using the --main-stacksize= flag.
+==13885==  The main thread stack size used in this run was 8388608.
+
+valgrind: m_scheduler/scheduler.c:1028 (void run_thread_for_a_while(HWord *, Int *, ThreadId, HWord, Bool)): Assertion 'VG_(in_generated_code) == False' failed.
+
+host stacktrace:
+==13885==    at 0x2580427BB: ???
+==13885==    by 0x258042B2F: ???
+==13885==    by 0x258042B12: ???
+==13885==    by 0x2580B7478: ???
+==13885==    by 0x2580B5547: ???
+==13885==    by 0x2580C6695: ???
+==13885==    by 0x2580C693D: ???
+
+sched status:
+  running_tid=2
+
+Thread 1: status = VgTs_Yielding (lwpid 771)
+==13885==    at 0x103841DF0: _platform_bzero$VARIANT$Haswell (in /usr/lib/system/libsystem_platform.dylib)
+==13885==    by 0x1003D31E5: std::__1::__function::__func<MNN::ConvolutionTiledExecutorBasic::onResize(std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&)::$_0, std::__1::allocator<MNN::ConvolutionTiledExecutorBasic::onResize(std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&)::$_0>, void (int)>::operator()(int&&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1003D3906: std::__1::__function::__func<MNN::ConvolutionTiledExecutorBasic::onExecute(std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&)::$_1, std::__1::allocator<MNN::ConvolutionTiledExecutorBasic::onExecute(std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&)::$_1>, void (int)>::operator()(int&&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1003B71B6: MNN::ThreadPool::enqueueInternal(std::__1::pair<std::__1::function<void (int)>, int>&&, int) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1003D2BD6: MNN::ConvolutionTiledExecutorBasic::onExecute(std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&, std::__1::vector<MNN::Tensor*, std::__1::allocator<MNN::Tensor*> > const&) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002B97F5: MNN::Pipeline::execute() (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x1002E09C7: MNN::Session::run() const (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x100019678: DbNet::getTextBoxes(cv::Mat&, ScaleParam&, float, float, float) (src/DbNet.cpp:81)
+==13885==    by 0x100020AB4: OcrLite::detect(char const*, char const*, cv::Mat&, cv::Rect_<int>&, ScaleParam&, float, float, float, bool, bool) (src/OcrLite.cpp:122)
+==13885==    by 0x100020783: OcrLite::detect(char const*, char const*, int, int, float, float, float, bool, bool) (src/OcrLite.cpp:87)
+==13885==    by 0x100063F5C: main (src/main.cpp:177)
+client stack range: [0x10427D000 0x104A7CFFF] client SP: 0x104A7A9F0
+valgrind stack range: [0x700006BB6000 0x700006CB5FFF] top usage: 11648 of 1048576
+
+Thread 2: status = VgTs_Runnable (lwpid 3331)
+==13885==    at 0x103855B68: start_wqthread (in /usr/lib/system/libsystem_pthread.dylib)
+client stack range: ??????? client SP: 0x70000E135000
+valgrind stack range: [0x70000D4FF000 0x70000D5FEFFF] top usage: 11232 of 1048576
+
+Thread 3: status = VgTs_WaitSys syscall unix:305 (lwpid 2819)
+==13885==    at 0x1037F8882: __psynch_cvwait (in /usr/lib/system/libsystem_kernel.dylib)
+==13885==    by 0x10385A424: _pthread_cond_wait (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x10328D591: std::__1::condition_variable::wait(std::__1::unique_lock<std::__1::mutex>&) (in /usr/lib/libc++.1.dylib)
+==13885==    by 0x1003B7654: void* std::__1::__thread_proxy<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct> >, MNN::ThreadPool::ThreadPool(int)::$_1> >(void*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x10385A108: _pthread_start (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103855B8A: thread_start (in /usr/lib/system/libsystem_pthread.dylib)
+client stack range: [0x70000DD1E000 0x70000DD9DFFF] client SP: 0x70000DD9DEB8
+valgrind stack range: [0x70000D603000 0x70000D702FFF] top usage: 3160 of 1048576
+
+Thread 4: status = VgTs_WaitSys syscall unix:305 (lwpid 3843)
+==13885==    at 0x1037F8882: __psynch_cvwait (in /usr/lib/system/libsystem_kernel.dylib)
+==13885==    by 0x10385A424: _pthread_cond_wait (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x10328D591: std::__1::condition_variable::wait(std::__1::unique_lock<std::__1::mutex>&) (in /usr/lib/libc++.1.dylib)
+==13885==    by 0x1003B7654: void* std::__1::__thread_proxy<std::__1::tuple<std::__1::unique_ptr<std::__1::__thread_struct, std::__1::default_delete<std::__1::__thread_struct> >, MNN::ThreadPool::ThreadPool(int)::$_1> >(void*) (in /Users/xiaomi/java/OcrLiteMnn/mnn-shared/macos/libMNN.dylib)
+==13885==    by 0x10385A108: _pthread_start (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103855B8A: thread_start (in /usr/lib/system/libsystem_pthread.dylib)
+client stack range: [0x70000DDA1000 0x70000DE20FFF] client SP: 0x70000DE20EB8
+valgrind stack range: [0x70000D707000 0x70000D806FFF] top usage: 2912 of 1048576
+
+Thread 5: status = VgTs_Yielding (lwpid 2575)
+==13885==    at 0x103856C10: _pthread_wqthread_setup (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103856942: _pthread_wqthread (in /usr/lib/system/libsystem_pthread.dylib)
+==13885==    by 0x103855B76: start_wqthread (in /usr/lib/system/libsystem_pthread.dylib)
+client stack range: ??????? client SP: 0x70000DFABF90
+valgrind stack range: [0x700011B14000 0x700011C13FFF] top usage: 9680 of 1048576
+
+
+Note: see also the FAQ in the source distribution.
+It contains workarounds to several common problems.
+In particular, if Valgrind aborted or crashed after
+identifying problems in your program, there's a good chance
+that fixing those problems will prevent Valgrind aborting or
+crashing, especially if it happened in m_mallocfree.c.
+
+If that doesn't help, please report this bug to: www.valgrind.org
+
+In the bug report, send all the above text, the valgrind
+version, and what OS and version you are using.  Thanks.
+
