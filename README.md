@@ -43,6 +43,9 @@ python backend/main.py
 * onnxruntime c# demo:  完全以C#编写的onnxruntime demo;
 * onnxruntime vb.net demo: 完全以VB编写的onnxruntime demo;
 
+#### 第三方Demo
+* [TNN中文字符ocr](https://github.com/Tencent/TNN/#effect-example): 根据本项目，基于TNN实现的轻量级中文字符ocr demo，支持iOS和Android系统，凭借TNN优化的CPU(ARMv7、ARMv8)和GPU(OpenCL、Metal)后端加速模型计算。
+
 ### Android识别展示
 ![avatar](test_imgs/android/detect_IMEI.gif)
 ![avatar](test_imgs/android/detect_id_card.gif)
@@ -50,3 +53,8 @@ python backend/main.py
 
 ### .NetDemo识别展示
 ![avatar](test_imgs/dotnet/OcrLiteOnnxCs.PNG)
+
+### 第三方 TNN Demo识别展示
+[![avatar](test_imgs/third_party/tnn_detect_camera.gif)](https://github.com/Tencent/TNN/#effect-example)
+[![avatar](test_imgs/third_party/tnn_detect_poster1.png)](https://github.com/Tencent/TNN/#effect-example)
+[![avatar](test_imgs/third_party/tnn_detect_poster2.png)](https://github.com/Tencent/TNN/#effect-example)
