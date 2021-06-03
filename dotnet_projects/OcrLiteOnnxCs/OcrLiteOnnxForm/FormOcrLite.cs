@@ -41,7 +41,7 @@ namespace OcrLiteOnnxCs
             {
                 MessageBox.Show("模型文件不存在:" + recPath);
             }
-            bool isKeysExists = File.Exists(recPath);
+            bool isKeysExists = File.Exists(keysPath);
             if (!isKeysExists)
             {
                 MessageBox.Show("Keys文件不存在:" + keysPath);
