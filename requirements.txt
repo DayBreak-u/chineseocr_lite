@@ -4,4 +4,4 @@ opencv_python==4.3.0.36
 onnxruntime==1.4.0
 Shapely==1.7.0
 pyclipper==1.2.0
-Pillow==7.2.0
+Pillow==8.2.0
