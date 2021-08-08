@@ -34,11 +34,13 @@ else (echo "输入错误！Input Error!")
 echo.
 
 echo "请注意：如果选择2)编译为JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
-set BUILD_LIB=OFF
+echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库，3)编译成C层动态库"
+set BUILD_JNI=OFF
+set BUILD_CLIB=OFF
 set /p flag=
-if %flag% == 1 (set BUILD_LIB=OFF)^
-else if %flag% == 2 (set BUILD_LIB=ON)^
+if %flag% == 1 (set BUILD_JNI=OFF)^
+else if %flag% == 2 (set BUILD_JNI=ON)^
+else if %flag% == 3 (set BUILD_CLIB=ON)^
 else (echo 输入错误！Input Error!)
 echo.
 
@@ -88,8 +90,8 @@ popd
 GOTO:EOF
 
 :cmakeParams
-echo cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% ..
-cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% ..
+echo cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% ..
+cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% ..
 GOTO:EOF
 
 @ENDLOCAL
