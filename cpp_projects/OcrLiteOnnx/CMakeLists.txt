@@ -49,6 +49,8 @@ endif ()
 # OnnxRuntime
 if (OCR_STATIC)
     set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
+elseif (ONNXRUNTIME_STATIC)
+    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
 else ()
     set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-shared")
 endif ()

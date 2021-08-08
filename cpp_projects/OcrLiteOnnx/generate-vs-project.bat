@@ -25,11 +25,14 @@ echo.
 
 echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
 echo "使用动态库时，编译出来的可执行文件较小，但部署的时候记得把dll复制到可执行文件目录"
-echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
+echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库，3)onnxruntime静态，opencv动态"
 set BUILD_STATIC=ON
+set BUILD_ONNXRUNTIME_STATIC=OFF
 set /p flag=
 if %flag% == 1 (set BUILD_STATIC=ON)^
 else if %flag% == 2 (set BUILD_STATIC=OFF)^
+else if %flag% == 3 (set BUILD_STATIC=OFF
+    set BUILD_ONNXRUNTIME_STATIC=ON)^
 else (echo "输入错误！Input Error!")
 echo.
 
@@ -90,8 +93,8 @@ popd
 GOTO:EOF
 
 :cmakeParams
-echo cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% ..
-cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% ..
+echo cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% -DONNXRUNTIME_STATIC=%BUILD_ONNXRUNTIME_STATIC% ..
+cmake -G "%~1" -A "%~2" -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% -DONNXRUNTIME_STATIC=%BUILD_ONNXRUNTIME_STATIC% ..
 GOTO:EOF
 
 @ENDLOCAL
