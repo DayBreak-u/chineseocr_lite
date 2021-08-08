@@ -7,6 +7,11 @@
 
 - linux/macos/windows
 
+## 安装依赖包  
+``` shell script
+pip install -r requirements.txt
+```  
+
 ## web服务启动
 ``` Bash
 cd chineseocr_lite## 进入chineseocr目录
