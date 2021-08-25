@@ -49,6 +49,8 @@ endif ()
 # OnnxRuntime
 if (OCR_STATIC)
     set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
+elseif (ONNXRUNTIME_STATIC)
+    set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-static")
 else ()
     set(OnnxRuntime_DIR "${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-shared")
 endif ()
@@ -103,10 +105,14 @@ if (OCR_STATIC)
     endif ()
 endif ()
 
-if (OCR_LIB)
+if (OCR_LIB) # JNI
     add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteOnnx PRIVATE __JNI__)
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
+elseif(OCR_CLIB) # C LIB
+    add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
+    target_compile_definitions(OcrLiteOnnx PRIVATE __CLIB__)
+    target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 else ()
     add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
@@ -117,7 +123,7 @@ if (OCR_OPENMP)
 endif ()
 
 # benchmark
-if (OCR_BENCHMARK AND NOT OCR_LIB)
+if (OCR_BENCHMARK AND NOT OCR_LIB AND NOT OCR_CLIB)
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp

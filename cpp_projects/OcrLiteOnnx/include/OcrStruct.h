@@ -4,6 +4,8 @@
 #include "opencv2/core.hpp"
 #include <vector>
 
+#include "OcrLitePort.h"
+
 struct ScaleParam {
     int srcWidth;
     int srcHeight;
@@ -30,7 +32,7 @@ struct TextLine {
     double time;
 };
 
-struct TextBlock {
+struct OCRLITE_PORT TextBlock {
     std::vector<cv::Point> boxPoint;
     float boxScore;
     int angleIndex;
@@ -42,7 +44,7 @@ struct TextBlock {
     double blockTime;
 };
 
-struct OcrResult {
+struct OCRLITE_PORT OcrResult {
     double dbNetTime;
     std::vector<TextBlock> textBlocks;
     cv::Mat boxImg;
