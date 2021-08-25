@@ -30,7 +30,10 @@ public:
     OcrResult detect(const char *path, const char *imgName,
                      int padding, int maxSideLen,
                      float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle);
-
+    
+    OcrResult detect(const cv::Mat& mat,
+        int padding, int maxSideLen,
+        float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle);
 private:
     bool isOutputConsole = false;
     bool isOutputPartImg = false;

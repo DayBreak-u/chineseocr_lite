@@ -1,4 +1,5 @@
 #ifndef __JNI__
+#ifndef __CLIB__
 #include <omp.h>
 #include <cstdio>
 #include "main.h"
@@ -180,4 +181,5 @@ int main(int argc, char **argv) {
     return 0;
 }
 
+#endif
 #endif
