@@ -104,10 +104,14 @@ if (OCR_STATIC)
     endif ()
 endif ()
 
-if (OCR_LIB)
+if (OCR_LIB) # JNI
     add_library(OcrLiteNcnn SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteNcnn PRIVATE __JNI__)
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
+elseif(OCR_CLIB) # C LIB
+    add_library(OcrLiteNcnn SHARED ${OCR_COMPILE_CODE})
+    target_compile_definitions(OcrLiteNcnn PRIVATE __CLIB__)
+    target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 else ()
     add_executable(OcrLiteNcnn ${OCR_COMPILE_CODE})
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
@@ -122,7 +126,7 @@ if (OCR_VULKAN)
 endif ()
 
 # benchmark
-if (OCR_BENCHMARK AND NOT OCR_LIB)
+if (OCR_BENCHMARK AND NOT OCR_LIB AND NOT OCR_CLIB)
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp
