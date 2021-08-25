@@ -15,6 +15,11 @@ void OcrLiteCaller::setNumThread(int numOfThread)
 	m_ocrlite_ptr->setNumThread(numOfThread);
 }
 
+void OcrLiteCaller::setGpuIndex(int gpuIndex)
+{
+	m_ocrlite_ptr->setGpuIndex(gpuIndex);
+}
+
 void OcrLiteCaller::initModels(const std::string& detPath, const std::string& clsPath, const std::string& recPath, const std::string& keysPath)
 {
 	m_ocrlite_ptr->initModels(detPath, clsPath, recPath, keysPath);
