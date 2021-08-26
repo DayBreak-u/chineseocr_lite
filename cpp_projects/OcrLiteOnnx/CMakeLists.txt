@@ -115,6 +115,7 @@ elseif(OCR_CLIB) # C LIB
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 else ()
     add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
+    target_compile_definitions(OcrLiteOnnx PRIVATE __EXEC__)
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
@@ -133,6 +134,7 @@ if (OCR_BENCHMARK AND NOT OCR_LIB AND NOT OCR_CLIB)
             src/OcrLite.cpp
             src/OcrUtils.cpp)
     target_link_libraries(benchmark ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
+    target_compile_definitions(benchmark PRIVATE __EXEC__)
     if (OCR_OPENMP)
         target_compile_definitions(benchmark PRIVATE __OPENMP__)
     endif ()
