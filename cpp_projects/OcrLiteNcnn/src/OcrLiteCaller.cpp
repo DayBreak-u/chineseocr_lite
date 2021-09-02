@@ -20,9 +20,9 @@ void OcrLiteCaller::setGpuIndex(int gpuIndex)
 	m_ocrlite_ptr->setGpuIndex(gpuIndex);
 }
 
-void OcrLiteCaller::initModels(const std::string& detPath, const std::string& clsPath, const std::string& recPath, const std::string& keysPath)
+bool OcrLiteCaller::initModels(const std::string& detPath, const std::string& clsPath, const std::string& recPath, const std::string& keysPath)
 {
-	m_ocrlite_ptr->initModels(detPath, clsPath, recPath, keysPath);
+	return m_ocrlite_ptr->initModels(detPath, clsPath, recPath, keysPath);
 }
 
 OcrResult OcrLiteCaller::detect(const cv::Mat& mat, int padding, int maxSideLen, float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle)
