@@ -21,7 +21,7 @@ public:
 	OcrLiteCaller(OcrLite&&) = delete;
 
 	void setNumThread(int numOfThread);
-	void initModels(const std::string& detPath, const std::string& clsPath,
+	bool initModels(const std::string& detPath, const std::string& clsPath,
 		const std::string& recPath, const std::string& keysPath);
 
 	OcrResult detect(const cv::Mat& mat,
