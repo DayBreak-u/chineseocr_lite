@@ -26,26 +26,33 @@ echo.
 
 echo "使用静态库时，编译出来的可执行文件较大，但部署起来比较方便。"
 echo "使用动态库时，编译出来的可执行文件较小，但部署的时候记得把dll复制到可执行文件目录"
-echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库"
+echo "请选择要使用的OnnxRuntime和Opencv库选项并回车: 1)Static静态库，2)Shared动态库，3)onnxruntime静态，opencv动态"
 set BUILD_STATIC=ON
+set BUILD_ONNXRUNTIME_STATIC=OFF
 set /p flag=
 if %flag% == 1 (set BUILD_STATIC=ON)^
 else if %flag% == 2 (set BUILD_STATIC=OFF)^
+else if %flag% == 3 (set BUILD_STATIC=OFF
+    set BUILD_ONNXRUNTIME_STATIC=ON)^
 else (echo "输入错误！Input Error!")
 echo.
 
 echo "请注意：如果选择2)编译为JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
-set BUILD_LIB=OFF
+echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库，3)编译成C层动态库"
+set BUILD_JNI=OFF
+set BUILD_CLIB=OFF
 set /p flag=
-if %flag% == 1 (set BUILD_LIB=OFF)^
-else if %flag% == 2 (set BUILD_LIB=ON)^
+if %flag% == 1 (set BUILD_JNI=OFF)^
+else if %flag% == 2 (set BUILD_JNI=ON)^
+else if %flag% == 3 (set BUILD_CLIB=ON)^
 else (echo 输入错误！Input Error!)
 echo.
-if %BUILD_LIB% == OFF (call :makeExe)^
-else (call :makeLib)
-echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% ..
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% ..
+
+if %BUILD_JNI% == ON (call :makeJni)^
+else if %BUILD_CLIB% == ON (call :makeCLib)^
+else (call :makeExe)
+echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_JNI=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% -DONNXRUNTIME_STATIC=%BUILD_ONNXRUNTIME_STATIC% ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_JNI=%BUILD_JNI%  -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC%  -DONNXRUNTIME_STATIC=%BUILD_ONNXRUNTIME_STATIC% ..
 nmake
 popd
 GOTO:EOF
@@ -55,21 +62,32 @@ mkdir build
 pushd build
 GOTO:EOF
 
-:makeLib
-mkdir build-lib
-pushd build-lib
+:makeJni
+mkdir build-jni
+pushd build-jni
+GOTO:EOF
+
+:makeCLib
+mkdir build-clib
+pushd build-clib
 GOTO:EOF
 
 :makeAllExe
 mkdir win-%VSCMD_ARG_TGT_ARCH%
 pushd win-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=OFF -DOCR_STATIC=ON -DONNXRUNTIME_STATIC=OFF ..
 nmake
 popd
 
-mkdir win-lib-%VSCMD_ARG_TGT_ARCH%
-pushd win-lib-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON ..
+mkdir win-jni-%VSCMD_ARG_TGT_ARCH%
+pushd win-jni-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=ON -DOCR_CLIB=OFF -DOCR_STATIC=ON -DONNXRUNTIME_STATIC=OFF ..
+nmake
+popd
+
+mkdir win-clib-%VSCMD_ARG_TGT_ARCH%
+pushd win-clib-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=ON -DOCR_STATIC=ON -DONNXRUNTIME_STATIC=OFF ..
 nmake
 popd
 
