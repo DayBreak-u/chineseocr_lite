@@ -3,25 +3,37 @@
 function buildAll() {
   mkdir -p ${sysOS}-CPU
   pushd ${sysOS}-CPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
   make -j $NUM_THREADS
   popd
 
   mkdir -p ${sysOS}-GPU
   pushd ${sysOS}-GPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
   make -j $NUM_THREADS
   popd
 
-  mkdir -p ${sysOS}-Lib-CPU
-  pushd ${sysOS}-Lib-CPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+  mkdir -p ${sysOS}-Jni-CPU
+  pushd ${sysOS}-Jni-CPU
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=ON -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
   make -j $NUM_THREADS
   popd
 
-  mkdir -p ${sysOS}-Lib-GPU
-  pushd ${sysOS}-Lib-GPU
-  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+  mkdir -p ${sysOS}-Jni-GPU
+  pushd ${sysOS}-Jni-GPU
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=ON -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+  make -j $NUM_THREADS
+  popd
+  
+  mkdir -p ${sysOS}-CLib-CPU
+  pushd ${sysOS}-CLib-CPU
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+  make -j $NUM_THREADS
+  popd
+
+  mkdir -p ${sysOS}-CLib-GPU
+  pushd ${sysOS}-CLib-GPU
+  cmake -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
   make -j $NUM_THREADS
   popd
 }
@@ -88,25 +100,32 @@ else
 fi
 
 echo "请注意：如果选择2)编译为JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
-read -p "" BUILD_LIB
-if [ $BUILD_LIB == 1 ]; then
-  BUILD_LIB=OFF
-elif [ $BUILD_LIB == 2 ]; then
-  BUILD_LIB=ON
+echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库，3)编译成C层动态库"
+read -p "" BUILD_JNI
+BUILD_CLIB=OFF
+if [ $BUILD_JNI == 1 ]; then
+  BUILD_JNI=OFF
+elif [ $BUILD_JNI == 2 ]; then
+  BUILD_JNI=ON
+elif [ $BUILD_JNI == 3 ]; then
+  BUILD_JNI=OFF
+  BUILD_CLIB=ON
 else
   echo -e "输入错误！Input Error!"
 fi
 
-if [ $BUILD_LIB == OFF ]; then
+if [ $BUILD_JNI == ON ]; then
+  mkdir -p build-jni
+  pushd build-jni
+elif [ $BUILD_CLIB == ON ]; then
+  mkdir -p build-clib
+  pushd build-clib
+else
   mkdir -p build
   pushd build
-else
-  mkdir -p build-lib
-  pushd build-lib
 fi
 
-echo "cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DOCR_OPENMP=${BUILD_OPENMP} -DOCR_LIB=${BUILD_LIB} -DOCR_STATIC=${BUILD_STATIC} -DOCR_VULKAN=${BUILD_VULKAN} .."
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOCR_OPENMP=$BUILD_OPENMP -DOCR_LIB=$BUILD_LIB -DOCR_STATIC=$BUILD_STATIC -DOCR_VULKAN=$BUILD_VULKAN ..
+echo "cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DOCR_OPENMP=${BUILD_OPENMP} -DOCR_JNI=${BUILD_JNI} -DOCR_CLIB=${BUILD_CLIB} -DOCR_STATIC=${BUILD_STATIC} -DOCR_VULKAN=${BUILD_VULKAN} .."
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DOCR_OPENMP=$BUILD_OPENMP -DOCR_JNI=$BUILD_JNI -DOCR_CLIB=$BUILD_CLIB -DOCR_STATIC=$BUILD_STATIC -DOCR_VULKAN=$BUILD_VULKAN ..
 make -j $NUM_THREADS
 popd

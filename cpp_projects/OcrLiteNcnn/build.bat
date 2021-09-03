@@ -43,18 +43,21 @@ else (echo "输入错误！Input Error!")
 echo.
 
 echo "请注意：如果选择2)编译为JNI动态库时，必须安装配置Oracle JDK"
-echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库"
-set BUILD_LIB=OFF
+echo "请选择编译输出类型并回车: 1)编译成可执行文件，2)编译成JNI动态库，3)编译成C层动态库"
+set BUILD_JNI=OFF
+set BUILD_CLIB=OFF
 set /p flag=
-if %flag% == 1 (set BUILD_LIB=OFF)^
-else if %flag% == 2 (set BUILD_LIB=ON)^
+if %flag% == 1 (set BUILD_JNI=OFF)^
+else if %flag% == 2 (set BUILD_JNI=ON)^
+else if %flag% == 3 (set BUILD_CLIB=ON)^
 else (echo 输入错误！Input Error!)
 echo.
 
-if %BUILD_LIB% == OFF (call :makeExe)^
-else (call :makeLib)
-echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_LIB=%BUILD_LIB% -DOCR_STATIC=%BUILD_STATIC% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
+if %BUILD_JNI% == ON (call :makeJni)^
+else if %BUILD_CLIB% == ON (call :makeCLib)^
+else (call :makeExe)
+echo cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_JNI=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DOCR_OPENMP=%BUILD_OPENMP% -DOCR_JNI=%BUILD_JNI% -DOCR_CLIB=%BUILD_CLIB% -DOCR_STATIC=%BUILD_STATIC% -DOCR_VULKAN=%BUILD_NCNN_VULKAN% ..
 nmake
 popd
 GOTO:EOF
@@ -64,33 +67,50 @@ mkdir build
 pushd build
 GOTO:EOF
 
-:makeLib
-mkdir build-lib
-pushd build-lib
+:makeJni
+mkdir build-jni
+pushd build-jni
+GOTO:EOF
+
+:makeCLib
+mkdir build-clib
+pushd build-clib
 GOTO:EOF
 
 :makeAllExe
 mkdir win-cpu-%VSCMD_ARG_TGT_ARCH%
 pushd win-cpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
 nmake
 popd
 
 mkdir win-gpu-%VSCMD_ARG_TGT_ARCH%
 pushd win-gpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
 nmake
 popd
 
-mkdir win-lib-cpu-%VSCMD_ARG_TGT_ARCH%
-pushd win-lib-cpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+mkdir win-jni-cpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-jni-cpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=ON -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
 nmake
 popd
 
-mkdir win-lib-gpu-%VSCMD_ARG_TGT_ARCH%
-pushd win-lib-gpu-%VSCMD_ARG_TGT_ARCH%
-cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_LIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+mkdir win-jni-gpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-jni-gpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=ON -DOCR_CLIB=OFF -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
+nmake
+popd
+
+mkdir win-clib-cpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-clib-cpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=OFF ..
+nmake
+popd
+
+mkdir win-clib-gpu-%VSCMD_ARG_TGT_ARCH%
+pushd win-clib-gpu-%VSCMD_ARG_TGT_ARCH%
+cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DOCR_OPENMP=OFF -DOCR_JNI=OFF -DOCR_CLIB=ON -DOCR_STATIC=ON -DOCR_VULKAN=ON ..
 nmake
 popd
 

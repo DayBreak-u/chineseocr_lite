@@ -22,7 +22,7 @@ public:
 
 	void setNumThread(int numOfThread);
 	void setGpuIndex(int gpuIndex);
-	void initModels(const std::string& detPath, const std::string& clsPath,
+	bool initModels(const std::string& detPath, const std::string& clsPath,
 		const std::string& recPath, const std::string& keysPath);
 
 	OcrResult detect(const cv::Mat& mat,

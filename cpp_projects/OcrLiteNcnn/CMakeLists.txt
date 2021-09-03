@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(OcrLiteNcnn)
 
-option(OCR_LIB "OcrLite Jni Support" OFF)
+option(OCR_JNI "OcrLite Jni Support" OFF)
+option(OCR_CLIB "OcrLite CLib Support" OFF)
 option(OCR_STATIC "Use Static Librarys For Build" ON)
 option(OCR_OPENMP "OcrLite Enable OpenMP" ON)
 option(OCR_BENCHMARK "build benchmark" ON)
 option(OCR_VULKAN "OcrLite Enable Vulkan" ON)
-#set(OCR_LIB ON)
+#set(OCR_JNI ON)
 #set(OCR_STATIC OFF)
 #set(OCR_OPENMP OFF)
 set(OCR_BENCHMARK ON)
@@ -76,7 +77,7 @@ else ()
 endif (OpenCV_FOUND)
 
 # JNI
-if (OCR_LIB)
+if (OCR_JNI)
     find_package(JNI REQUIRED)
     if (JNI_FOUND)
         message("JNI FOUND")
@@ -104,7 +105,7 @@ if (OCR_STATIC)
     endif ()
 endif ()
 
-if (OCR_LIB) # JNI
+if (OCR_JNI) # JNI
     add_library(OcrLiteNcnn SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteNcnn PRIVATE __JNI__)
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
@@ -127,7 +128,7 @@ if (OCR_VULKAN)
 endif ()
 
 # benchmark
-if (OCR_BENCHMARK AND NOT OCR_LIB AND NOT OCR_CLIB)
+if (OCR_BENCHMARK AND NOT OCR_JNI AND NOT OCR_CLIB)
     add_executable(benchmark benchmark/benchmark.cpp
             src/AngleNet.cpp
             src/clipper.cpp

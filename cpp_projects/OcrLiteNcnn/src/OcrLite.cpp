@@ -49,6 +49,7 @@ bool OcrLite::initModels(const std::string &detPath, const std::string &clsPath,
 
     if (!retDbNet || !retAngleNet || !retCrnnNet) {
         Logger("Init Models Failed! %d  %d  %d\n", retDbNet, retAngleNet, retCrnnNet);
+        return false;
     }
     return true;
 }
