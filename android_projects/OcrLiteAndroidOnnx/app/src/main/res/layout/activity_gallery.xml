@@ -137,7 +137,7 @@
             android:layout_height="wrap_content"
             android:text="@string/do_angle" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/doAngleSw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,7 +151,7 @@
             android:layout_marginStart="5dp"
             android:text="角度投票" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/mostAngleSw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

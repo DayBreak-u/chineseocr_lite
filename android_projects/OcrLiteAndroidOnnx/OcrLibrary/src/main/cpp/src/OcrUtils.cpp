@@ -1,5 +1,4 @@
 #include <opencv2/imgproc.hpp>
-#include <opencv2/imgcodecs.hpp>
 #include "OcrUtils.h"
 #include "clipper.hpp"
 
@@ -106,7 +105,7 @@ cv::Mat matRotateClockWise90(cv::Mat src) {
     return src;
 }
 
-cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
+cv::Mat getRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box) {
     cv::Mat image;
     src.copyTo(image);
     std::vector<cv::Point> points = box;
@@ -272,7 +271,8 @@ float boxScoreFast(cv::Mat &mapmat, std::vector<cv::Point> &_box) {
 }
 
 // use clipper
-void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec, float unClipRatio) {
+void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv::Point> &outVec,
+            float unClipRatio) {
     ClipperLib::Path poly;
 
     for (int i = 0; i < minBoxVec.size(); ++i) {
@@ -282,7 +282,8 @@ void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv
     double distance = unClipRatio * ClipperLib::Area(poly) / (double) allEdgeSize;
 
     ClipperLib::ClipperOffset clipperOffset;
-    clipperOffset.AddPath(poly, ClipperLib::JoinType::jtRound, ClipperLib::EndType::etClosedPolygon);
+    clipperOffset.AddPath(poly, ClipperLib::JoinType::jtRound,
+                          ClipperLib::EndType::etClosedPolygon);
     ClipperLib::Paths polys;
     polys.push_back(poly);
     clipperOffset.Execute(polys, distance);
@@ -297,7 +298,8 @@ void unClip(std::vector<cv::Point> &minBoxVec, float allEdgeSize, std::vector<cv
     }
 }
 
-std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, const float *normVals) {
+std::vector<float>
+substractMeanNormalize(cv::Mat &src, const float *meanVals, const float *normVals) {
     auto inputTensorSize = src.cols * src.rows * src.channels();
     std::vector<float> inputTensorValues(inputTensorSize);
     size_t numChannels = src.channels();
@@ -305,7 +307,8 @@ std::vector<float> substractMeanNormalize(cv::Mat &src, const float *meanVals, c
 
     for (size_t pid = 0; pid < imageSize; pid++) {
         for (size_t ch = 0; ch < numChannels; ++ch) {
-            float data = (float) (src.data[pid * numChannels + ch] * normVals[ch] - meanVals[ch] * normVals[ch]);
+            float data = (float) (src.data[pid * numChannels + ch] * normVals[ch] -
+                                  meanVals[ch] * normVals[ch]);
             inputTensorValues[ch * imageSize + pid] = data;
         }
     }
