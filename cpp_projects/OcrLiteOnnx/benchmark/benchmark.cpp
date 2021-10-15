@@ -1,4 +1,3 @@
-#include <omp.h>
 #include <cstdio>
 #include "main.h"
 #include "version.h"
@@ -162,7 +161,6 @@ int main(int argc, char **argv) {
         fprintf(stderr, "keys file not found: %s\n", keysPath.c_str());
         return -1;
     }
-    omp_set_num_threads(numThread);
     OcrLite ocrLite;
     ocrLite.setNumThread(numThread);
     ocrLite.initLogger(

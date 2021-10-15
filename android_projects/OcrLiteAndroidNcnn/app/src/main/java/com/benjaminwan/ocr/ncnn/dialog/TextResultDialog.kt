@@ -5,10 +5,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import com.benjaminwan.ocr.ncnn.R
 import com.benjaminwan.ocr.ncnn.utils.hideSoftInput
 import com.benjaminwan.ocr.ncnn.utils.toClipboard
-import kotlinx.android.synthetic.main.dialog_text_result.*
 
 class TextResultDialog : BaseDialog(), View.OnClickListener {
     companion object {
@@ -26,6 +28,11 @@ class TextResultDialog : BaseDialog(), View.OnClickListener {
     private var content: String = ""
     private var title: String = ""
 
+    private lateinit var negativeBtn: Button
+    private lateinit var positiveBtn: Button
+    private lateinit var titleTV: TextView
+    private lateinit var contentEdit: EditText
+
     override fun onCreateView(
         inflater: LayoutInflater,
         viewGroup: ViewGroup?,
@@ -34,8 +41,16 @@ class TextResultDialog : BaseDialog(), View.OnClickListener {
         return inflater.inflate(R.layout.dialog_text_result, viewGroup, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private fun findViews(view: View) {
+        negativeBtn = view.findViewById(R.id.negativeBtn)
+        positiveBtn = view.findViewById(R.id.positiveBtn)
+        titleTV = view.findViewById(R.id.titleTV)
+        contentEdit = view.findViewById(R.id.contentEdit)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        findViews(view)
         initViews()
     }
 
@@ -62,7 +77,6 @@ class TextResultDialog : BaseDialog(), View.OnClickListener {
         content = textContent
         return this
     }
-
 
     override fun onClick(view: View) {
         val resId = view.id

@@ -110,7 +110,7 @@ TextLine CrnnNet::getTextLine(const cv::Mat &src) {
     int dstWidth = int((float) src.cols * scale);
 
     cv::Mat srcResize;
-    resize(src, srcResize, cv::Size(dstWidth, dstHeight));
+    cv::resize(src, srcResize, cv::Size(dstWidth, dstHeight));
 
     ncnn::Mat input = ncnn::Mat::from_pixels(
             srcResize.data, ncnn::Mat::PIXEL_RGB,
@@ -131,9 +131,6 @@ TextLine CrnnNet::getTextLine(const cv::Mat &src) {
 std::vector<TextLine> CrnnNet::getTextLines(std::vector<cv::Mat> &partImg) {
     int size = partImg.size();
     std::vector<TextLine> textLines(size);
-#ifdef __OPENMP__
-#pragma omp parallel for num_threads(4)
-#endif
     for (int i = 0; i < size; ++i) {
         //getTextLine
         double startCrnnTime = getCurrentTime();

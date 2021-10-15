@@ -7,11 +7,14 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.assent.Permission
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assent.isAllGranted
@@ -24,11 +27,13 @@ import com.benjaminwan.ocrlibrary.OcrFailed
 import com.benjaminwan.ocrlibrary.OcrResult
 import com.benjaminwan.ocrlibrary.OcrStop
 import com.orhanobut.logger.Logger
-import com.uber.autodispose.android.lifecycle.autoDisposable
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_plate.*
+import jsc.kit.cameramask.CameraLensView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import kotlin.math.max
 
 class PlateActivity : AppCompatActivity(), View.OnClickListener {
@@ -55,6 +60,21 @@ class PlateActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private lateinit var startBtn: Button
+    private lateinit var stopBtn: Button
+    private lateinit var resultEdit: EditText
+    private lateinit var cameraLensView: CameraLensView
+
+    private fun initViews() {
+        viewFinder = findViewById(R.id.viewFinder)
+        startBtn = findViewById(R.id.startBtn)
+        stopBtn = findViewById(R.id.stopBtn)
+        resultEdit = findViewById(R.id.resultEdit)
+        cameraLensView = findViewById(R.id.cameraLensView)
+        startBtn.setOnClickListener(this)
+        stopBtn.setOnClickListener(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.ocrEngine.doAngle = false//摄像头拍摄一般都是正的，不需要判断方向
@@ -62,7 +82,6 @@ class PlateActivity : AppCompatActivity(), View.OnClickListener {
         App.ocrEngine.boxScoreThresh = 0.2f
         App.ocrEngine.unClipRatio = 2.0f
         setContentView(R.layout.activity_plate)
-        viewFinder = findViewById(R.id.viewFinder)
         initViews()
     }
 
@@ -122,10 +141,6 @@ class PlateActivity : AppCompatActivity(), View.OnClickListener {
         resultEdit.setSelection(result.strRes.length)
     }
 
-    private fun initViews() {
-        startBtn.setOnClickListener(this)
-        stopBtn.setOnClickListener(this)
-    }
 
     override fun onClick(view: View?) {
         view ?: return
@@ -152,17 +167,21 @@ class PlateActivity : AppCompatActivity(), View.OnClickListener {
         resultEdit.isEnabled = !isStart
     }
 
+    private fun getBitMap(): Bitmap? {
+        val camPic = viewFinder.bitmap ?: return null
+        if (camPic.width <= 0 || camPic.height <= 0) return null
+        return cameraLensView.cropCameraLensRectBitmap(camPic, false)
+    }
+
     private fun detectLoop() {
         cameraLensView.cameraLensBitmap = null
         resultEdit.setText("")
         setDetectState(true)
-        Observable.fromCallable {
+        flow {
             var success: OcrResult? = null
             do {
-                val camPic = viewFinder.bitmap ?: continue
-                if (camPic.width <= 0 || camPic.height <= 0) continue
-                val bitmap =
-                    cameraLensView.cropCameraLensRectBitmap(camPic, false)
+                val bitmap = withContext(Dispatchers.Main) { getBitMap() }
+                bitmap ?: continue
                 val once = detectOnce(bitmap)
                 val text = once.strRes.trimBlankAndSymbols().toUpperCase()
                 Logger.i(text)
@@ -171,16 +190,15 @@ class PlateActivity : AppCompatActivity(), View.OnClickListener {
                     success = once.copy(strRes = matchId)
                 }
             } while (success == null && detectStart)
-            success ?: if (!detectStart) {
+            val result = success ?: if (!detectStart) {
                 OcrStop
             } else {
                 OcrFailed
             }
+            emit(result)
         }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(this)
-            .subscribe({
+            .flowOn(Dispatchers.IO)
+            .onEach {
                 when (it) {
                     is OcrResult -> {
                         setDetectState(false)
@@ -194,9 +212,8 @@ class PlateActivity : AppCompatActivity(), View.OnClickListener {
                         detectLoop()
                     }
                 }
-            }, {
-                detectLoop()
-            })
+            }
+            .launchIn(lifecycleScope)
     }
 
     private fun startCamera() {

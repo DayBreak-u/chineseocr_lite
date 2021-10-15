@@ -3,7 +3,7 @@
 
 #include "OcrStruct.h"
 #include "ncnn/net.h"
-#include <opencv/cv.hpp>
+#include <opencv2/opencv.hpp>
 
 class DbNet {
 public:

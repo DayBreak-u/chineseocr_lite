@@ -29,7 +29,7 @@ void OcrLite::enableResultTxt(const char *path, const char *imgName) {
     resultTxt = fopen(resultTxtPath.c_str(), "w");
 }
 
-void OcrLite::initModels(const std::string &detPath, const std::string &clsPath,
+bool OcrLite::initModels(const std::string &detPath, const std::string &clsPath,
                          const std::string &recPath, const std::string &keysPath) {
     Logger("=====Init Models=====\n");
     Logger("--- Init DbNet ---\n");
@@ -42,6 +42,7 @@ void OcrLite::initModels(const std::string &detPath, const std::string &clsPath,
     crnnNet.initModel(recPath, keysPath);
 
     Logger("Init Models Success!\n");
+    return true;
 }
 
 void OcrLite::Logger(const char *format, ...) {
@@ -91,24 +92,24 @@ OcrResult OcrLite::detect(const char *path, const char *imgName,
 
 OcrResult OcrLite::detect(const cv::Mat& mat, int padding, int maxSideLen, float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle)
 {
-	cv::Mat originSrc;
-	cvtColor(mat, originSrc, cv::COLOR_BGR2RGB);// convert to RGB
-	int originMaxSide = (std::max)(originSrc.cols, originSrc.rows);
-	int resize;
-	if (maxSideLen <= 0 || maxSideLen > originMaxSide) {
-		resize = originMaxSide;
-	}
-	else {
-		resize = maxSideLen;
-	}
-	resize += 2 * padding;
-	cv::Rect paddingRect(padding, padding, originSrc.cols, originSrc.rows);
-	cv::Mat paddingSrc = makePadding(originSrc, padding);
-	ScaleParam scale = getScaleParam(paddingSrc, resize);
-	OcrResult result;
-	result = detect(NULL, NULL, paddingSrc, paddingRect, scale,
-		boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
-	return result;
+    cv::Mat originSrc;
+    cvtColor(mat, originSrc, cv::COLOR_BGR2RGB);// convert to RGB
+    int originMaxSide = (std::max)(originSrc.cols, originSrc.rows);
+    int resize;
+    if (maxSideLen <= 0 || maxSideLen > originMaxSide) {
+        resize = originMaxSide;
+    }
+    else {
+        resize = maxSideLen;
+    }
+    resize += 2 * padding;
+    cv::Rect paddingRect(padding, padding, originSrc.cols, originSrc.rows);
+    cv::Mat paddingSrc = makePadding(originSrc, padding);
+    ScaleParam scale = getScaleParam(paddingSrc, resize);
+    OcrResult result;
+    result = detect(NULL, NULL, paddingSrc, paddingRect, scale,
+        boxScoreThresh, boxThresh, unClipRatio, doAngle, mostAngle);
+    return result;
 }
 
 std::vector<cv::Mat> OcrLite::getPartImages(cv::Mat &src, std::vector<TextBox> &textBoxes,

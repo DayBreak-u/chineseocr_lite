@@ -3,19 +3,34 @@ package com.benjaminwan.ocr.ncnn
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    private lateinit var galleryBtn: Button
+    private lateinit var cameraBtn: Button
+    private lateinit var imeiBtn: Button
+    private lateinit var plateBtn: Button
+    private lateinit var idCardBtn: Button
+
+    private fun initViews() {
+        galleryBtn = findViewById(R.id.galleryBtn)
+        cameraBtn = findViewById(R.id.cameraBtn)
+        imeiBtn = findViewById(R.id.imeiBtn)
+        plateBtn = findViewById(R.id.plateBtn)
+        idCardBtn = findViewById(R.id.idCardBtn)
         galleryBtn.setOnClickListener(this)
         cameraBtn.setOnClickListener(this)
         imeiBtn.setOnClickListener(this)
         plateBtn.setOnClickListener(this)
         idCardBtn.setOnClickListener(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        initViews()
     }
 
     override fun onClick(view: View?) {
