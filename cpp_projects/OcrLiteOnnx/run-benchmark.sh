@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+function PrepareVar(){
+EXE_PATH=${sysOS}-BIN
+}
+
 sysOS=`uname -s`
 NUM_THREADS=1
 if [ $sysOS == "Darwin" ];then
@@ -15,18 +19,19 @@ fi
 echo "Setting the Number of Threads=$NUM_THREADS Using an OpenMP Environment Variable"
 set OMP_NUM_THREADS=$NUM_THREADS
 
-echo "请输入循环次数:"
+PrepareVar
+
+echo "请输入循环次数"
 read -p "" LOOP_COUNT
 
-TARGET_IMG=../images/1.jpg
+TARGET_IMG=images/1.jpg
 if [ ! -f "$TARGET_IMG" ]; then
 echo "找不到待识别的目标图片：${TARGET_IMG}，请打开本文件并编辑TARGET_IMG"
 exit
 fi
 
-##### run test on MacOS or Linux
-./build/benchmark --version
-./build/benchmark --models models \
+./${EXE_PATH}/benchmark --version
+./${EXE_PATH}/benchmark --models models \
 --det dbnet.onnx \
 --cls angle_net.onnx \
 --rec crnn_lite_lstm.onnx \

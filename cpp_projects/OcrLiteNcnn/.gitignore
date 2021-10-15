@@ -142,7 +142,10 @@ build-lib/
 /ncnn/macos/
 /ncnn/windows/
 /ncnn/linux/
-ncnn-static/
-ncnn-vulkan-static/
-opencv-shared/
-opencv-static/
+ncnn-static/*
+!/ncnn-static/NcnnWrapperConfig.cmake
+ncnn-vulkan-static/*
+!/ncnn-vulkan-static/NcnnWrapperConfig.cmake
+opencv-static/*
+!/opencv-static/OpenCVWrapperConfig.cmake
+/images/*-result.*

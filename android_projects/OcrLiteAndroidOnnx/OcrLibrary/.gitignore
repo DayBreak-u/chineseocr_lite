@@ -1,10 +1,5 @@
 /build
 /.cxx
 /src/main/sharedLibs
-/src/main/assets/*.onnx
 /src/sdk
-/src/main/onnx/include
-/src/main/onnx/arm64-v8a
-/src/main/onnx/armeabi-v7a
-/src/main/onnx/x86
-/src/main/onnx/x86_64
+/src/main/onnx

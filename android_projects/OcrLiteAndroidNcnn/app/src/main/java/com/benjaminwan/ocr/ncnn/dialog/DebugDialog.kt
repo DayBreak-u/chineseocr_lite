@@ -5,6 +5,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.benjaminwan.ocr.ncnn.R
@@ -15,10 +17,6 @@ import com.benjaminwan.ocr.ncnn.utils.hideSoftInput
 import com.benjaminwan.ocr.ncnn.utils.setMarginItemDecoration
 import com.benjaminwan.ocrlibrary.OcrResult
 import com.benjaminwan.ocrlibrary.TextBlock
-import kotlinx.android.synthetic.main.dialog_debug.*
-import kotlinx.android.synthetic.main.dialog_text_result.negativeBtn
-import kotlinx.android.synthetic.main.dialog_text_result.positiveBtn
-import kotlinx.android.synthetic.main.dialog_text_result.titleTV
 
 class DebugDialog : BaseDialog(), View.OnClickListener {
     companion object {
@@ -36,7 +34,11 @@ class DebugDialog : BaseDialog(), View.OnClickListener {
     private var title: String = ""
     private var textBlocks: MutableList<TextBlock> = mutableListOf()
     private var dbnetTime: Double = 0.0
-    private lateinit var recyclerView: EpoxyRecyclerView
+
+    private lateinit var debugRV: EpoxyRecyclerView
+    private lateinit var negativeBtn: Button
+    private lateinit var positiveBtn: Button
+    private lateinit var titleTV: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,8 +48,16 @@ class DebugDialog : BaseDialog(), View.OnClickListener {
         return inflater.inflate(R.layout.dialog_debug, viewGroup, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private fun findViews(view: View) {
+        debugRV = view.findViewById(R.id.debugRV)
+        negativeBtn = view.findViewById(R.id.negativeBtn)
+        positiveBtn = view.findViewById(R.id.positiveBtn)
+        titleTV = view.findViewById(R.id.titleTV)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        findViews(view)
         initViews()
     }
 

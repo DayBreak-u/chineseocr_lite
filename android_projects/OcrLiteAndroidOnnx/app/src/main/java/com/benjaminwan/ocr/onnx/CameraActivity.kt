@@ -3,12 +3,16 @@ package com.benjaminwan.ocr.onnx
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.assent.Permission
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assent.isAllGranted
@@ -20,11 +24,9 @@ import com.benjaminwan.ocr.onnx.utils.showToast
 import com.benjaminwan.ocrlibrary.OcrResult
 import com.bumptech.glide.Glide
 import com.orhanobut.logger.Logger
-import com.uber.autodispose.android.lifecycle.autoDisposable
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_camera.*
+import jsc.kit.cameramask.CameraLensView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlin.math.max
 
 class CameraActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener {
@@ -36,10 +38,45 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeek
     private var camera: Camera? = null
     private lateinit var viewFinder: PreviewView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_camera)
-        App.ocrEngine.doAngle = false//摄像头一般不需要考虑倒过来的情况
+    private lateinit var clearBtn: Button
+    private lateinit var detectBtn: Button
+    private lateinit var resultBtn: Button
+    private lateinit var debugBtn: Button
+    private lateinit var paddingSeekBar: SeekBar
+    private lateinit var boxScoreThreshSeekBar: SeekBar
+    private lateinit var boxThreshSeekBar: SeekBar
+    private lateinit var maxSideLenSeekBar: SeekBar
+    private lateinit var scaleUnClipRatioSeekBar: SeekBar
+    private lateinit var cameraLensView: CameraLensView
+    private lateinit var maxSideLenTv: TextView
+    private lateinit var paddingTv: TextView
+    private lateinit var boxScoreThreshTv: TextView
+    private lateinit var boxThreshTv: TextView
+    private lateinit var unClipRatioTv: TextView
+    private lateinit var timeTV: TextView
+    private lateinit var loadingImg: ImageView
+
+    private fun findViews() {
+        clearBtn = findViewById(R.id.clearBtn)
+        detectBtn = findViewById(R.id.detectBtn)
+        resultBtn = findViewById(R.id.resultBtn)
+        debugBtn = findViewById(R.id.debugBtn)
+        paddingSeekBar = findViewById(R.id.paddingSeekBar)
+        boxScoreThreshSeekBar = findViewById(R.id.boxScoreThreshSeekBar)
+        boxThreshSeekBar = findViewById(R.id.boxThreshSeekBar)
+        maxSideLenSeekBar = findViewById(R.id.maxSideLenSeekBar)
+        scaleUnClipRatioSeekBar = findViewById(R.id.scaleUnClipRatioSeekBar)
+        cameraLensView = findViewById(R.id.cameraLensView)
+        maxSideLenTv = findViewById(R.id.maxSideLenTv)
+        paddingTv = findViewById(R.id.paddingTv)
+        boxScoreThreshTv = findViewById(R.id.boxScoreThreshTv)
+        boxThreshTv = findViewById(R.id.boxThreshTv)
+        unClipRatioTv = findViewById(R.id.unClipRatioTv)
+        timeTV = findViewById(R.id.timeTV)
+        loadingImg = findViewById(R.id.loadingImg)
+    }
+
+    private fun initViews() {
         clearBtn.setOnClickListener(this)
         detectBtn.setOnClickListener(this)
         resultBtn.setOnClickListener(this)
@@ -57,6 +94,14 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeek
         cameraLensView.postDelayed({
             updateMaxSideLen(100)
         }, 500)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        App.ocrEngine.doAngle = false//摄像头一般不需要考虑倒过来的情况
+        setContentView(R.layout.activity_camera)
+        findViews()
+        initViews()
     }
 
     override fun onResume() {
@@ -198,23 +243,25 @@ class CameraActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeek
     }
 
     private fun detect(reSize: Int) {
-        Single.fromCallable {
-            val src = cameraLensView.cropCameraLensRectBitmap(viewFinder.bitmap, false)
-            val boxImg: Bitmap = Bitmap.createBitmap(
-                src.width, src.height, Bitmap.Config.ARGB_8888
-            )
-            Logger.i("selectedImg=${src.height},${src.width} ${src.config}")
-            App.ocrEngine.detect(src, boxImg, reSize)
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { showLoading() }
-            .doFinally { hideLoading() }
-            .autoDisposable(this)
-            .subscribe { t1, t2 ->
-                ocrResult = t1
-                timeTV.text = "识别时间:${t1.detectTime.toInt()}ms"
-                cameraLensView.cameraLensBitmap = t1.boxImg
+        flow {
+            emit(cameraLensView.cropCameraLensRectBitmap(viewFinder.bitmap, false))
+        }.flowOn(Dispatchers.Main)
+            .map { src ->
+                val boxImg: Bitmap = Bitmap.createBitmap(
+                    src.width, src.height, Bitmap.Config.ARGB_8888
+                )
+                Logger.i("selectedImg=${src.height},${src.width} ${src.config}")
+                App.ocrEngine.detect(src, boxImg, reSize)
             }
+            .flowOn(Dispatchers.IO)
+            .onStart { showLoading() }
+            .onCompletion { hideLoading() }
+            .onEach {
+                ocrResult = it
+                timeTV.text = "识别时间:${it.detectTime.toInt()}ms"
+                cameraLensView.cameraLensBitmap = it.boxImg
+            }
+            .launchIn(lifecycleScope)
     }
 
     private fun startCamera() {
