@@ -1,7 +1,6 @@
 package com.benjaminwan.ocr.ncnn.dialog
 
 import android.app.Dialog
-import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ abstract class BaseDialog : DialogFragment() {
     private var mCanceledBack = true//是否返回键关闭
     private var mAnimStyle: Int = 0//显示动画
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+    /*override fun onActivityCreated(savedInstanceState: Bundle?) {
         //修复DialogFragment内存泄漏
         if (showsDialog) {
             showsDialog = false
@@ -39,7 +38,7 @@ abstract class BaseDialog : DialogFragment() {
                 dialog?.onRestoreInstanceState(dialogState)
             }
         }
-    }
+    }*/
 
     fun setGravity(gravity: Int) {
         mGravity = gravity
