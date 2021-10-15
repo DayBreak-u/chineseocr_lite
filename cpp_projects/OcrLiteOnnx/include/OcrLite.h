@@ -2,7 +2,7 @@
 #define __OCR_LITE_H__
 
 #include "opencv2/core.hpp"
-#include "onnxruntime_cxx_api.h"
+#include <onnxruntime/core/session/onnxruntime_cxx_api.h>
 #include "OcrStruct.h"
 #include "DbNet.h"
 #include "AngleNet.h"
@@ -20,7 +20,7 @@ public:
 
     void enableResultTxt(const char *path, const char *imgName);
 
-    void initModels(const std::string &detPath, const std::string &clsPath,
+    bool initModels(const std::string &detPath, const std::string &clsPath,
                     const std::string &recPath, const std::string &keysPath);
 
     void Logger(const char *format, ...);
@@ -29,10 +29,9 @@ public:
                      int padding, int maxSideLen,
                      float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle);
 
-
-	OcrResult detect(const cv::Mat& mat,
-		int padding, int maxSideLen,
-		float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle);
+    OcrResult detect(const cv::Mat &mat,
+                     int padding, int maxSideLen,
+                     float boxScoreThresh, float boxThresh, float unClipRatio, bool doAngle, bool mostAngle);
 
 private:
     bool isOutputConsole = false;
