@@ -7,12 +7,15 @@ import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.afollestad.assent.Permission
 import com.afollestad.assent.askForPermissions
 import com.afollestad.assent.isAllGranted
@@ -25,12 +28,14 @@ import com.benjaminwan.ocr.onnx.utils.trimBlankAndSymbols
 import com.benjaminwan.ocrlibrary.OcrFailed
 import com.benjaminwan.ocrlibrary.OcrResult
 import com.benjaminwan.ocrlibrary.OcrStop
+import com.mywork.idcardview.IdCardFrontView
 import com.orhanobut.logger.Logger
-import com.uber.autodispose.android.lifecycle.autoDisposable
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_idcard_front.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import kotlin.math.max
 
 class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
@@ -57,6 +62,49 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private lateinit var startBtn: Button
+    private lateinit var stopBtn: Button
+    private lateinit var clearNameBtn: ImageButton
+    private lateinit var clearGenderBtn: ImageButton
+    private lateinit var clearNationBtn: ImageButton
+    private lateinit var clearBirthBtn: ImageButton
+    private lateinit var clearAddressBtn: ImageButton
+    private lateinit var clearNumberBtn: ImageButton
+    private lateinit var nameEdit: EditText
+    private lateinit var genderEdit: EditText
+    private lateinit var nationEdit: EditText
+    private lateinit var birthDateEdit: EditText
+    private lateinit var addressEdit: EditText
+    private lateinit var numberEdit: EditText
+    private lateinit var idCardFrontView: IdCardFrontView
+
+    private fun initViews() {
+        viewFinder = findViewById(R.id.viewFinder)
+        startBtn = findViewById(R.id.startBtn)
+        stopBtn = findViewById(R.id.stopBtn)
+        clearNameBtn = findViewById(R.id.clearNameBtn)
+        clearGenderBtn = findViewById(R.id.clearGenderBtn)
+        clearNationBtn = findViewById(R.id.clearNationBtn)
+        clearBirthBtn = findViewById(R.id.clearBirthBtn)
+        clearAddressBtn = findViewById(R.id.clearAddressBtn)
+        clearNumberBtn = findViewById(R.id.clearNumberBtn)
+        nameEdit = findViewById(R.id.nameEdit)
+        genderEdit = findViewById(R.id.genderEdit)
+        nationEdit = findViewById(R.id.nationEdit)
+        birthDateEdit = findViewById(R.id.birthDateEdit)
+        addressEdit = findViewById(R.id.addressEdit)
+        numberEdit = findViewById(R.id.numberEdit)
+        idCardFrontView = findViewById(R.id.idCardFrontView)
+        startBtn.setOnClickListener(this)
+        stopBtn.setOnClickListener(this)
+        clearNameBtn.setOnClickListener(this)
+        clearGenderBtn.setOnClickListener(this)
+        clearNationBtn.setOnClickListener(this)
+        clearBirthBtn.setOnClickListener(this)
+        clearAddressBtn.setOnClickListener(this)
+        clearNumberBtn.setOnClickListener(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.ocrEngine.doAngle = false//摄像头拍摄一般都是正的，不需要判断方向
@@ -64,7 +112,6 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
         App.ocrEngine.boxScoreThresh = 0.1f
         App.ocrEngine.unClipRatio = 2.0f
         setContentView(R.layout.activity_idcard_front)
-        viewFinder = findViewById(R.id.viewFinder)
         initViews()
     }
 
@@ -132,17 +179,6 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
         setEdit(numberEdit, result.number)
     }
 
-    private fun initViews() {
-        startBtn.setOnClickListener(this)
-        stopBtn.setOnClickListener(this)
-        clearNameBtn.setOnClickListener(this)
-        clearGenderBtn.setOnClickListener(this)
-        clearNationBtn.setOnClickListener(this)
-        clearBirthBtn.setOnClickListener(this)
-        clearAddressBtn.setOnClickListener(this)
-        clearNumberBtn.setOnClickListener(this)
-    }
-
     override fun onClick(view: View?) {
         view ?: return
         when (view.id) {
@@ -201,7 +237,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun detectLoop() {
         setDetectState(true)
-        Observable.fromCallable {
+        flow {
             var success: IdCardFront? = null
             var numberStr: String? = null
             var nameStr: String? = null
@@ -209,11 +245,11 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
             var addressStr: String? = null
             val start = System.currentTimeMillis()
             do {
-                val cameraBitmap = viewFinder.bitmap ?: continue
+                val cameraBitmap = withContext(Dispatchers.Main) { viewFinder.bitmap } ?: continue
                 if (cameraBitmap.width <= 0 || cameraBitmap.height <= 0) continue
                 //先识别身份证号
                 if (numberStr == null) {
-                    val numberBitmap = idCardFrontView.cropNumberBitmap(cameraBitmap)
+                    val numberBitmap = withContext(Dispatchers.Main) { idCardFrontView.cropNumberBitmap(cameraBitmap) }
                     val numberOnce = detectOnce(numberBitmap)
                     Logger.i(numberOnce.strRes)
                     numberStr =
@@ -221,7 +257,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 //识别姓名
                 if (nameStr == null) {
-                    val nameBitmap = idCardFrontView.cropNameBitmap(cameraBitmap)
+                    val nameBitmap = withContext(Dispatchers.Main) { idCardFrontView.cropNameBitmap(cameraBitmap) }
                     val nameOnce = detectOnce(nameBitmap)
                     Logger.i(nameOnce.toString())
                     val nameLine = nameOnce.textBlocks.sortedBy { it.boxPoint.first().x }
@@ -238,7 +274,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
                 }
                 //民族
                 if (nationStr == null) {
-                    val nationBitmap = idCardFrontView.cropNationBitmap(cameraBitmap)
+                    val nationBitmap = withContext(Dispatchers.Main) { idCardFrontView.cropNationBitmap(cameraBitmap) }
                     val nationOnce = detectOnce(nationBitmap)
                     Logger.i(nationOnce.toString())
                     val nationLine = nationOnce.textBlocks.sortedBy { it.boxPoint.first().x }
@@ -258,7 +294,7 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
 
                 //住址
                 if (addressStr == null) {
-                    val addressBitmap = idCardFrontView.cropAddressBitmap(cameraBitmap)
+                    val addressBitmap = withContext(Dispatchers.Main) { idCardFrontView.cropAddressBitmap(cameraBitmap) }
                     val addressOnce = detectOnce(addressBitmap)
                     Logger.i(addressOnce.toString())
                     val addressLine = addressOnce.textBlocks.sortedBy { it.boxPoint.first().y }
@@ -284,15 +320,15 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
             } while (success == null && detectStart)
             val end = System.currentTimeMillis()
             Logger.i("time=${end - start}")
-            success ?: if (!detectStart) {
+            val result = success ?: if (!detectStart) {
                 OcrStop
             } else {
                 OcrFailed
             }
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(this)
-            .subscribe({
+            emit(result)
+        }
+            .flowOn(Dispatchers.IO)
+            .onEach {
                 when (it) {
                     is IdCardFront -> {
                         setDetectState(false)
@@ -306,9 +342,8 @@ class IdCardFrontActivity : AppCompatActivity(), View.OnClickListener {
                         detectLoop()
                     }
                 }
-            }, {
-                detectLoop()
-            })
+            }
+            .launchIn(lifecycleScope)
     }
 
     private fun startCamera() {

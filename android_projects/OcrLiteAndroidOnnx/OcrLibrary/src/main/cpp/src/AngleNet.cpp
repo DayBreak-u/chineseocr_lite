@@ -13,7 +13,7 @@ void AngleNet::setNumThread(int numOfThread) {
     //===session options===
     // Sets the number of threads used to parallelize the execution within nodes
     // A value of 0 means ORT will pick a default
-    //sessionOptions.SetIntraOpNumThreads(numThread);
+    sessionOptions.SetIntraOpNumThreads(numThread);
     //set OMP_NUM_THREADS=16
 
     // Sets the number of threads used to parallelize the execution of the graph (across nodes)
@@ -86,18 +86,13 @@ std::vector<Angle> AngleNet::getAngles(std::vector<cv::Mat> &partImgs,
     int size = partImgs.size();
     std::vector<Angle> angles(size);
     if (doAngle) {
-#ifdef __OPENMP__
-#pragma omp parallel for num_threads(numThread)
-#endif
         for (int i = 0; i < size; ++i) {
             double startAngle = getCurrentTime();
             auto angleImg = adjustTargetImg(partImgs[i], dstWidth, dstHeight);
             Angle angle = getAngle(angleImg);
             double endAngle = getCurrentTime();
             angle.time = endAngle - startAngle;
-
             angles[i] = angle;
-
         }
     } else {
         for (int i = 0; i < size; ++i) {

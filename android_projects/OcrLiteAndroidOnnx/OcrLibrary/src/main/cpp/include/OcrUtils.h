@@ -62,7 +62,7 @@ cv::Mat matRotateClockWise180(cv::Mat src);
 
 cv::Mat matRotateClockWise90(cv::Mat src);
 
-cv::Mat GetRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box);
+cv::Mat getRotateCropImage(const cv::Mat &src, std::vector<cv::Point> box);
 
 cv::Mat adjustTargetImg(cv::Mat &src, int dstWidth, int dstHeight);
 
