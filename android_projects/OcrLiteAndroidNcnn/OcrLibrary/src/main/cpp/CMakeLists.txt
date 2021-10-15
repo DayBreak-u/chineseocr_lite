@@ -2,9 +2,7 @@ project(OcrLite)
 
 cmake_minimum_required(VERSION 3.4.1)
 
-option(OCR_LITE_OPENMP "OcrLite Enable OpenMP" OFF)
 option(OCR_LITE_VULKAN "OcrLite Enable Vulkan" ON)
-set(OCR_LITE_OPENMP OFF)
 #set(OCR_LITE_VULKAN ON)
 if (OCR_LITE_VULKAN)
     set(ncnn_DIR "${CMAKE_SOURCE_DIR}/../ncnn-vulkan/${ANDROID_ABI}/lib/cmake/ncnn")
@@ -28,10 +26,6 @@ file(GLOB OCR_SRC src/*.cpp)
 set(OCR_COMPILE_CODE ${OCR_SRC})
 
 add_library(OcrLite SHARED ${OCR_COMPILE_CODE})
-
-if (OCR_LITE_OPENMP)
-    target_compile_definitions(OcrLite PRIVATE __OPENMP__)
-endif ()
 
 target_link_libraries(
         OcrLite

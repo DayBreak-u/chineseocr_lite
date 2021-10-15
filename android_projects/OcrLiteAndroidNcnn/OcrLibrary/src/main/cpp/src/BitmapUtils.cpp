@@ -30,14 +30,14 @@ void bitmapToMat(JNIEnv *env, jobject bitmap, Mat &dst) {
         }
         AndroidBitmap_unlockPixels(env, bitmap);
         return;
-    } catch (const cv::Exception &e) {
+    } /*catch (const cv::Exception &e) {
         AndroidBitmap_unlockPixels(env, bitmap);
         LOGE("nBitmapToMat caught cv::Exception: %s", e.what());
         jclass je = env->FindClass("java/lang/Exception");
         if (!je) je = env->FindClass("java/lang/Exception");
         env->ThrowNew(je, e.what());
         return;
-    } catch (...) {
+    }*/ catch (...) {
         AndroidBitmap_unlockPixels(env, bitmap);
         LOGE("nBitmapToMat caught unknown exception (...)");
         jclass je = env->FindClass("java/lang/Exception");
@@ -90,14 +90,14 @@ void matToBitmap(JNIEnv *env, cv::Mat &src, jobject bitmap) {
         }
         AndroidBitmap_unlockPixels(env, bitmap);
         return;
-    } catch (const cv::Exception &e) {
+    } /*catch (const cv::Exception &e) {
         AndroidBitmap_unlockPixels(env, bitmap);
         LOGE("nMatToBitmap caught cv::Exception: %s", e.what());
         jclass je = env->FindClass("java/lang/Exception");
         if (!je) je = env->FindClass("java/lang/Exception");
         env->ThrowNew(je, e.what());
         return;
-    } catch (...) {
+    }*/ catch (...) {
         AndroidBitmap_unlockPixels(env, bitmap);
         LOGE("nMatToBitmap caught unknown exception (...)");
         jclass je = env->FindClass("java/lang/Exception");

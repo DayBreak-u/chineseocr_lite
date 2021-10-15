@@ -4,5 +4,6 @@
     <string name="box_score_thresh">框置信度门限</string>
     <string name="box_un_clip_ratio">框大小倍率</string>
     <string name="app_permission">获取相机权限</string>
+    <string name="storage_permission">获取存储权限</string>
     <string name="do_angle">文字方向检测</string>
 </resources>
