@@ -5,16 +5,26 @@ chcp 65001
 echo "Setting the Number of Threads=%NUMBER_OF_PROCESSORS% Using an OpenMP Environment Variable"
 set OMP_NUM_THREADS=%NUMBER_OF_PROCESSORS%
 
-SET TARGET_IMG=../../images/1.jpg
+:MainExec
+echo "请输入测试选项并回车: 1)CPU-x64, 2)CPU-x86"
+set /p flag=
+if %flag% == 1 (call :PrepareCpuX64)^
+else if %flag% == 2 (call :PrepareCpuX86)^
+else (echo 输入错误！Input Error!)
+
+SET TARGET_IMG=images/1.jpg
 if not exist %TARGET_IMG% (
 echo "找不到待识别的目标图片：%TARGET_IMG%，请打开本文件并编辑TARGET_IMG"
 PAUSE
 exit
 )
 
-:: run Windows
-build\OcrLiteOnnx.exe --version
-build\OcrLiteOnnx.exe --models models ^
+if exist %EXE_PATH%\install\bin (
+SET EXE_PATH=%EXE_PATH%\install\bin
+)
+
+%EXE_PATH%\OcrLiteOnnx.exe --version
+%EXE_PATH%\OcrLiteOnnx.exe --models models ^
 --det dbnet.onnx ^
 --cls angle_net.onnx ^
 --rec crnn_lite_lstm.onnx ^
@@ -28,5 +38,16 @@ build\OcrLiteOnnx.exe --models models ^
 --unClipRatio 2.0 ^
 --doAngle 1 ^
 --mostAngle 1
-PAUSE
+
+echo.
+GOTO:MainExec
+
+:PrepareCpuX64
+set EXE_PATH=win-BIN-x64
+GOTO:EOF
+
+:PrepareCpuX86
+set EXE_PATH=win-BIN-Win32
+GOTO:EOF
+
 @ENDLOCAL

@@ -9,15 +9,15 @@
 static OcrLite *ocrLite;
 
 JNIEXPORT jint JNICALL
-JNI_OnLoad(JavaVM *vm, void *reserved){
+JNI_OnLoad(JavaVM *vm, void *reserved) {
     ocrLite = new OcrLite();
     return JNI_VERSION_1_4;
 }
 
 JNIEXPORT void JNICALL
-JNI_OnUnload(JavaVM *vm, void *reserved){
+JNI_OnUnload(JavaVM *vm, void *reserved) {
     //printf("JNI_OnUnload\n");
-	delete ocrLite;
+    delete ocrLite;
 }
 
 #ifdef _WIN32

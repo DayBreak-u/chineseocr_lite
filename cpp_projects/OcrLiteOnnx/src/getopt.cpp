@@ -6,7 +6,7 @@
  * Released under the MIT license
  * https://github.com/takamin/win-c/blob/master/LICENSE
  */
-#ifndef __CLIB__
+#ifndef  __CLIB__
 
 #include <stdio.h>
 #include <string.h>
@@ -223,4 +223,4 @@ int getopt_long_only(int argc, char* const argv[],
 }
 ********************************************************/
 
-#endif
+#endif //  __CLIB__

@@ -3,7 +3,7 @@
 
 #include <opencv2/core.hpp>
 #include "OcrStruct.h"
-#include "onnxruntime_cxx_api.h"
+#include <onnxruntime/core/session/onnxruntime_cxx_api.h>
 #include <numeric>
 #include <sys/stat.h>
 
