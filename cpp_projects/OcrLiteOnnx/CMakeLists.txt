@@ -96,20 +96,21 @@ if (OCR_OUTPUT STREQUAL "JNI") # JNI
     add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteOnnx PRIVATE __JNI__)
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
-elseif(OCR_OUTPUT STREQUAL "CLIB") # C LIB
+elseif(OCR_OUTPUT STREQUAL "CLIB") # CLIB
     add_library(OcrLiteOnnx SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteOnnx PRIVATE __CLIB__)
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
-elseif(OCR_OUTPUT STREQUAL "BIN") # C LIB
+elseif(OCR_OUTPUT STREQUAL "BIN") # BIN
     add_executable(OcrLiteOnnx ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteOnnx PRIVATE __EXEC__)
     target_link_libraries(OcrLiteOnnx ${OnnxRuntime_LIBS} ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
-install(TARGETS OcrLiteOnnx EXPORT OcrLiteOnnx
-        ARCHIVE DESTINATION staticlib
-        LIBRARY DESTINATION sharedlib
-        RUNTIME DESTINATION bin)
+install(TARGETS OcrLiteOnnx EXPORT OcrLiteOnnx)
+if (OCR_OUTPUT STREQUAL "CLIB") # CLIB
+    file(GLOB OCR_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+    install(FILES ${OCR_INCLUDE} DESTINATION include)
+endif ()
 
 # benchmark
 if (OCR_BENCHMARK AND (OCR_OUTPUT STREQUAL "BIN"))
