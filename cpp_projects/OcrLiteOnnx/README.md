@@ -2,7 +2,9 @@
 
 ### 联系方式
 
-QQ①群：994929053 QQ②群：820132154
+* QQ①群：994929053
+* QQ②群：820132154
+* QQ③群：904091319
 
 ### Project下载
 
@@ -32,6 +34,11 @@ ChineseOcr Lite Onnx，超轻量级中文OCR PC Demo，支持onnxruntime推理
 采用onnxruntime框架[https://github.com/microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)
 
 ### 更新说明
+
+#### 2021-10-25 update
+
+* fix:win编译打包C动态库缺少lib文件
+* 编译c动态库添加打包include
 
 #### 2021-10-15 update
 
