@@ -32,6 +32,7 @@
 
 * QQ①群：994929053
 * QQ②群：820132154
+* QQ③群：904091319
 
 ## 项目完整源码
 
@@ -41,7 +42,6 @@
 ## APK下载
 
 * 编译好的demo apk，可以在release中下载，或者Q群共享内下载，文件名例：OcrLiteAndroidOnnx-版本号-release.apk
-* 或者[Gitee下载](https://gitee.com/benjaminwan/ocr-lite-android-onnx/releases)
 * 或者[Github下载](https://github.com/benjaminwan/OcrLiteAndroidOnnx/releases)
 
 ## 简介
@@ -65,7 +65,7 @@ onnxruntime框架[https://github.com/microsoft/onnxruntime](https://github.com/m
 
 ## 更新说明
 
-#### 2021-09-29 update
+#### 2021-09-29 update 1.6.0
 
 * opencv 3.4.15(特别说明：4.5.3也可以支持，如果换成cv4，minSdkVersion必须改为24)
 * onnxruntime 1.9.0
@@ -73,6 +73,11 @@ onnxruntime框架[https://github.com/microsoft/onnxruntime](https://github.com/m
 * 升级gradle: 7.0.2
 * 升级各dependencies
 * 使用kotlin coroutines代替rxjava
+
+#### 2021-10-28 update 1.6.1
+
+* 编辑build.gradle，把版本定义放到root build.gradle
+* 编辑github workflow config，上传aar文件到release
 
 ## 编译说明
 
