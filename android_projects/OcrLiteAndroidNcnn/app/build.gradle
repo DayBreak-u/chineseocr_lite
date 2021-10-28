@@ -1,7 +1,9 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+}
 
 android {
     signingConfigs {
@@ -13,14 +15,14 @@ android {
         }
     }
 
-    compileSdkVersion 31
+    compileSdkVersion compile_sdk_version
 
     defaultConfig {
         applicationId "com.benjaminwan.ocr.ncnn"
-        minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 21
-        versionName "1.6.0.20210928"
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode project_version_code
+        versionName project_version_name
         signingConfig signingConfigs.ocr
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -89,10 +91,10 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
     //lifecycle
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-rc01'
 
     //glide
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
     implementation project(":OcrLibrary")
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
@@ -109,7 +111,7 @@ dependencies {
     // CameraX Lifecycle library
     implementation "androidx.camera:camera-lifecycle:$camerax_version"
     // CameraX View class
-    implementation 'androidx.camera:camera-view:1.0.0-alpha29'
+    implementation 'androidx.camera:camera-view:1.0.0-alpha30'
 
     //cameraMask 相机遮罩
     implementation 'jsc.kit.cameramask:camera-mask:0.3.0'
