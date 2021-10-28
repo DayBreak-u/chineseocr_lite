@@ -25,7 +25,6 @@ echo.
 
 echo "请注意：如果选择2)JNI动态库时，必须安装配置Oracle JDK"
 echo "请选择编译输出类型并回车: 1)BIN可执行文件，2)JNI动态库，3)C动态库"
-set BUILD_OUTPUT="EXE"
 set /p flag=
 if %flag% == 1 (set BUILD_OUTPUT="BIN")^
 else if %flag% == 2 (set BUILD_OUTPUT="JNI")^

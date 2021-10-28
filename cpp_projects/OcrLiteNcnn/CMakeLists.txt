@@ -103,20 +103,21 @@ if (OCR_OUTPUT STREQUAL "JNI") # JNI
     add_library(OcrLiteNcnn SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteNcnn PRIVATE __JNI__)
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${JNI_LIBS} ${OpenMP_CXX_LIB_NAMES})
-elseif(OCR_OUTPUT STREQUAL "CLIB") # C LIB
+elseif(OCR_OUTPUT STREQUAL "CLIB") # CLIB
     add_library(OcrLiteNcnn SHARED ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteNcnn PRIVATE __CLIB__)
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
-elseif(OCR_OUTPUT STREQUAL "BIN") # C LIB
+elseif(OCR_OUTPUT STREQUAL "BIN") # BIN
     add_executable(OcrLiteNcnn ${OCR_COMPILE_CODE})
     target_compile_definitions(OcrLiteNcnn PRIVATE __EXEC__)
     target_link_libraries(OcrLiteNcnn ncnn ${OpenCV_LIBS} ${OpenMP_CXX_LIB_NAMES})
 endif ()
 
-install(TARGETS OcrLiteNcnn EXPORT OcrLiteNcnn
-        ARCHIVE DESTINATION staticlib
-        LIBRARY DESTINATION sharedlib
-        RUNTIME DESTINATION bin)
+install(TARGETS OcrLiteNcnn EXPORT OcrLiteNcnn)
+if (OCR_OUTPUT STREQUAL "CLIB") # CLIB
+    file(GLOB OCR_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+    install(FILES ${OCR_INCLUDE} DESTINATION include)
+endif ()
 
 if (OCR_VULKAN STREQUAL "GPU")
     target_compile_definitions(OcrLiteNcnn PRIVATE __VULKAN__)
