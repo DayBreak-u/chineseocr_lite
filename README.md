@@ -12,7 +12,7 @@
 cd chineseocr_lite## 进入chineseocr目录
 python backend/main.py 
 ```
-## 在线演示地址: [chineseocr_lite](http://www.cnocrlite.com:8088)
+## 在线演示地址: [chineseocr_lite](http://http://ocrlite.cnocrlite.com/)
 
 ## 识别结果展示
 ![avatar](test_imgs/res.jpg)
