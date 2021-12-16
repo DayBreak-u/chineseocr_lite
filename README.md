@@ -24,7 +24,7 @@ python backend/main.py
   
 ```
 import base64
-url = http://www.cnocrlite.com/api/tr-run/
+url = "http://www.cnocrlite.com/api/tr-run/"
 f = open(img, "rb")
 base64_data = base64.b64encode(f.read()).decode("utf-8")
 data = {
