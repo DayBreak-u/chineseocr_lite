@@ -14,6 +14,27 @@ python backend/main.py
 ```
 ## 在线演示地址: [chineseocr_lite](http://ocrlite.cnocrlite.com/)
 
+## web api
+  
+  POST 方式调用， 请求地址： http://www.cnocrlite.com/api/tr-run/
+  请求参数：
+  image : 图片的base64
+  language_type: 语言 支持 "en","ja","zh","kr
+  python示例:
+  
+```
+f = open(img, "rb")
+base64_data = base64.b64encode(f.read()).decode("utf-8")
+data = {
+  "image": base64_data,
+  "language_type": "ch", # 支持 "en","ja","ch","kr"
+}
+
+resp = requests.post(self.url, data=data)
+resp = resp.text
+print(resp)
+```
+
 ## 识别结果展示
 ![avatar](test_imgs/res.jpg)
 ![avatar](test_imgs/res_2.jpg)
