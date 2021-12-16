@@ -23,6 +23,7 @@ python backend/main.py
   python示例:
   
 ```
+import base64
 f = open(img, "rb")
 base64_data = base64.b64encode(f.read()).decode("utf-8")
 data = {
