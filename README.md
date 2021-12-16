@@ -20,6 +20,7 @@ python backend/main.py
   请求参数:
   
   image : 图片的base64
+  
   language_type: 语言 支持 "en","ja","zh","kr
   python示例:
   
