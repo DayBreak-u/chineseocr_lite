@@ -92,7 +92,6 @@ class TrRun(tornado.web.RequestHandler):
         if time_day != now_time:
             now_time = time_day
             request_time = {}
-        #img.save("../web_imgs/{}.jpg".format(time_now))
         
 
         '''
