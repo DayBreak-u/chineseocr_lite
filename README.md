@@ -24,6 +24,7 @@ python backend/main.py
   
 ```
 import base64
+url = http://www.cnocrlite.com/api/tr-run/
 f = open(img, "rb")
 base64_data = base64.b64encode(f.read()).decode("utf-8")
 data = {
@@ -31,7 +32,7 @@ data = {
   "language_type": "ch", # 支持 "en","ja","ch","kr"
 }
 
-resp = requests.post(self.url, data=data)
+resp = requests.post(url, data=data)
 resp = resp.text
 print(resp)
 ```
