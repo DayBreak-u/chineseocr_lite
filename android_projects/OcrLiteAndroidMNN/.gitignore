@@ -1,0 +1,6 @@
+/build
+/.gradle
+app/build
+/OcrLibrary/build
+/OcrLibrary/.cxx
+/OcrLibrary/src/sdk

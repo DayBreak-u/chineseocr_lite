@@ -59,6 +59,7 @@ print(resp)
 #### [C++ Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/cpp_projects)
 * onnxruntime C++ demo，支持Windows、linux、macOS，目前仅支持cpu计算；
 * ncnn C++ demo，支持Windows、linux、macOS，分为cpu版与gpu版，gpu版使用ncnn+vulkan来支持gpu加速；
+* MNN C++ demo, 支持 windows、linux、macOs，目前仅支持cpu计算；
 
 #### [Jvm Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/jvm_projects)
 * onnxruntime jvm demo: 以onnxruntime C++为基础，编译成jni供java或kotlin调用；
@@ -67,6 +68,7 @@ print(resp)
 #### [Android Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/android_projects)
 * onnxruntime android demo: 以onnxruntime C++为基础，整合为一个独立的android模块供app调用；
 * ncnn jvm android demo: 以ncnn C++为基础，整合为一个独立的android模块供app调用，同样分为cpu版与gpu版；
+* MNN android demo: 以MNN C++为基础，整合为一个独立的android模块供app调用，支持cpu版本
 
 #### [.Net Demo](https://github.com/ouyanghuiyu/chineseocr_lite/tree/onnx/dotnet_projects)
 * onnxruntime c# demo:  完全以C#编写的onnxruntime demo;
