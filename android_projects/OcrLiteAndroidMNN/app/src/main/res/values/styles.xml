@@ -1,0 +1,71 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="window_scale_animation" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/window_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/window_exit_anim</item>
+    </style>
+
+    <style name="diag_top_down_up_animation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/window_show_down</item>
+        <item name="android:windowExitAnimation">@anim/window_close_up</item>
+    </style>
+
+    <style name="diag_bottom_up_down_animation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/window_show_up</item>
+        <item name="android:windowExitAnimation">@anim/window_close_down</item>
+    </style>
+
+    <style name="diag_fade_animation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/window_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/window_fade_out</item>
+    </style>
+
+    <style name="ButtonSeparatorH">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:src">@color/material_grey_300</item>
+    </style>
+
+    <style name="ButtonSeparatorV">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:src">@color/material_grey_300</item>
+    </style>
+
+    <style name="TextItemTitle">
+        <item name="android:gravity">start</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextItemContent">
+        <item name="android:textColor">@color/material_blue_500</item>
+        <item name="android:background">@drawable/bg_transparent_to_transparent_half</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+</resources>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="框坐标:" />
+
+        <TextView
+            android:id="@+id/boxPointTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="坐标" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="框置信度:" />
+
+        <TextView
+            android:id="@+id/boxScoreTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="方向索引:" />
+
+        <TextView
+            android:id="@+id/angleIndexTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="索引" />
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="方向置信度:" />
+
+        <TextView
+            android:id="@+id/angleScoreTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="方向置信度" />
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="方向耗时:" />
+
+        <TextView
+            android:id="@+id/angleTimeTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="识别时间" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="文字结果:" />
+
+        <TextView
+            android:id="@+id/textTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="结果" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="字置信度"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/charScoresTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="置信度"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="字识别耗时:"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/crnnTimeTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextItemTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="框总耗时:"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/blockTimeTv"
+            style="@style/TextItemContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
