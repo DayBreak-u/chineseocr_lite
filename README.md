@@ -19,7 +19,7 @@ python backend/main.py
   POST 方式调用， 请求地址： http://www.cnocrlite.com/api/tr-run/
   请求参数:
   
-  image : 图片的base64
+  im : 图片的base64
   
   language_type: 语言 支持 "en","ja","zh","kr
   python示例:
