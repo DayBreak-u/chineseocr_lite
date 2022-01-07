@@ -30,7 +30,7 @@ url = "http://www.cnocrlite.com/api/tr-run/"
 f = open(img, "rb")
 base64_data = base64.b64encode(f.read()).decode("utf-8")
 data = {
-  "image": base64_data,
+  "img": base64_data,
   "language_type": "ch", # 支持 "en","ja","ch","kr"
 }
 
