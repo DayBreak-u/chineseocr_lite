@@ -16,27 +16,40 @@ python backend/main.py
 
 ## web api
   
-  POST 方式调用， 请求地址： http://www.cnocrlite.com/api/tr-run/
+  POST 方式调用， 请求地址： http://www.cnocrlite.com/api/tr-run/  
   请求参数:
   
-  image : 图片的base64
-  
-  language_type: 语言 支持 "en","ja","zh","kr
-  python示例:
-  
-```
+  img : 图片的base64
+
+#### Python示例:
+```python
 import base64
 url = "http://www.cnocrlite.com/api/tr-run/"
 f = open(img, "rb")
 base64_data = base64.b64encode(f.read()).decode("utf-8")
 data = {
-  "image": base64_data,
-  "language_type": "ch", # 支持 "en","ja","ch","kr"
+  "img": base64_data
 }
 
 resp = requests.post(url, data=data)
 resp = resp.text
 print(resp)
+```
+
+#### Java示例:
+```java
+// header
+HttpHeaders headers = new HttpHeaders();
+headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+// body
+MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+body.add("img", Base64.getEncoder().encodeToString(Files.readAllBytes(outputFile.toPath())));
+// 发送请求
+ResponseEntity<String> entity = new RestTemplate().postForEntity(
+        "http://www.cnocrlite.com/api/tr-run/",
+        new HttpEntity<>(body, headers),
+        String.class
+);
 ```
 
 ## 识别结果展示
