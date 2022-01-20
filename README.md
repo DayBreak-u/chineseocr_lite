@@ -7,10 +7,11 @@
 
 - linux/macos/windows
 
-## web服务启动
-``` Bash
-cd chineseocr_lite## 进入chineseocr目录
-python backend/main.py 
+## 依赖安装、web服务启动
+```bash
+cd chineseocr_lite ## 进入chineseocr目录
+pip3 install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+python3 backend/main.py 
 ```
 ## 在线演示地址: [chineseocr_lite](http://ocrlite.cnocrlite.com/)
 
