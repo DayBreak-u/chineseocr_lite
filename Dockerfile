@@ -23,7 +23,6 @@ RUN pip3 install --user  -U pip -i https://pypi.tuna.tsinghua.edu.cn/simple/  \
 
 RUN source ~/.bash_profile && pip3 install -r requirements.txt
 
-EXPOSE 5000
-EXPOSE 8000
+EXPOSE 8089
 
 CMD python3 backend/main.py
