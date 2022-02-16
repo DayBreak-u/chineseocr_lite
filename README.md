@@ -23,11 +23,7 @@ python backend/main.py
 1. TrWebOCR https://github.com/alisen39/TrWebOCR         
 
 ## QQ群
-一群已满
-
-二群已满
-
-三群： 904091319
+615877948
 
 ### 以下范例项目是参考Python代码翻译为各种语言的Demo，仅供参考
 ** 注意：以下各种demo均相互独立，只是同一个程序的不同版本 **
