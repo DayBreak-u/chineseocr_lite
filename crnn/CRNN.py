@@ -1,4 +1,4 @@
-from PIL import  Image
+from PIL import Image
 import numpy as np
 import cv2
 from .keys import alphabetChinese as alphabet

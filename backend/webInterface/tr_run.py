@@ -1,7 +1,7 @@
 
 
 import time
-from model import  OcrHandle
+from model import OcrHandle
 import tornado.web
 import tornado.gen
 import tornado.httpserver
