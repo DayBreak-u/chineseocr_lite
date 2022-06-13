@@ -1,8 +1,8 @@
 import onnxruntime as rt
-import  numpy as np
+import numpy as np
 import time
 import cv2
-from .decode import  SegDetectorRepresenter
+from .decode import SegDetectorRepresenter
 
 mean = (0.485, 0.456, 0.406)
 std = (0.229, 0.224, 0.225)

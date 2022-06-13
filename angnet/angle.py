@@ -1,4 +1,4 @@
-from PIL import  Image
+from PIL import Image
 import numpy as np
 import cv2
 
@@ -44,7 +44,7 @@ class AngleNetHandle:
     def predict_rbgs(self, imgs):
         nlen = len(imgs)
         res_sum = sum([self.predict_rbg(im) for im in imgs])
-        return  res_sum < nlen//2
+        return res_sum < nlen//2
 
 
 if __name__ == "__main__":

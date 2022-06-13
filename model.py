@@ -1,6 +1,6 @@
 from config import *
 from crnn import CRNNHandle
-from angnet import  AngleNetHandle
+from angnet import AngleNetHandle
 from utils import draw_bbox, crop_rect, sorted_boxes, get_rotate_crop_image
 from PIL import Image
 import numpy as np
@@ -10,7 +10,7 @@ from dbnet.dbnet_infer import DBNET
 import time
 import traceback
 
-class  OcrHandle(object):
+class OcrHandle(object):
     def __init__(self):
         self.text_handle = DBNET(model_path)
         self.crnn_handle = CRNNHandle(crnn_model_path)
