@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw,ImageFont
 from io import BytesIO
 import datetime
 import json
+import os
 
 from backend.tools.np_encoder import NpEncoder
 from backend.tools import log
@@ -152,7 +153,7 @@ class TrRun(tornado.web.RequestHandler):
                 x1,y1,x2,y2,x3,y3,x4,y4 = rect.reshape(-1)
                 size = max(min(x2-x1,y3-y2) // 2 , 20 )
 
-                myfont = ImageFont.truetype("仿宋_GB2312.ttf", size=size)
+                myfont = ImageFont.truetype(os.path.join(os.getcwd(), "仿宋_GB2312.ttf"), size=size)
                 fillcolor = colors[i % len(colors)]
                 img_draw.text((x1, y1 - size ), str(i+1), font=myfont, fill=fillcolor)
                 for xy in [(x1, y1, x2, y2), (x2, y2, x3, y3 ), (x3 , y3 , x4, y4), (x4, y4, x1, y1)]:
