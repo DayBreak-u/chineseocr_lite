@@ -1,4 +1,4 @@
-
+# coding=utf-8
 
 import time
 from model import  OcrHandle

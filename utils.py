@@ -1,3 +1,4 @@
+# coding=utf-8
 import numpy as np
 import cv2
 from PIL import Image
@@ -12,16 +13,16 @@ def rotate_cut_img(im, degree, x_center, y_center, w, h, leftAdjust=False, right
         right = 1
     if leftAdjust:
         left = 1
-    
+
     box = (max(1, x_center - w / 2 - left * alph * (w / 2))
            , y_center - h / 2,  # ymin
            min(x_center + w / 2 + right * alph * (w / 2), im.size[0] - 1)
            , y_center + h / 2)  # ymax
-    
+
     newW = box[2] - box[0]
     newH = box[3] - box[1]
     tmpImg = im.rotate(degree, center=(x_center, y_center)).crop(box)
-    
+
     return tmpImg, newW, newH
 
 
@@ -32,7 +33,7 @@ def crop_rect(img, rect, alph=0.15):
     # print(rect)
     center, size, angle = rect[0], rect[1], rect[2]
     min_size = min(size)
-    
+
     if angle > -45:
         center, size = tuple(map(int, center)), tuple(map(int, size))
         # angle-=270
@@ -90,10 +91,10 @@ def sort_box(boxs):
         x2, y2 = sorted(newBox[:2], key=lambda x: x[1])[0]
         index = newBox.index([x2, y2])
         newBox.pop(index)
-        
+
         newBox = sorted(newBox, key=lambda x: -x[1])
         x3, y3 = sorted(newBox[:2], key=lambda x: x[0])[0]
-        
+
         res.append([x1, y1, x2, y2, x3, y3, x4, y4])
     return res
 
@@ -116,7 +117,7 @@ def solve(box):
     cy = (y1 + y3 + y4 + y2) / 4.0
     w = (np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) + np.sqrt((x3 - x4) ** 2 + (y3 - y4) ** 2)) / 2
     h = (np.sqrt((x2 - x3) ** 2 + (y2 - y3) ** 2) + np.sqrt((x1 - x4) ** 2 + (y1 - y4) ** 2)) / 2
-    
+
     sinA = (h * (x1 - cx) - w * (y1 - cy)) * 1.0 / (h * h + w * w) * 2
     angle = np.arcsin(sinA)
     return angle, w, h, cx, cy
@@ -135,8 +136,8 @@ def sorted_boxes(dt_boxes):
     _boxes = list(sorted_boxes)
 
     for i in range(num_boxes - 1):
-        if abs(_boxes[i+1][0][1] - _boxes[i][0][1]) < 10 and \
-            (_boxes[i + 1][0][0] < _boxes[i][0][0]):
+        if abs(_boxes[i + 1][0][1] - _boxes[i][0][1]) < 10 and \
+                (_boxes[i + 1][0][0] < _boxes[i][0][0]):
             tmp = _boxes[i]
             _boxes[i] = _boxes[i + 1]
             _boxes[i + 1] = tmp
@@ -154,8 +155,8 @@ def get_rotate_crop_image(img, points):
     points[:, 1] = points[:, 1] - top
     img_crop_width = int(np.linalg.norm(points[0] - points[1]))
     img_crop_height = int(np.linalg.norm(points[0] - points[3]))
-    pts_std = np.float32([[0, 0], [img_crop_width, 0],\
-        [img_crop_width, img_crop_height], [0, img_crop_height]])
+    pts_std = np.float32([[0, 0], [img_crop_width, 0], \
+                          [img_crop_width, img_crop_height], [0, img_crop_height]])
 
     M = cv2.getPerspectiveTransform(points, pts_std)
     dst_img = cv2.warpPerspective(
