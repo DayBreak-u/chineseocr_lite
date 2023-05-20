@@ -44,9 +44,12 @@ python backend/main.py
 * onnxruntime c# demo:  完全以C#编写的onnxruntime demo;
 * onnxruntime vb.net demo: 完全以VB编写的onnxruntime demo;
 
+#### [字符检测ocr Demo](https://github.com/fanqie03/char-detection)
+* 根据本项目和CRNN原理，推到出每个字符的位置demo，包括将字符组合成单词。
+
 #### 第三方Demo
 * [TNN中文字符ocr](https://github.com/Tencent/TNN/#effect-example): 根据本项目，基于TNN实现的轻量级中文字符ocr demo，支持iOS和Android系统，凭借TNN优化的CPU(ARMv7、ARMv8)和GPU(OpenCL、Metal)后端加速模型计算。
-* [字符检测ocr](https://github.com/fanqie03/char-detection): 根据本项目和CRNN原理，推到出每个字符的位置demo，包括将字符组合成单词。
+
 
 ### Android识别展示
 ![avatar](test_imgs/android/detect_IMEI.gif)
@@ -55,6 +58,9 @@ python backend/main.py
 
 ### .NetDemo识别展示
 ![avatar](test_imgs/dotnet/OcrLiteOnnxCs.PNG)
+
+### 字符检测ocr Demo识别展示
+![avatar](https://github.com/fanqie03/char-detection/raw/main/images/o2-word.jpg)
 
 ### 第三方 TNN Demo识别展示
 [![avatar](test_imgs/third_party/tnn_detect_camera.gif)](https://github.com/Tencent/TNN/#effect-example)
