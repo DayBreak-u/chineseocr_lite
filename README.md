@@ -46,6 +46,7 @@ python backend/main.py
 
 #### 第三方Demo
 * [TNN中文字符ocr](https://github.com/Tencent/TNN/#effect-example): 根据本项目，基于TNN实现的轻量级中文字符ocr demo，支持iOS和Android系统，凭借TNN优化的CPU(ARMv7、ARMv8)和GPU(OpenCL、Metal)后端加速模型计算。
+* [字符检测ocr](https://github.com/fanqie03/char-detection): 根据本项目和CRNN原理，推到出每个字符的位置demo，包括将字符组合成单词。
 
 ### Android识别展示
 ![avatar](test_imgs/android/detect_IMEI.gif)
