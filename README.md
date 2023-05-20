@@ -60,7 +60,7 @@ python backend/main.py
 ![avatar](test_imgs/dotnet/OcrLiteOnnxCs.PNG)
 
 ### 字符检测ocr Demo识别展示
-![avatar](https://github.com/fanqie03/char-detection/raw/main/images/o2-word.jpg)
+![avatar](test_imgs/o2-word.jpg)
 
 ### 第三方 TNN Demo识别展示
 [![avatar](test_imgs/third_party/tnn_detect_camera.gif)](https://github.com/Tencent/TNN/#effect-example)
