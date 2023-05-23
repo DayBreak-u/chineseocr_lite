@@ -1,4 +1,4 @@
-
+# coding=utf-8
 import os
 import sys
 
@@ -14,7 +14,8 @@ from backend.webInterface import tr_run
 from backend.webInterface import tr_index
 from backend.tools import log
 import logging
-logger = logging.getLogger(log.LOGGER_ROOT_NAME+'.'+__name__)
+
+logger = logging.getLogger(log.LOGGER_ROOT_NAME + '.' + __name__)
 
 current_path = os.path.dirname(__file__)
 settings = dict(
@@ -34,7 +35,6 @@ def make_app():
 
 
 if __name__ == "__main__":
-
     port = 8089
     app = make_app()
     server = tornado.httpserver.HTTPServer(app)

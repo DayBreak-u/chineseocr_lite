@@ -1,4 +1,6 @@
-from PIL import  Image
+# coding=utf-8
+
+from PIL import Image
 import numpy as np
 import cv2
 from .keys import alphabetChinese as alphabet
@@ -10,19 +12,19 @@ from .util import strLabelConverter, resizeNormalize
 
 converter = strLabelConverter(''.join(alphabet))
 
+
 def softmax(x):
     x_row_max = x.max(axis=-1)
-    x_row_max = x_row_max.reshape(list(x.shape)[:-1]+[1])
+    x_row_max = x_row_max.reshape(list(x.shape)[:-1] + [1])
     x = x - x_row_max
     x_exp = np.exp(x)
-    x_exp_row_sum = x_exp.sum(axis=-1).reshape(list(x.shape)[:-1]+[1])
+    x_exp_row_sum = x_exp.sum(axis=-1).reshape(list(x.shape)[:-1] + [1])
     softmax = x_exp / x_exp_row_sum
     return softmax
 
 
 class CRNNHandle:
     def __init__(self, model_path):
-
         self.sess = rt.InferenceSession(model_path)
 
     def predict(self, image):
@@ -43,20 +45,16 @@ class CRNNHandle:
 
         preds = preds[0]
 
+        length = preds.shape[0]
+        preds = preds.reshape(length, -1)
 
-        length  = preds.shape[0]
-        preds = preds.reshape(length,-1)
-
-        preds = np.argmax(preds,axis=1)
+        preds = np.argmax(preds, axis=1)
 
         preds = preds.reshape(-1)
-
 
         sim_pred = converter.decode(preds, length, raw=False)
 
         return sim_pred
-
-
 
     def predict_rbg(self, im):
         """
@@ -77,21 +75,18 @@ class CRNNHandle:
 
         preds = preds[0]
 
-
-        length  = preds.shape[0]
-        preds = preds.reshape(length,-1)
+        length = preds.shape[0]
+        preds = preds.reshape(length, -1)
 
         # preds = softmax(preds)
 
-
-        preds = np.argmax(preds,axis=1)
+        preds = np.argmax(preds, axis=1)
 
         preds = preds.reshape(-1)
 
         sim_pred = converter.decode(preds, length, raw=False)
 
         return sim_pred
-
 
 
 if __name__ == "__main__":
