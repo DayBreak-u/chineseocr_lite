@@ -1,4 +1,4 @@
-tornado==5.1.1
+tornado==6.3.3
 numpy==1.19.1
 opencv_python==4.3.0.36
 onnxruntime==1.4.0
