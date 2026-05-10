@@ -13,7 +13,7 @@ dependencies = [
   "tornado>=5.1.1",
   "numpy>=1.19.1",
   "opencv-python>=4.3.0.36",
-  "onnxruntime>=1.4.0",
+  "onnxruntime>=1.4.0,<=1.20.1",
   "Shapely>=1.7.0",
   "pyclipper>=1.2.0",
   "Pillow>=7.2.0",
