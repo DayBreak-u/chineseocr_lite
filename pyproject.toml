@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chineseocr-lite"
+version = "0.1.0"
+description = "Lightweight Chinese OCR CLI based on chineseocr_lite ONNX models."
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "Apache-2.0" }
+dependencies = [
+  "tornado>=5.1.1",
+  "numpy>=1.19.1",
+  "opencv-python>=4.3.0.36",
+  "onnxruntime>=1.4.0,<=1.20.1",
+  "Shapely>=1.7.0",
+  "pyclipper>=1.2.0",
+  "Pillow>=7.2.0",
+]
+
+[project.scripts]
+chineseocr = "chineseocr_lite.cli:main"
+
+[tool.setuptools]
+packages = [
+  "chineseocr_lite",
+  "angnet",
+  "backend",
+  "backend.tools",
+  "backend.webInterface",
+  "crnn",
+  "dbnet",
+  "models",
+]
+py-modules = ["config", "model", "utils"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+models = ["*.onnx"]

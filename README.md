@@ -1,4 +1,4 @@
-# chineseocr_lite ONNX
+# chineseocr_lite
 
 轻量级中文 OCR 项目，当前分支以 ONNX Runtime 推理为主，包含 Web 服务、Python 推理代码，以及 C++、JVM、Android、.NET 等多端 Demo。
 
@@ -39,6 +39,62 @@ server is running: 192.168.x.x:8089
 
 在浏览器打开该地址即可使用 Web OCR 页面。
 
+## CLI 使用
+
+当前项目也可以作为命令行 OCR 工具使用，适合被 agent、脚本或批处理任务调用。
+
+本地开发安装：
+
+```bash
+pip install -e .
+```
+
+识别单张图片并输出 JSON：
+
+```bash
+chineseocr test_imgs/res.jpg
+```
+
+写入 JSON 文件：
+
+```bash
+chineseocr test_imgs/res.jpg --output result.json
+```
+
+同时输出带检测框的图片：
+
+```bash
+chineseocr test_imgs/res.jpg --output result.json --draw result.jpg
+```
+
+调整检测前的短边尺寸：
+
+```bash
+chineseocr test_imgs/res.jpg --compress 960
+```
+
+CLI 输出为稳定 JSON，便于 agent 解析：
+
+```json
+{
+  "text": "识别出的全文",
+  "blocks": [
+    {
+      "text": "单个文本块",
+      "score": 0.93,
+      "box": [[12, 30], [210, 31], [209, 60], [11, 59]]
+    }
+  ],
+  "elapsed": 1.24
+}
+```
+
+也可以用 Python 模块方式运行：
+
+```bash
+python -m chineseocr_lite test_imgs/res.jpg
+```
+
 ## 模型文件
 
 当前仓库包含基础推理模型：
@@ -49,6 +105,8 @@ server is running: 192.168.x.x:8089
 | `models/` | `crnn_lite_lstm.onnx` | 文本识别 |
 | `models/` | `angle_net.onnx` | 文字方向分类 |
 | `models_ncnn/` | `*.bin`, `*.param` | NCNN Demo 使用的模型 |
+
+作为 Python CLI 包安装时，`models/*.onnx` 会随包一起安装，CLI 开箱即可使用。`models_ncnn/` 和各端 Demo 不会作为 CLI 必需资源。
 
 不要把训练权重、Python wheel、大型第三方库或构建产物直接提交到 Git。推荐放到 GitHub Releases、对象存储或 Git LFS。
 

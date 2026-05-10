@@ -8,7 +8,9 @@ import time
 class AngleNetHandle:
     def __init__(self, model_path,size_h = 32, size_w = 192):
 
-        self.sess = rt.InferenceSession(model_path)
+        sess_options = rt.SessionOptions()
+        sess_options.log_severity_level = 3
+        self.sess = rt.InferenceSession(model_path, sess_options)
         self.size_h = size_h
         self.size_w = size_w
 
