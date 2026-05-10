@@ -1,11 +1,5 @@
 <p align="center">
-  <img src="assets/chineseocr-lite-logo.png" alt="ChineseOCR Lite logo" width="520">
-</p>
-
-<h1 align="center">ChineseOCR Lite</h1>
-
-<p align="center">
-  轻量 · 高效 · 中文 OCR
+  <img src="assets/chineseocr-lite-logo-wide.png" alt="ChineseOCR Lite" width="760">
 </p>
 
 <p align="center">
