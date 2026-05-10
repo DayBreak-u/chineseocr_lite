@@ -43,7 +43,9 @@ def draw_bbox(img_path, result, color=(255, 0, 0), thickness=2):
 
 class DBNET(metaclass=SingletonType):
     def __init__(self, MODEL_PATH):
-        self.sess = rt.InferenceSession(MODEL_PATH)
+        sess_options = rt.SessionOptions()
+        sess_options.log_severity_level = 3
+        self.sess = rt.InferenceSession(MODEL_PATH, sess_options)
 
         self.decode_handel = SegDetectorRepresenter()
 
