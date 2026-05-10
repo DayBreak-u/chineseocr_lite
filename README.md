@@ -24,16 +24,6 @@
 pip install -r requirements.txt
 ```
 
-主要 Python 依赖：
-
-- `onnxruntime==1.4.0`
-- `opencv_python==4.3.0.36`
-- `tornado==5.1.1`
-- `numpy==1.19.1`
-- `Shapely==1.7.0`
-- `pyclipper==1.2.0`
-- `Pillow==7.2.0`
-
 ## 启动 Web 服务
 
 ```bash
