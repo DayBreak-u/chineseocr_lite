@@ -1,4 +1,19 @@
-# chineseocr_lite
+<p align="center">
+  <img src="assets/chineseocr-lite-logo.png" alt="ChineseOCR Lite logo" width="520">
+</p>
+
+<h1 align="center">ChineseOCR Lite</h1>
+
+<p align="center">
+  轻量 · 高效 · 中文 OCR
+</p>
+
+<p align="center">
+  <a href="#cli-使用">CLI</a> ·
+  <a href="#启动-web-服务">Web Demo</a> ·
+  <a href="#模型文件">Models</a> ·
+  <a href="#多端-demo">Multi-platform Demo</a>
+</p>
 
 轻量级中文 OCR 项目，当前分支以 ONNX Runtime 推理为主，包含 Web 服务、Python 推理代码，以及 C++、JVM、Android、.NET 等多端 Demo。
 
@@ -210,6 +225,10 @@ python -m chineseocr_lite test_imgs/res.jpg
 
 [![TNN poster OCR 2](test_imgs/third_party/tnn_detect_poster2.png)](https://github.com/Tencent/TNN/#effect-example)
 
+
+## 作者项目
+
+- [UnWatermark AI](https://unmarkai.net/)：在线视频水印去除工具，适合处理短视频、素材和内容发布前的清理工作。
 
 ## QQ 群
 
