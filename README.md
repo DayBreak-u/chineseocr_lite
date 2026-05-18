@@ -219,11 +219,3 @@ python -m chineseocr_lite test_imgs/res.jpg
 
 [![TNN poster OCR 2](test_imgs/third_party/tnn_detect_poster2.png)](https://github.com/Tencent/TNN/#effect-example)
 
-
-## 作者项目
-
-- [UnWatermark AI](https://unmarkai.net/)：在线视频水印去除工具，适合处理短视频、素材和内容发布前的清理工作。
-
-## QQ 群
-
-合作联系QQ： 760997646
